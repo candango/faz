@@ -14,11 +14,9 @@
     <link href="/stylesheets/faz.css" rel="stylesheet"/>
     <link href="/stylesheets/showcase.css" rel="stylesheet"/>
     <!-- Production -->
-    <!--<script src="/dist/steal.production.js" main="faz/index">
-    </script>-->
+    <!--<script src="/dist/steal.production.js" main="faz/app/navbar"></script>-->
     <!-- Development -->
-    <script src="/node_modules/steal/steal.js" main="faz/index">
-    </script>
+    <script src="/node_modules/steal/steal.js" main="faz/app/navbar"></script>
 </head>
 
 <body>
@@ -85,6 +83,7 @@
         <faz-navbar-brand href="#"><img src="/img/faz_square.png" width="30" height="30" class="d-inline-block align-top" alt="">
             Faz Toolkit aaa
         </faz-navbar-brand>
+        <faz-navbar-toggler><span class="navbar-toggler-icon"></span></faz-navbar-toggler>
 
         <faz-navbar-nav>
             <children>
@@ -93,6 +92,8 @@
             </children>
         </faz-navbar-nav>
     </faz-navbar>
+
+
 </main><!-- /.container -->
 
 <!-- Bootstrap core JavaScript

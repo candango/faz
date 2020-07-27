@@ -15,14 +15,17 @@
  */
 
 import {
-    ajax, DeepObservable, ObservableObject, StacheElement, type
+    ajax, DeepObservable, ObservableArray, ObservableObject, StacheElement, type
 } from "can";
 
-import { default as ID } from "../id";
-import {default as FazNavbarBrand} from "./navbar-brand";
-import {default as FazNavbarNav} from "./navbar-nav";
+import ID from "../id";
+import FazItem from "../item";
+import FazNavbarBrand from "./navbar-brand";
+import FazNavbarNav from "./navbar-nav";
+import FazNavbarToggler from "./navbar-toggler";
 
 import navbarTemplate from "./stache/navbar.stache";
+import {FazNavbarNavItemList} from "./navbar-nav-item";
 
 export default class FazNavbar extends StacheElement {
     static view = navbarTemplate;
@@ -35,13 +38,19 @@ export default class FazNavbar extends StacheElement {
                 type: ObservableObject,
                 get default(){
                     return new ObservableObject({
-                        "brand": undefined,
-                        "nav": undefined
+                        "items": undefined
                     });
                 }
             },
             source: {type: String, default: ""},
+            items: {
+                type: FazNavbarItemList,
+                get default() {
+                    return new FazNavbarItemList([]);
+                }
+            },
             brand: ObservableObject,
+            toggler: ObservableObject,
             nav: ObservableObject,
             extraClasses: String,
             type: {type: type.convert(String), default: "light"},
@@ -69,58 +78,54 @@ export default class FazNavbar extends StacheElement {
 
     processData() {
         if(this.data !== undefined) {
-            if (this.data.brand !== undefined) {
-                this.processBrandData(this.data.brand);
+            if (this.data.items !== undefined) {
+                this.data.items.forEach(function(item) {
+                    switch (item.type.toLowerCase()) {
+                        case "faz-navbar-brand":
+                            this.items.push(this.processBrandData(item));
+                            break;
+                        case "faz-navbar-nav":
+                            this.items.push(this.processNavData(item));
+                            break;
+                    }
+                }.bind(this));
             }
-            if (this.data.nav !== undefined) {
-                this.processNavData(this.data.nav);
-            }
         }
     }
 
-    processBrand(brand) {
-        if(!this.brand) {
-            let navbarBrand = new FazNavbarBrand();
-            navbarBrand.process(brand);
-            this.brand = navbarBrand;
-        } else {
-            console.warn("Faz Navbar brand is unique. Please remove " +
-                "extra brands declared into this object.")
-        }
-        brand.detach();
+    processBrand(element) {
+        let brand = new FazNavbarBrand();
+        brand.process($(element));
+        return brand;
     }
 
-    processBrandData(brandData) {
-        if(!this.brand) {
-            let navbarBrand = new FazNavbarBrand();
-            navbarBrand.processData(brandData);
-            this.brand = navbarBrand;
-        } else {
-            console.warn("Faz Navbar brand is unique. Please remove " +
-                "extra brands declared into this object.")
-        }
+    processBrandData(data) {
+        let brand = new FazNavbarBrand();
+        brand.processData(data);
+        return brand;
     }
 
-    processNav(nav) {
-        $(nav).detach();
-        if(!this.nav) {
-            let navbarNav = new FazNavbarNav();
-            navbarNav.process(this, nav);
-            this.nav = navbarNav;
-        } else {
-            console.warn("Faz Navbar nav is unique. Please remove " +
-                "extra navs declared into this object.")
-        }
+    processNav(element) {
+        let nav = new FazNavbarNav();
+        nav.process(this, element);
+        return nav;
     }
 
-    processNavData(navData) {
-        if(!this.nav) {
-            let navbarNav = new FazNavbarNav();
-            navbarNav.processData(this, navData);
-            this.nav = navbarNav;
+    processNavData(data) {
+        let nav = new FazNavbarNav();
+        nav.processData(this, data);
+        return nav;
+    }
+
+    processToggler(toggler) {
+        $(toggler).detach();
+        if(!this.toggler) {
+            let navbarToggler = new FazNavbarToggler();
+            navbarToggler.process(toggler);
+            this.toggler = navbarToggler;
         } else {
-            console.warn("Faz Navbar nav is unique. Please remove " +
-                "extra navs declared into this object.")
+            console.warn("Faz Navbar toggler is unique. Please remove " +
+                "extra togglers declared into this object.")
         }
     }
 
@@ -146,21 +151,30 @@ export default class FazNavbar extends StacheElement {
                     break;
             }
         }
+        let childrenToDelete = new Array();
+        for (let i = 0; i < this.children.length; i++) {
+            let child = this.children[i];
+            switch (child.tagName.toLowerCase()) {
+                case "faz-navbar-brand":
+                    this.items.push(this.processBrand(child));
+                    childrenToDelete.push(child);
+                    break;
+                case "faz-navbar-nav":
+                    this.items.push(this.processNav(child));
+                    childrenToDelete.push(child);
+                    break;
+            }
+        }
 
-        $(this).find("faz-navbar-brand").each(function (_, brand) {
-            this.processBrand($(brand));
-        }.bind(this));
-
-        $(this).find("faz-navbar-nav").each(function (_, nav) {
-            this.processNav(nav);
-        }.bind(this));
+        childrenToDelete.forEach(function (child) {
+            $(child).detach();
+        });
 
         this.isLoading = false;
         super.connectedCallback();
     }
 
     connected() {
-        console.log(this.source);
         if(this.source!="") {
             this.isLoading = true;
             ajax({
@@ -175,6 +189,24 @@ export default class FazNavbar extends StacheElement {
 
     static get seal() {
         return true;
+    }
+}
+
+export class FazNavbarItemList extends ObservableArray {
+    static get props() {
+        return {
+            get enabled() {
+                return this.filter({disabled: false});
+            },
+
+            get active() {
+                return this.filter({active: true});
+            }
+        };
+    }
+
+    static get items() {
+        return type.convert(FazItem);
     }
 }
 
