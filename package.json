@@ -1,19 +1,19 @@
 {
   "name": "faz",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Candango Faz Javascript toolkit.",
   "main": "faz.js",
   "repository": "https://github.com/candango/faz.git",
   "author": "Flavio Garcia <piraz@candango.org>",
   "license": "Apache-2.0",
   "dependencies": {
-    "bootstrap": "4.6.0",
-    "bootstrap-icons": "1.4.1",
-    "bootswatch": "4.6.0",
+    "@popperjs/core": "2.9.2",
+    "bootstrap": "5.0.1",
+    "bootstrap-icons": "1.5.0",
+    "bootswatch": "5.0.1",
     "can": "6.6.1",
     "jquery": "3.5.1",
-    "less": "4.1.1",
-    "popper.js": "1.16.1"
+    "less": "4.1.1"
   },
   "scripts": {
     "run": "http-server",
@@ -36,10 +36,10 @@
     "toolkit"
   ],
   "devDependencies": {
-    "codemirror": "5.61.0",
-    "electron": "12.0.6",
+    "codemirror": "5.61.1",
+    "electron": "13.1.2",
     "http-server": "0.12.3",
-    "qunit": "2.15.0",
+    "qunit": "2.16.0",
     "steal": "2.2.4",
     "steal-qunit": "2.0.0",
     "steal-stache": "5.0.0",
