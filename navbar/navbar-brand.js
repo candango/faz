@@ -17,7 +17,6 @@
 import {FazStacheItem} from "../item";
 
 import navbarBrandTemplate from "./stache/navbar-brand.stache";
-import {ObservableObject, type} from "can";
 
 
 /**

@@ -15,7 +15,7 @@
  */
 
 
-import {domEvents, ObservableObject, type} from "can";
+import { domEvents } from "can";
 import DateUtil from "../date";
 import { FazStacheItem } from "../item";
 import datepickerTemplate from "./stache/datepicker.stache";
