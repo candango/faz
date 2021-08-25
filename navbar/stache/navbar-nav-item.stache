@@ -1,7 +1,7 @@
 {{# isRoot }}
     {{# ../dropdown }}
     <li class="nav-item dropdown">
-        <a id:from="../id" class="nav-link dropdown-toggle" on:click="../activate(scope.element)" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">{{ ../content }}</a>
+        <a id:from="../fazid" class="nav-link dropdown-toggle" on:click="../activate(scope.element)" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">{{ ../content }}</a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             {{#each ( ../items, child=value)}}
                 {{{ child.html }}}
@@ -10,14 +10,14 @@
     </li>
     {{else}}
     <li class="nav-item">
-        <a id:from="../id" class:from="../class" {{#if ../isLink}}href:from="../getHref()"{{/if}}>{{ ../content }}</a>
+        <a id:from="../fazid" class:from="../class" {{#if ../isLink}}href:from="../getHref()"{{/if}}>{{ ../content }}</a>
     </li>
     {{/ ../dropdown }}
 {{else}}
     {{# dropdown }}
     <!-- Dropdown items dropdowns -->
     <li class="dropdown-submenu">
-        <a class="dropdown-item dropdown-toggle" on:click="../activate(scope.element, scope.event)" href="#">{{ ../this.title }}</a>
+        <a id:from="../fazid" class="dropdown-item dropdown-toggle" on:click="../activate(scope.element, scope.event)" href="#">{{ ../this.faztitle }}</a>
         <ul class="dropdown-menu">
             {{#each (../items, child=value)}}
                 {{{ child.html }}}

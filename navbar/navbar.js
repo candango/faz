@@ -15,7 +15,7 @@
  */
 
 import {
-    ajax, DeepObservable, ObservableObject, StacheElement, type
+    ajax, DeepObservable, ObservableObject, type
 } from "can";
 
 import { FazStacheItem, FazStacheItemList } from "../item";

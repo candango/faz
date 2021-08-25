@@ -13,11 +13,6 @@
     <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/stylesheets/faz.css" rel="stylesheet"/>
     <link href="/stylesheets/showcase.css" rel="stylesheet"/>
-    <!-- Production -->
-    <!--<script src="/dist/steal.production.js" main="faz/app/datepicker"></script>-->
-    <!-- Development -->
-    <script src="/node_modules/steal/steal.js" main="faz/app/datepicker">
-    </script>
 </head>
 
 <body>
@@ -40,13 +35,11 @@
         <faz-input-datepicker />
     </div>
 
-    <script language="JavaScript">
-        steal.done().then(function(){
-            steal("can-dom-events", function(domEvents) {
-                domEvents.addEventListener(document.getElementById("test"),
-                    "day-click",
-                    event => console.log(event.day));
-            });
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("test").addEventListener(
+                "day-click", event => console.log(event.day)
+            );
         });
     </script>
 
@@ -56,9 +49,10 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="/node_modules/jquery/dist/jquery.min.js"></script>
-<script src="/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
-<script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/dist/vendor/jquery.min.js"></script>
+<script src="/dist/vendor/popper.min.js"></script>
+<script src="/dist/vendor/bootstrap.min.js"></script>
+<script src="/dist/datepicker.bundle.js"></script>
 
 <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.6/build/highlight.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.6.0/dist/highlightjs-line-numbers.min.js"></script>

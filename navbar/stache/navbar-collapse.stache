@@ -1,4 +1,4 @@
-<div class="collapse navbar-collapse" id:from="id">
+<div class="collapse navbar-collapse" id:from="fazid">
     {{#items}}
         {{{ this.html }}}
     {{/items}}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ObservableObject, type } from "can";
+import { ObservableObject } from "can";
 import {FazStacheItem} from "../item";
 import { FazNavbar } from "../faz";
 import mainNavbarTemplate from "./stache/main-navbar.stache";
@@ -24,7 +24,6 @@ export default class MainNavbar extends FazStacheItem{
 
     static get props() {
         return $.extend(super.props, {
-            id: {type: type.convert(String), default: "navbarIndex"},
             data: ObservableObject
         });
     }

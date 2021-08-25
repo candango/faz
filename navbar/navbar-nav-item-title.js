@@ -33,7 +33,6 @@ export default class FazNavbarNavItemTitle extends FazStacheItem {
     }
 
     beforeConnectedCallback() {
-        console.log(this.content);
     }
 
     processData(parent, data) {
