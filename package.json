@@ -16,9 +16,11 @@
     "less": "4.1.1"
   },
   "scripts": {
+    "watch": "webpack --watch",
     "run": "http-server",
-    "build": "node build.js && npm run export && npm run lessc",
-    "export": "steal-tools export",
+    "build": "npm run build:clean && webpack && npm run lessc",
+    "build:clean": "rm -rf dist",
+    "build:vendors": "rm -rf dist",
     "lessc": "lessc stylesheets/faz.less dist/css/faz.css --source-map",
     "lessc:dev": "npm run lessc:dev:faz && npm run lessc:dev:showcase",
     "lessc:dev:faz": "lessc stylesheets/faz.less stylesheets/faz.css --source-map",
@@ -36,24 +38,14 @@
     "toolkit"
   ],
   "devDependencies": {
-    "codemirror": "5.61.1",
+    "can-stache-loader": "3.0.0",
+    "codemirror": "5.62.0",
+    "copy-webpack-plugin": "9.0.1",
     "electron": "13.1.2",
     "http-server": "0.12.3",
     "qunit": "2.16.0",
-    "steal": "2.2.4",
-    "steal-qunit": "2.0.0",
-    "steal-stache": "5.0.0",
-    "steal-tools": "2.2.6",
-    "testee": "0.9.1"
-  },
-  "steal": {
-    "plugins": [
-      "steal-stache"
-    ],
-    "babelOptions": {
-      "plugins": [
-        "transform-class-properties"
-      ]
-    }
+    "testee": "0.9.1",
+    "webpack": "5.51.1",
+    "webpack-cli": "4.8.0"
   }
 }
