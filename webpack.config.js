@@ -41,6 +41,14 @@ module.exports = {
                     to: "vendor/bootstrap.min.js.map"
                 },
                 {
+                    from: "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+                    to: "vendor/css/bootstrap.min.css"
+                },
+                {
+                    from: "./node_modules/bootstrap/dist/css/bootstrap.min.css.map",
+                    to: "vendor/css/bootstrap.min.css.map"
+                },
+                {
                     from: "./node_modules/jquery/dist/jquery.min.js",
                     to: "vendor/jquery.min.js"
                 },
@@ -62,13 +70,13 @@ module.exports = {
                 },
                 {
                     from: "./node_modules/codemirror/lib/codemirror.css",
-                    to: "css/codemirror.css"
+                    to: "vendor/css/codemirror.css"
                 }
             ],
         }),
         new webpack.SourceMapDevToolPlugin({
-            append: '\n//# sourceMappingURL=http://localhost:8080/dist/[url]',
-            filename: '[name].map',
+            append: '\n//# sourceMappingURL=[url]',
+            filename: '[name].bundle.map',
         })
     ]
 }
