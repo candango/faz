@@ -13,9 +13,9 @@
     <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/stylesheets/faz.css" rel="stylesheet"/>
     <link href="/stylesheets/showcase.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/dist/css/codemirror.css">
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.6/build/styles/sunburst.min.css">
     <link rel="stylesheet" type="text/css" href="/app/highlight-line-numbers.css">
-    <script src="/node_modules/steal/steal.js" main="faz/app/nav"></script>
     <!-- Custom styles for this template -->
 </head>
 
@@ -27,103 +27,106 @@
         <h1>Navs</h1>
 
         <div class="card">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <faz-nav active="item1" id="navBasic">
-                        <faz-nav-item id="active">Active</faz-nav-item>
-                        <faz-nav-item id="item1">Item 1</faz-nav-item>
-                        <faz-nav-item id="item2">Item 2</faz-nav-item>
-                        <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
-                    </faz-nav>
-                </li>
-                <li class="list-group-item"><pre><code class="xml">&lt;faz-nav active="item1"&gt;
-    &lt;faz-nav-item id="active"&gt;Active&lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="item1"&gt;Item 1&lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="item2"&gt;Item 2&lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="disabled" disabled="true"&gt;Disabled&lt;/faz-nav-item&gt;
-&lt;/faz-nav&gt;</code></pre>
-                </li>
-            </ul>
+            <div class="card-body">
+                <h5 class="card-title">Basic example</h5>
+                <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+                <div id="navBasicExample"><faz-nav fazid="navBasic">
+    <faz-nav-item fazid="active" active="true">Active</faz-nav-item>
+    <faz-nav-item fazid="item1">Item 1</faz-nav-item>
+    <faz-nav-item fazid="item2">Item 2</faz-nav-item>
+    <faz-nav-item fazid="disabled" disabled="true">Disabled</faz-nav-item>
+</faz-nav></div>
+            </div>
+            <textarea id="navBasicExampleCode"></textarea>
         </div>
-
-
+        <br><br>
+        <h2>Horizontal alignment</h2>
         <div class="card">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <faz-nav active="item1Data" id="navBasicData" source="/nav/nav-data-example1.json">
-                    </faz-nav>
-                </li>
-                <li class="list-group-item"><pre><code class="xml">&lt;faz-nav active="item1Data" id="navBasicData" source="/nav/nav-data-example1.json"&gt;
-&lt;/faz-nav&gt;</code></pre>
-                </li>
-            </ul>
+            <div class="card-body">
+                <h5 class="card-title">Centered</h5>
+                <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+                <div id="navCenteredExample"><faz-nav fazid="navCentered" justify="center">
+    <faz-nav-item fazid="navCenteredActive" active="true">Active</faz-nav-item>
+    <faz-nav-item fazid="navCenteredItem1">Item 1</faz-nav-item>
+    <faz-nav-item fazid="navCenteredItem2">Item 2</faz-nav-item>
+    <faz-nav-item fazid="navCenteredDisabled" disabled="true">Disabled</faz-nav-item>
+</faz-nav></div>
+            </div>
+            <textarea id="navCenteredExampleCode"></textarea>
         </div>
-
+        <br><br>
         <div class="card">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <faz-nav active="item1Data1" id="navBasicData" source="/nav/nav-data-example2.json">
-                    </faz-nav>
-                </li>
-                <li class="list-group-item"><pre><code class="xml">&lt;faz-nav active="item1Data" id="navBasicData" source="/nav/nav-data-example1.json"&gt;
-&lt;/faz-nav&gt;</code></pre>
-                </li>
-            </ul>
+            <div class="card-body">
+                <h5 class="card-title">Right Aligned</h5>
+                <div id="navRightExample"><faz-nav fazid="navRight" justify="right">
+    <faz-nav-item fazid="navRightActive" active="true">Active</faz-nav-item>
+    <faz-nav-item fazid="navRightItem1">Item 1</faz-nav-item>
+    <faz-nav-item fazid="navRightItem2">Item 2</faz-nav-item>
+    <faz-nav-item fazid="navRightDisabled" disabled="true">Disabled</faz-nav-item>
+</faz-nav></div>
+            </div>
+            <textarea id="navRightExampleCode"></textarea>
         </div>
+        <br><br>
+        <h2>From a json data source</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Basic example.</h5>
+                <div id="navSourceExample"><faz-nav active="item1Data" fazid="navBasicData" source="/nav/nav-data-example1.json"></faz-nav></div>
+            </div>
+            <textarea id="navSourceExampleCode"></textarea>
+        </div>
+        <br><br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">With children.</h5>
+                <div id="navSourceExample2"><faz-nav active="item1Data1" id="navBasicData" source="/nav/nav-data-example2.json"></faz-nav></div>
+            </div>
+            <textarea id="navSourceExample2Code"></textarea>
+        </div>
+        <br><br>
+        <h2>With children, justified to the right</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">With children.</h5>
+                <div id="navSourceWithChildren"><faz-nav active="dropdown" justify="right">
+    <faz-nav-item target="_blank" href="http://example.com" id="active">Active</faz-nav-item>
+    <faz-nav-item id="dropdown1">
+        <faz-nav-item-title>Dropdown 1</faz-nav-item-title>
+        <faz-nav-item id="sub11">Sub11</faz-nav-item>
+        <faz-nav-item id="sub12">Sub12</faz-nav-item>
+        <faz-nav-item id="sub13">
+            <faz-nav-item-title>Sub13</faz-nav-item-title>
+            <faz-nav-item id="sub131">Sub131</faz-nav-item>
+            <faz-nav-item id="sub132">
+                <faz-nav-item-title>Sub132</faz-nav-item-title>
+                <faz-nav-item target="_blank" href="http://example.com" id="sub1321">sub1321</faz-nav-item>
+                <faz-nav-item id="sub1322">sub1322</faz-nav-item>
+                <faz-nav-item id="sub1323">sub1323</faz-nav-item>
+            </faz-nav-item>
+        </faz-nav-item>
+    </faz-nav-item>
+    <faz-nav-item id="dropdown2">
+        <faz-nav-item-title>Dropdown 2</faz-nav-item-title>
+        <faz-nav-item id="sub1">Sub21</faz-nav-item>
+        <faz-nav-item id="sub2">Sub22</faz-nav-item>
+        <faz-nav-item id="sub3">Sub23</faz-nav-item>
+    </faz-nav-item>
+    <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
+</faz-nav></div>
+            </div>
+            <textarea id="navSourceWithChildrenCode"></textarea>
+        </div>
+<!--
+
 
         <h1>Horizontal alignment</h1>
 
-        <h2>Center</h2>
 
-        <faz-nav active="item2" justify="center">
-            <faz-nav-item id="active">Active</faz-nav-item>
-            <faz-nav-item id="item1">Item 1</faz-nav-item>
-            <faz-nav-item id="item2">Item 2</faz-nav-item>
-            <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
-        </faz-nav>
-
-        <pre><code class="xml">&lt;faz-nav active="item1" justify="center"&gt;
-    &lt;faz-nav-item id="active"&gt;Active&lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="item1"&gt;Item 1&lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="item2"&gt;Item 2&lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="disabled" disabled="true"&gt;Disabled&lt;/faz-nav-item&gt;
-&lt;/faz-nav&gt;</code></pre>
 
         <h2>Right</h2>
 
-        <faz-nav active="dropdown" justify="right">
-            <faz-nav-item target="_blank" href="http://example.com" id="active">Active</faz-nav-item>
-            <faz-nav-item id="dropdown1">
-                <title>Dropdown 1</title>
-                <children>
-                    <faz-nav-item id="sub11">Sub11</faz-nav-item>
-                    <faz-nav-item id="sub12">Sub12</faz-nav-item>
-                    <faz-nav-item id="sub13">
-                        <title>Sub13</title>
-                        <children>
-                            <faz-nav-item id="sub131">Sub131</faz-nav-item>
-                            <faz-nav-item id="sub132">
-                                <title>Sub132</title>
-                                <children>
-                                    <faz-nav-item target="_blank" href="http://example.com" id="sub1321">sub1321</faz-nav-item>
-                                    <faz-nav-item id="sub1322">sub1322</faz-nav-item>
-                                    <faz-nav-item id="sub1323">sub1323</faz-nav-item>
-                                </children>
-                            </faz-nav-item>
-                        </children>
-                    </faz-nav-item>
-                </children>
-            </faz-nav-item>
-            <faz-nav-item id="dropdown2">
-                <title>Dropdown 2</title>
-                <children>
-                    <faz-nav-item id="sub1">Sub21</faz-nav-item>
-                    <faz-nav-item id="sub2">Sub22</faz-nav-item>
-                    <faz-nav-item id="sub3">Sub23</faz-nav-item>
-                </children>
-            </faz-nav-item>
-            <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
-        </faz-nav>
+
 
         <pre><code class="xml">&lt;faz-nav active="dropdown" justify="right"&gt;
     &lt;faz-nav-item id="active"&gt;Active&lt;/faz-nav-item&gt;
@@ -204,27 +207,41 @@
             </faz-nav-tab-content>
 
         </faz-nav>
-
-
+-->
+        <br><br>
     </main><!-- /.container -->
 
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
-    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.6/build/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.6.0/dist/highlightjs-line-numbers.min.js"></script>
-
+    <script src="/dist/vendor/codemirror.js"></script>
+    <script src="/dist/vendor/codemirror_mode_xml.js"></script>
     <script>
-        //$(function () {
-        document.querySelectorAll("pre code").forEach((block) => {
-            hljs.highlightBlock(block);
-            hljs.lineNumbersBlock(block);
-        });
-        //});
+    function codemirrorit(name) {
+        document.getElementById(name + "Code").value =
+            document.getElementById(name).innerHTML;
+        CodeMirror.fromTextArea(
+            document.getElementById(name + "Code"), {
+                mode:  "xml",
+                fixedGutters: false,
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+    }
+
+    codemirrorit("navBasicExample");
+    codemirrorit("navCenteredExample");
+    codemirrorit("navRightExample");
+    codemirrorit("navSourceExample");
+    codemirrorit("navSourceExample2");
+    codemirrorit("navSourceWithChildren");
     </script>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/dist/vendor/jquery.min.js"></script>
+    <script src="/dist/nav.bundle.js" ></script>
+    <script src="/dist/vendor/popper.min.js"></script>
+    <script src="/dist/vendor/bootstrap.min.js"></script>
 </body>
 </html>
