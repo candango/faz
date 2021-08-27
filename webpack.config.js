@@ -1,5 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
+// SEE: https://webpack.js.org/plugins/copy-webpack-plugin/
 const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
@@ -36,12 +37,32 @@ module.exports = {
                     to: "vendor/bootstrap.min.js"
                 },
                 {
+                    from: "./node_modules/bootstrap/dist/js/bootstrap.min.js.map",
+                    to: "vendor/bootstrap.min.js.map"
+                },
+                {
                     from: "./node_modules/jquery/dist/jquery.min.js",
                     to: "vendor/jquery.min.js"
                 },
                 {
                     from: "./node_modules/@popperjs/core/dist/umd/popper.min.js",
                     to: "vendor/popper.min.js"
+                },
+                {
+                    from: "./node_modules/@popperjs/core/dist/umd/popper.min.js.map",
+                    to: "vendor/popper.min.js.map"
+                },
+                {
+                    from: "./node_modules/codemirror/lib/codemirror.js",
+                    to: "vendor/codemirror.js"
+                },
+                {
+                    from: "./node_modules/codemirror/mode/xml/xml.js",
+                    to: "vendor/codemirror_mode_xml.js"
+                },
+                {
+                    from: "./node_modules/codemirror/lib/codemirror.css",
+                    to: "css/codemirror.css"
                 }
             ],
         }),
@@ -51,3 +72,9 @@ module.exports = {
         })
     ]
 }
+
+// Also see:
+// Implemented at package.json watch task
+// - https://webpack.js.org/guides/development/#using-watch-mode
+// Consider:
+// -  https://webpack.js.org/guides/tree-shaking/
