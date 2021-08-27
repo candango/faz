@@ -32,8 +32,9 @@
             {{/each}}
         </div>
     {{else}}
+
         <nav class:from="componentClass" id:from="id" aria-orientation:from="orientation">
-            {{#each (scope.top.items, item=value)}}
+            {{#each (items, item=value)}}
                 {{ item.html }}
             {{/each}}
         </nav>
