@@ -17,8 +17,9 @@
   },
   "scripts": {
     "watch": "webpack --watch",
-    "run": "http-server",
+    "run": "http-server & npm run watch",
     "build": "npm run build:clean && webpack && npm run lessc",
+    "build:dev": "npm run build:clean && webpack && npm run lessc",
     "build:clean": "rm -rf dist",
     "build:vendors": "rm -rf dist",
     "lessc": "lessc stylesheets/faz.less dist/css/faz.css --source-map",
