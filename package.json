@@ -44,7 +44,7 @@
     "can-stache-loader": "3.0.0",
     "codemirror": "5.62.3",
     "copy-webpack-plugin": "9.0.1",
-    "electron": "13.1.2",
+    "electron": "13.2.3",
     "http-server": "0.12.3",
     "qunit": "2.16.0",
     "testee": "0.9.1",
