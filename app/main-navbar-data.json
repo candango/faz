@@ -34,6 +34,17 @@
               "value": "Breadcrumb"
             },
             {
+              "id": "navInput",
+              "value": "Input",
+              "items": [
+                {
+                  "id": "navInputFilterbox",
+                  "href": "/input/filterbox.html",
+                  "value": "Filterbox"
+                }
+              ]
+            },
+            {
               "id": "navDatePicker",
               "href": "/datepicker",
               "value": "Date Picker"
