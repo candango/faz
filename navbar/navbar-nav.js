@@ -44,14 +44,6 @@ export default class FazNavbarNav extends FazStacheItem {
         return navTemplate(this);
     }
 
-    processItemData(data) {
-        let navbarNavItem = new FazNavbarNavItem();
-        navbarNavItem.isRoot = true;
-        navbarNavItem.root = this;
-        navbarNavItem.processData(this, data);
-        this.items.push(navbarNavItem);
-    }
-
     beforeConnectedCallback() {
         for(let attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
@@ -82,7 +74,9 @@ export default class FazNavbarNav extends FazStacheItem {
         }
         if (data.items !== undefined) {
             data.items.forEach((item) => {
-                this.processItemData(item);
+                let navbarNavItem = new FazNavbarNavItem();
+                navbarNavItem.processData(this, item, this, true);
+                this.items.push(navbarNavItem);
             });
         }
     }
