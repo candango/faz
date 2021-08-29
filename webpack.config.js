@@ -9,10 +9,13 @@ module.exports = {
         alert: "./app/alert.js",
         breadcrumb: "./app/breadcrumb.js",
         datepicker: "./app/datepicker.js",
+        filterbox: "./app/filterbox.js",
         form: "./app/form.js",
+        input: "./app/input.js",
         nav: "./app/nav.js",
         navbar: "./app/navbar.js",
-        pagination: "./app/pagination.js"
+        pagination: "./app/pagination.js",
+        picklist: "./app/picklist.js"
     },
     output: {
         filename: '[name].bundle.js',
