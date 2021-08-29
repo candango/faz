@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 Flavio Garcia
+ * Copyright 2018-2021 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 
 import { assign, ObservableArray, type } from "can";
-import { default as  FazItem } from "../item";
+import {FazStacheItem, FazStacheItemList} from "../item";
 import itemTemplate from "./stache/nav-item.stache";
-import {default as FazNavbarNavItem} from "../navbar/navbar-nav-item";
+import {default as FazNavItemTitle} from "./nav-item-title";
 
 /**
  *
@@ -27,52 +27,35 @@ import {default as FazNavbarNavItem} from "../navbar/navbar-nav-item";
  * @param {Object} event. An object representing a nav item.
  * @param {string} event.value
  */
-export class FazNavItem extends FazItem {
+export class FazNavItem extends FazStacheItem {
+
+    static view = ``;
 
     static get props() {
         return $.extend(super.props, {
+            items: {
+                type: FazStacheItemList,
+                get default() {
+                    return new FazStacheItemList([]);
+                }
+            },
+            faztitle: {
+                type: FazNavItemTitle
+            },
             disabled: {type: type.convert(Boolean), default: false},
-            target: {type: type.convert(String), default: ""},
-            items: {type: FazNavItemList, get default() {
-                return new FazNavItemList([]);
-            }},
             root: "*",
             isRoot: {type: type.convert(Boolean), default: false},
-            value: String,
-            title: String
+            target: {type: type.convert(String), default: ""},
+            value: String
         });
     }
 
-    get ariaControls() {
-        let voidAriaControls = "";
-        let validAriaControls = this.href === undefined ? voidAriaControls :
-            this.href;
-        if (this.disabled) {
-            return voidAriaControls;
-        }
-        if (this.parent !== undefined) {
-            if (this.parent.tabs) {
-                if (validAriaControls.startsWith("#") && this.href) {
-                    return validAriaControls.substring(1);
-                }
-            }
-        }
-        return validAriaControls;
-    }
-
-    get ariaSelected() {
-        return this.active ? "true" : "false";
-    }
-
     get dropdown() {
-        if(this.items.length==0) {
-            return false;
-        }
-        return true;
+        return this.items.length > 0;
     }
 
-    get navId() {
-        return "fazNavItem" + this.id;
+    get html() {
+        return itemTemplate(this);
     }
 
     /**
@@ -92,12 +75,31 @@ export class FazNavItem extends FazItem {
         return classes.join(" ");
     }
 
-    get html() {
-        return itemTemplate(this);
+    /**
+     * Returns the nav item href. If item is disabled a javascript void
+     * function will be placed to avoid any action.
+     *
+     * @param {FazNavItem} item
+     * @returns {string}
+     */
+    getHref() {
+        let voidHref = "javascript:void(0)";
+        let validHef = this.href === undefined ? voidHref : this.href;
+        if (this.disabled) {
+            return voidHref;
+        }
+        if (this.parent !== undefined) {
+            if (this.parent.hasTabs) {
+                if (!validHef.startsWith("#") && this.href) {
+                    return "#" + validHef;
+                }
+            }
+        }
+        return validHef;
     }
 
-    setParent(parent) {
-        this.parent = parent;
+    beforeConnectedCallback() {
+        this.process();
     }
 
     activate(element, event) {
@@ -124,16 +126,16 @@ export class FazNavItem extends FazItem {
             if (this.parent != null) {
                 this.parent.items.active.forEach(function(child) {
                     child.active = false;
-                }.bind(this));
+                });
                 if (this.isRoot) {
-                    if (this.parent.hasTabContents) {
-                        this.parent.tabContents.forEach(
-                            function(tabContent) {
-                                tabContent.active = false;
-                                if(tabContent.id == this.ariaControls) {
-                                    tabContent.active = true;
+                    if (this.parent.hasTabs) {
+                        this.parent.tabs.forEach(
+                            tab => {
+                                tab.active = false;
+                                if(tab.fazid == this.ariaControls) {
+                                    tab.active = true;
                                 }
-                            }.bind(this)
+                            }
                         );
                     }
                 }
@@ -142,27 +144,102 @@ export class FazNavItem extends FazItem {
         }
     }
 
-    /**
-     * Returns the nav item href. If item is disabled a javascript void
-     * function will be placed to avoid any action.
-     *
-     * @param {FazNavItem} item
-     * @returns {string}
-     */
-    getHref() {
-        let voidHref = "javascript:void(0)";
-        let validHef = this.href === undefined ? voidHref : this.href;
+    process() {
+        for(let attribute of this.attributes) {
+            switch (attribute.name.toLowerCase()) {
+                case "active":
+                    document.addEventListener("DOMContentLoaded", event => {
+                        this.activate(this, event);
+                    });
+                    this.active = attribute.value;
+                    break;
+                case "disabled":
+                    this.disabled = attribute.value;
+                    break;
+                case "fazid":
+                case "id":
+                    this.fazid = attribute.value;
+                    break;
+                case "current":
+                    this.active = true;
+                    break;
+                case "href":
+                    this.href = attribute.value;
+                    break;
+            }
+        }
+        if (this.children.length > 0) {
+            this.processChildren();
+        }
+    }
+
+    processChildren(sub=false) {
+        let childrenToDelete = new Array();
+        for (let i = 0; i < this.children.length; i++) {
+            let child = this.children[i];
+            if(child.tagName.toLowerCase().includes("nav-item")) {
+                if(child.tagName.toLowerCase().includes(
+                    "nav-item-title")) {
+                    this.faztitle = child;
+                } else {
+                    this.items.push(this.processChild(child));
+                }
+                childrenToDelete.push(child);
+            }
+        }
+        childrenToDelete.forEach((child) => {
+            this.removeChild(child);
+        });
+        if(this.faztitle!==undefined) {
+            this.content = this.faztitle.content;
+
+        }
+    }
+
+    processChild(child) {
+        let element = new FazNavItem();
+        element.parent = this;
+        element.innerHTML = child.innerHTML;
+        element.content = element.innerHTML;
+        element.process();
+        element.processChildren(true);
+        return element;
+    }
+
+    setRoot(root) {
+        this.root = root;
+        this.items.forEach((child) => {
+            child.setRoot(root);
+        });
+    }
+
+    get ariaControls() {
+        let voidAriaControls = "";
+        let validAriaControls = this.href === undefined ? voidAriaControls :
+            this.href;
         if (this.disabled) {
-            return voidHref;
+            return voidAriaControls;
         }
         if (this.parent !== undefined) {
-            if (this.parent.tabs) {
-                if (!validHef.startsWith("#") && this.href) {
-                    return "#" + validHef;
+            if (this.parent.hasTabs) {
+                if (validAriaControls.startsWith("#") && this.href) {
+                    return validAriaControls.substring(1);
                 }
             }
         }
-        return validHef;
+        return validAriaControls;
+    }
+
+    get ariaSelected() {
+        return this.active ? "true" : "false";
+    }
+
+    get navId() {
+        return "fazNavItem" + this.fazid;
+    }
+
+    setParent(parent) {
+        this.parent = parent;
     }
 
     processData(parent, data, isRoot=false) {
@@ -177,9 +254,9 @@ export class FazNavItem extends FazItem {
 
         let children = undefined;
 
-        if(data.children !== undefined) {
-            children = data.children;
-            delete data.children;
+        if(data.items !== undefined) {
+            children = data.items;
+            delete data.items;
         }
 
         assign(this, data);
@@ -195,47 +272,6 @@ export class FazNavItem extends FazItem {
         this.content = data.value;
     }
 
-    processElement(parent, element, isRoot=false) {
-        this.parent = parent;
-
-        if (isRoot) {
-            this.root = parent;
-            this.isRoot = true;
-        } else {
-            this.root = parent.root;
-        }
-
-        let dataItem = {};
-        for(let attribute of element.attributes) {
-            dataItem[attribute.name] = attribute.value;
-        }
-        assign(this, dataItem);
-
-        if (this.root.active == this.id) {
-            this.active = true;
-        }
-
-        if (element.children.length > 0) {
-            $(element.children).each(function(_,child) {
-                switch (child.tagName.toLowerCase()) {
-                    case "title":
-                        this.content = child.innerHTML;
-                        break;
-                    case "children":
-                        if (child.children.length > 0) {
-                            $(child.children).each(function(_,grandChild) {
-                                let navItem = new FazNavItem();
-                                navItem.processElement(this, grandChild);
-                                this.items.push(navItem);
-                            }.bind(this));
-                        }
-                        break;
-                }
-            }.bind(this));
-        } else {
-            this.content = element.innerHTML;
-        }
-    }
 }
 
 export class FazNavItemList extends ObservableArray {
@@ -246,10 +282,18 @@ export class FazNavItemList extends ObservableArray {
             },
 
             get active() {
-                return this.filter({active: true});
+                let actives = this.filter({active: true});
+                if(actives.length===0) {
+                    console.log("buga")
+                    actives.push(this[0]);
+                    actives[0].active = true;
+                }
+                return actives;
             }
         };
     }
 
     static items = type.convert(FazNavItem);
 }
+
+customElements.define("faz-nav-item", FazNavItem);

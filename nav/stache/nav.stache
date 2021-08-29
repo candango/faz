@@ -1,7 +1,7 @@
 {{# this.isLoading}}
     <div>Loading...</div>
 {{ else }}
-    {{#hasTabContents}}
+    {{#hasTabs}}
         {{#if(../vertical)}}
             <div class="row">
                 <div class="col-3">
@@ -13,8 +13,8 @@
                 </div>
                 <div class="col-9">
                     <div class="tab-content">
-                        {{#each (scope.top.tabContents, tabContent=value)}}
-                            {{ tabContent.html }}
+                        {{#each (scope.top.tabs, tab=value)}}
+                            {{ tab.html }}
                         {{/each}}
                     </div>
                 </div>
@@ -27,15 +27,15 @@
             </div>
         {{/if}}
         <div class="tab-content">
-            {{#each (../tabContents, tabContent=value)}}
-                {{ tabContent.html }}
+            {{#each (../tabs, tab=value)}}
+                {{ tab.html }}
             {{/each}}
         </div>
     {{else}}
         <nav class:from="componentClass" id:from="id" aria-orientation:from="orientation">
-            {{#each (scope.top.items, item=value)}}
+            {{#each (items, item=value)}}
                 {{ item.html }}
             {{/each}}
         </nav>
-    {{/hasTabContents}}
+    {{/hasTabs}}
 {{/ this.isLoading }}

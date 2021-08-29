@@ -15,7 +15,7 @@
  */
 
 import { assign, ObservableArray, type } from "can";
-import {default as FazItem} from "../item";
+import { FazStacheItem } from "../item";
 import tabContentTemplate from "./stache/nav-tab-content.stache";
 
 /**
@@ -27,12 +27,13 @@ import tabContentTemplate from "./stache/nav-tab-content.stache";
  * @param {string} event.value
  */
 
-export class FazNavTabContent extends FazItem {
+export class FazNavTabContent extends FazStacheItem {
+
+    static view = ``;
 
     static get props() {
         return $.extend(super.props, {
-            fade: {type: type.convert(Boolean), default: false},
-            show: {type: type.convert(Boolean), default: false}
+            fade: {type: type.convert(Boolean), default: false}
         });
     }
 
@@ -50,30 +51,48 @@ export class FazNavTabContent extends FazItem {
     get ariaLabelledby() {
         let itemId = ""
         this.parent.items.forEach(function (item) {
-            if (this.id == item.ariaControls) {
-                itemId = item.id;
+            if (this.fazid == item.ariaControls) {
+                itemId = item.fazid;
                 return;
             }
         }.bind(this));
         return itemId;
     }
 
+    setParent(parent) {
+        this.parent = parent;
+    }
+
+    beforeConnectedCallback() {
+        for(let attribute of this.attributes) {
+            switch (attribute.name.toLowerCase()) {
+                case "fade":
+                    this.fade = attribute.value;
+                    break;
+                case "disabled":
+                    this.disabled = attribute.value;
+                    break;
+                case "fazid":
+                case "id":
+                    this.fazid = attribute.value;
+                    break;
+            }
+        }
+    }
+
     get class() {
         let classes = ["tab-pane"];
+        if (this.fade) {
+            classes.push("fade");
+            if (this.active) {
+                classes.push("show");
+            }
+        }
         if (this.active) {
             classes.push("active");
         }
-        if (this.fade) {
-            classes.push("fade");
-        }
-        if (this.show) {
-            classes.push("show");
-        }
-        return classes.join(" ");
-    }
 
-    get value() {
-        return this.element;
+        return classes.join(" ");
     }
 
     get html() {
@@ -92,3 +111,5 @@ export class FazNavTabContentList extends ObservableArray {
 
     static items = type.convert(FazNavTabContent);
 }
+
+customElements.define("faz-nav-tab-content", FazNavTabContent);

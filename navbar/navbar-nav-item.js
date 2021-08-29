@@ -196,10 +196,21 @@ export default class FazNavbarNavItem extends FazStacheItem {
         });
     }
 
-    processData(parent, data) {
+    processData(parent, data, root, isRoot=false) {
         this.parent = parent;
         this.content = data.value;
-        this.href = data.href;
+        this.isRoot = isRoot;
+        this.setRoot(root);
+        if(data.href !== undefined) {
+            this.href = data.href;
+        }
+        if(data.items !== undefined && data.items.length > 0) {
+            data.items.forEach( item=> {
+                let navbarNavItem = new FazNavbarNavItem();
+                navbarNavItem.processData(this, item, root);
+                this.items.push(navbarNavItem);
+            });
+        }
         if(this.href == document.location.pathname) {
             this.active = true;
         }

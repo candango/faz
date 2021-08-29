@@ -21,7 +21,7 @@ module.exports = {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, "dist")
     },
-    mode: "development",
+    mode: "production",
     module: {
         rules: [
             {
@@ -77,10 +77,10 @@ module.exports = {
                 }
             ],
         }),
-        new webpack.SourceMapDevToolPlugin({
-            append: '\n//# sourceMappingURL=[url]',
-            filename: '[name].bundle.map',
-        })
+        // new webpack.SourceMapDevToolPlugin({
+        //     append: '\n//# sourceMappingURL=[url]',
+        //     filename: '[name].bundle.map',
+        // })
     ]
 }
 
