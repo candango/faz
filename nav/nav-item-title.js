@@ -24,7 +24,7 @@ import { FazStacheItem } from "../item";
  * @param {Object} event. An object representing a nav item.
  * @param {string} event.value
  */
-export default class FazNavbarNavItemTitle extends FazStacheItem {
+export default class FazNavItemTitle extends FazStacheItem {
 
     static view = `{{content}}`;
 
@@ -40,4 +40,4 @@ export default class FazNavbarNavItemTitle extends FazStacheItem {
     }
 }
 
-customElements.define("faz-navbar-nav-item-title", FazNavbarNavItemTitle);
+customElements.define("faz-nav-item-title", FazNavItemTitle);

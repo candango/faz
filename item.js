@@ -80,7 +80,7 @@ export class FazItemList extends ObservableArray {
 export class FazStacheItem extends StacheElement {
     static get props() {
         return {
-            id: {
+            fazid: {
                 type: type.convert(String),
                 get default() {
                     return ID.random;
@@ -110,7 +110,7 @@ export class FazStacheItem extends StacheElement {
     connectedCallback() {
         let content = this.innerHTML;
         this.content = content;
-        steal.done().then(()=>{
+        document.addEventListener("DOMContentLoaded", event => {
             this.contentLoaded();
         });
         this.beforeConnectedCallback();

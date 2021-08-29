@@ -1,6 +1,6 @@
 <nav aria-label="Page navigation example">
     <ul class="pagination">
-        {{# hasMultipleBlocks}}
+        {{# hasMultipleBlocks }}
         <li class:from="../firstPreviousButtonClass">
             <a class="page-link" on:click="../gotToFirstPage()" href:from="../getHref()"{{#if(../isFirstPage}} aria-disabled="true"{{/if}}>{{ ../firstPageLabel }}</a>
         </li>
@@ -16,14 +16,14 @@
         <li class:from="lastNextButtonClass">
             <a class="page-link" on:click="gotToNextPage()" href:from="getHref()"{{#if(isLastPage}} aria-disabled="true"{{/if}}>{{ nextLabel }}</a>
         </li>
-        {{# hasMultipleBlocks}}
+        {{# hasMultipleBlocks }}
             <li class:from="../lastNextButtonClass">
                 <a class="page-link" on:click="../gotToLastPage()" href:from="../getHref()"{{#if(../isLastPage}} aria-disabled="true"{{/if}}>{{ ../lastPageLabel }}</a>
             </li>
         {{/ hasMultipleBlocks }}
     </ul>
 </nav>
-{{# debug}}
+{{# debug }}
 <div class="card">
     <div class="card-body">
         <h5 class="card-title">Component State Information</h5>
@@ -78,4 +78,4 @@
         </dl>
     </div>
 </div>
-{{/debug}}
+{{/ debug }}

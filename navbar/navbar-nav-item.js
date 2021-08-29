@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {type} from "can";
+import { type } from "can";
 import { FazStacheItem, FazStacheItemList } from "../item";
 import {default as FazNavbarNavItemTitle} from "./navbar-nav-item-title"
 import navbarNavItemTemplate from "./stache/navbar-nav-item.stache";
@@ -39,7 +39,7 @@ export default class FazNavbarNavItem extends FazStacheItem {
                     return new FazStacheItemList([]);
                 }
             },
-            title: {
+            faztitle: {
                 type: FazNavbarNavItemTitle
             },
             disabled: {type: type.convert(Boolean), default: false},
@@ -55,9 +55,9 @@ export default class FazNavbarNavItem extends FazStacheItem {
     }
 
     get html() {
-        let view = navbarNavItemTemplate;
-        return view(this);
+        return navbarNavItemTemplate(this);
     }
+
     /**
      * Returns the nav item class.
      *
@@ -74,6 +74,7 @@ export default class FazNavbarNavItem extends FazStacheItem {
         }
         return classes.join(" ");
     }
+
     /**
      * Returns the nav item href. If item is disabled a javascript void
      * function will be placed to avoid any action.
@@ -100,13 +101,9 @@ export default class FazNavbarNavItem extends FazStacheItem {
         return validHef;
     }
 
-    logThis() {
-        console.log(this);
-    }
-
     beforeConnectedCallback() {
         this.process();
-        this.processChildren();
+        //this.processChildren();
     }
 
     activate(element, event) {
@@ -155,6 +152,9 @@ export default class FazNavbarNavItem extends FazStacheItem {
                     break;
             }
         }
+        if (this.children.length > 0) {
+            this.processChildren();
+        }
     }
 
     processChildren(sub=false) {
@@ -164,7 +164,7 @@ export default class FazNavbarNavItem extends FazStacheItem {
             if(child.tagName.toLowerCase().includes("navbar-nav-item")) {
                 if(child.tagName.toLowerCase().includes(
                     "navbar-nav-item-title")) {
-                    this.title = child;
+                    this.faztitle = child;
                 } else {
                     this.items.push(this.processChild(child));
                 }
@@ -174,9 +174,8 @@ export default class FazNavbarNavItem extends FazStacheItem {
         childrenToDelete.forEach((child) => {
             this.removeChild(child);
         });
-        if(this.title!==undefined) {
-            this.content = this.title.content;
-            console.log(this.title.content);
+        if(this.faztitle!==undefined) {
+            this.content = this.faztitle.content;
         }
     }
 
@@ -197,10 +196,21 @@ export default class FazNavbarNavItem extends FazStacheItem {
         });
     }
 
-    processData(parent, data) {
+    processData(parent, data, root, isRoot=false) {
         this.parent = parent;
         this.content = data.value;
-        this.href = data.href;
+        this.isRoot = isRoot;
+        this.setRoot(root);
+        if(data.href !== undefined) {
+            this.href = data.href;
+        }
+        if(data.items !== undefined && data.items.length > 0) {
+            data.items.forEach( item=> {
+                let navbarNavItem = new FazNavbarNavItem();
+                navbarNavItem.processData(this, item, root);
+                this.items.push(navbarNavItem);
+            });
+        }
         if(this.href == document.location.pathname) {
             this.active = true;
         }

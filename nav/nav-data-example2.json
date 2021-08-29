@@ -9,7 +9,7 @@
       "type": "faz-nav-item",
       "id": "item1Data1",
       "value": "Item 1 Data 1",
-      "children": [
+      "items": [
         {
           "type": "faz-nav-item",
           "id": "item1Child1Data1",

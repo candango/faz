@@ -1,4 +1,4 @@
-<button id:from="id" class="navbar-toggler" type="button" data-toggle="collapse"
+<button id:from="fazid" class="navbar-toggler" type="button" data-toggle="collapse"
         data-target:from="dataTarget" aria-controls:from="target"
         aria-expanded="false" aria-label:from="label">
 {{{ content }}}
