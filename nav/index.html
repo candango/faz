@@ -10,12 +10,10 @@
     <title>Candango Faz Toolkit</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/stylesheets/faz.css" rel="stylesheet"/>
-    <link href="/stylesheets/showcase.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="/dist/css/codemirror.css">
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.6/build/styles/sunburst.min.css">
-    <link rel="stylesheet" type="text/css" href="/app/highlight-line-numbers.css">
+    <link href="/dist/vendor/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/dist/css/faz.css" rel="stylesheet"/>
+    <link href="/dist/css/showcase.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/dist/vendor/css/codemirror.css">
     <!-- Custom styles for this template -->
 </head>
 
@@ -57,8 +55,8 @@
         <br><br>
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Right Aligned</h5>
-                <div id="navRightExample"><faz-nav fazid="navRight" justify="right">
+                <h5 class="card-title">Right Aligned and pills</h5>
+                <div id="navRightExample"><faz-nav fazid="navRight" justify="right" pills="true">
     <faz-nav-item fazid="navRightActive" active="true">Active</faz-nav-item>
     <faz-nav-item fazid="navRightItem1">Item 1</faz-nav-item>
     <faz-nav-item fazid="navRightItem2">Item 2</faz-nav-item>
@@ -66,6 +64,48 @@
 </faz-nav></div>
             </div>
             <textarea id="navRightExampleCode"></textarea>
+        </div>
+        <br><br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Fill and pills</h5>
+                <div id="navFillExample"><faz-nav fazid="navPill" fill="true" pills="true">
+    <faz-nav-item fazid="navFillActive" active="true">Active</faz-nav-item>
+    <faz-nav-item fazid="navFillItem1">Item 1</faz-nav-item>
+    <faz-nav-item fazid="navFillItem2">Item 2</faz-nav-item>
+    <faz-nav-item fazid="navFillDisabled" disabled="true">Disabled</faz-nav-item>
+</faz-nav></div>
+            </div>
+            <textarea id="navFillExampleCode"></textarea>
+        </div>
+        <br><br>
+        <h2>Vertical alignment</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Just vertical</h5>
+                <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+                <div id="navVerticalExample"><faz-nav vertical="true">
+    <faz-nav-item id="active" active="true">Active</faz-nav-item>
+    <faz-nav-item id="item1">Item 1</faz-nav-item>
+    <faz-nav-item id="item2">Item 2</faz-nav-item>
+    <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
+</faz-nav></div>
+            </div>
+            <textarea id="navVerticalExampleCode"></textarea>
+        </div>
+        <br><br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Vertical and pills</h5>
+                <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+                <div id="navVerticalBulletExample"><faz-nav vertical="true" pills="true">
+    <faz-nav-item id="active" active>Active</faz-nav-item>
+    <faz-nav-item id="item1">Item 1</faz-nav-item>
+    <faz-nav-item id="item2">Item 2</faz-nav-item>
+    <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
+</faz-nav></div>
+            </div>
+            <textarea id="navVerticalBulletExampleCode"></textarea>
         </div>
         <br><br>
         <h2>From a json data source</h2>
@@ -117,97 +157,54 @@
             </div>
             <textarea id="navSourceWithChildrenCode"></textarea>
         </div>
-<!--
+        <br>
+        <br>
+        <h2>With tabs</h2>
 
-
-        <h1>Horizontal alignment</h1>
-
-
-
-        <h2>Right</h2>
-
-
-
-        <pre><code class="xml">&lt;faz-nav active="dropdown" justify="right"&gt;
-    &lt;faz-nav-item id="active"&gt;Active&lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="dropdown"&gt;
-        &lt;title&gt;Dropdown&lt;/title&gt;
-        &lt;children&gt;
-            &lt;faz-nav-item id="sub1"&gt;Sub1&lt;/faz-nav-item&gt;
-            &lt;faz-nav-item id="sub2"&gt;Sub2&lt;/faz-nav-item&gt;
-            &lt;faz-nav-item id="sub2"&gt;Sub3&lt;/faz-nav-item&gt;
-        &lt;/children&gt;
-    &lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="item2"&gt;Item 2&lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="disabled" disabled="true"&gt;Disabled&lt;/faz-nav-item&gt;
-&lt;/faz-nav></code></pre>
-
-        <h1>Vertical</h1>
-
-        <faz-nav active="item1" vertical>
-            <faz-nav-item id="active">Active</faz-nav-item>
-            <faz-nav-item id="item1">Item 1</faz-nav-item>
-            <faz-nav-item id="item2">Item 2</faz-nav-item>
-            <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
-        </faz-nav>
-
-
-        <pre><code class="xml">&lt;faz-nav active="item1" vertical&gt;
-    &lt;faz-nav-item id="active"&gt;Active&lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="item1"&gt;Item 1&lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="item2"&gt;Item 2&lt;/faz-nav-item&gt;
-    &lt;faz-nav-item id="disabled" disabled="true"&gt;Disabled&lt;/faz-nav-item&gt;
-&lt;/faz-nav&gt;</code></pre>
-
-        <faz-nav active="item1" pills fill>
-            <faz-nav-item id="active">Active</faz-nav-item>
-            <faz-nav-item id="item1">Item 1</faz-nav-item>
-            <faz-nav-item id="item2">Item 2</faz-nav-item>
-            <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
-        </faz-nav>
+        <br><br>
         <div class="card">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <faz-nav active="item1" justify="right" tabs>
-                        <faz-nav-item id="item1" href="item1-content">Item 1</faz-nav-item>
-                        <faz-nav-item id="item2" href="item2-content">Item 2</faz-nav-item>
-                        <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
+            <div class="card-body">
+                <h5 class="card-title">Horizontal.</h5>
+                <div id="navSourceWithTab1"><faz-nav active="item1" justify="right">
+    <faz-nav-item id="item1" href="item1-content">Item 1</faz-nav-item>
+    <faz-nav-item id="item2" href="item2-content">Item 2</faz-nav-item>
+    <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
 
-                        <faz-nav-tab-content id="item1-content">
-                            Item 1 content
-                        </faz-nav-tab-content>
+    <faz-nav-tab-content id="item1-content">
+        Item 1 content
+    </faz-nav-tab-content>
 
-                        <faz-nav-tab-content id="item2-content">
-                            Item 2 content
-                        </faz-nav-tab-content>
-                    </faz-nav>
-                </li>
-            </ul>
+    <faz-nav-tab-content id="item2-content">
+        Item 2 content
+    </faz-nav-tab-content>
+</faz-nav></div>
+            </div>
+            <textarea id="navSourceWithTab1Code"></textarea>
         </div>
+        <br><br>
 
-    <script>
-        //var compute = steal("can-compute/can-compute")
-        //var buga = new compute("test");
-    </script>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Vertical.</h5>
+                <div id="navSourceWithTab2"><faz-nav vertical="true" pills="true">
+    <faz-nav-item id="firstItem">First Item</faz-nav-item>
+    <faz-nav-item id="item1" active="true" href="item21-content">Item 1(active)</faz-nav-item>
+    <faz-nav-item id="item2" href="item22-content">Item 2</faz-nav-item>
+    <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
 
-        <faz-nav active="active" justify="right" pills vertical tabs>
-            <faz-nav-item id="active">Active</faz-nav-item>
-            <faz-nav-item id="item1" href="item21-content">Item 1</faz-nav-item>
-            <faz-nav-item id="item2" href="item22-content">Item 2</faz-nav-item>
-            <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
-
-            <faz-nav-tab-content id="item21-content" fade>
-                Item 1 content <faz-alert>
-                        <content> a</content>
-                    </faz-alert>
-            </faz-nav-tab-content>
-
-            <faz-nav-tab-content id="item22-content">
-                Item 2 content
-            </faz-nav-tab-content>
-
-        </faz-nav>
--->
+    <faz-nav-tab-content id="item21-content" fade="true">
+        Item 1 content
+        <faz-alert>
+        A faz alert being rendered inside a tab.
+        </faz-alert>
+    </faz-nav-tab-content>
+    <faz-nav-tab-content id="item22-content">
+        Item 2 content
+    </faz-nav-tab-content>
+</faz-nav></div>
+            </div>
+            <textarea id="navSourceWithTab2Code"></textarea>
+        </div>
         <br><br>
     </main><!-- /.container -->
 
@@ -233,9 +230,14 @@
     codemirrorit("navBasicExample");
     codemirrorit("navCenteredExample");
     codemirrorit("navRightExample");
+    codemirrorit("navFillExample");
+    codemirrorit("navVerticalExample");
+    codemirrorit("navVerticalBulletExample");
     codemirrorit("navSourceExample");
     codemirrorit("navSourceExample2");
     codemirrorit("navSourceWithChildren");
+    codemirrorit("navSourceWithTab2");
+    codemirrorit("navSourceWithTab1");
     </script>
 
     <!-- Placed at the end of the document so the pages load faster -->

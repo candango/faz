@@ -45,7 +45,7 @@ export default class FazNav extends FazStacheItem {
                     return new FazStacheItemList([]);
                 }
             },
-            tabContents: {type: FazNavTabContentList, get default() {
+            tabs: {type: FazNavTabContentList, get default() {
                 return new FazNavTabContentList([]);
             }},
             navOuterClass: {type: type.convert(String), default: "row"},
@@ -55,13 +55,12 @@ export default class FazNav extends FazStacheItem {
             page: String,
             pills: {type: type.convert(Boolean), default: false},
             source: String,
-            tabs: {type: type.convert(Boolean), default: false},
             vertical: {type: type.convert(Boolean), default: false}
         });
     };
 
-    get hasTabContents() {
-        return !!this.tabContents.length;
+    get hasTabs() {
+        return !!this.tabs.length;
     }
 
     get componentClass() {
@@ -80,7 +79,7 @@ export default class FazNav extends FazStacheItem {
             classes.push("nav-pills");
         }
 
-        if (this.tabs) {
+        if (this.hasTabs) {
             classes.push("nav-tabs");
         }
 
@@ -92,7 +91,7 @@ export default class FazNav extends FazStacheItem {
     }
 
     get role() {
-        if (this.hasTabContents()) {
+        if (this.hasTabs) {
             return "tablist";
         }
         return "";
@@ -112,13 +111,13 @@ export default class FazNav extends FazStacheItem {
     processData() {
         if(this.data !== undefined) {
             if (this.data.items !== undefined) {
-                this.data.items.forEach(function(item) {
+                this.data.items.forEach(item => {
                     switch (item.type.toLowerCase()) {
                         case "faz-nav-item":
                             this.items.push(this.processItemData(item));
                             break;
                     }
-                }.bind(this));
+                });
             }
         }
     }
@@ -133,7 +132,15 @@ export default class FazNav extends FazStacheItem {
         $(this).addClass("faz-nav-rendered");
     }
 
-    afterConnectedCallback() {}
+    afterConnectedCallback() {
+        if (this.hasTabs) {
+            let active = this.items.active[0];
+            if(active===undefined) {
+                active = this.items[0];
+            }
+            active.activate();
+        }
+    }
 
     beforeConnectedCallback() {
         let attributes = {};
@@ -146,14 +153,14 @@ export default class FazNav extends FazStacheItem {
                 case "fazid":
                     this.fazid = attribute.value;
                     break;
+                case "fill":
+                    this.fill = attribute.value;
+                    break;
                 case "justify":
                     this.justify = attribute.value;
                     break;
                 case "pills":
-                    this.pills = true;
-                    break;
-                case "tabs":
-                    this.tabs = true;
+                    this.pills = attribute.value;
                     break;
                 case "vertical":
                     this.vertical = true;
@@ -171,15 +178,19 @@ export default class FazNav extends FazStacheItem {
         assign(this, attributes);
         for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
-            if(child.tagName.toLowerCase().includes("nav")) {
+            if(child.tagName.toLowerCase().includes("nav-item")) {
                 this.items.push(child);
                 if (child.isRoot !== undefined) {
                     child.isRoot = true;
                     child.setRoot(this);
                 }
-                if (child.parent !== undefined) {
-                    child.parent = this;
-                }
+
+            }
+            if(child.tagName.toLowerCase().includes("nav-tab-content")) {
+                this.tabs.push(child);
+            }
+            if (child.parent !== undefined) {
+                child.parent = this;
             }
         }
     }
@@ -194,12 +205,6 @@ export default class FazNav extends FazStacheItem {
                 this.processData()
                 this.isLoading = false;
             }.bind(this));
-        }
-        this.items.forEach(function(item){
-            item.setParent(this);
-        }.bind(this));
-        if (this.hasTabContents) {
-            this.items.active[0].activate();
         }
     }
 

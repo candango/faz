@@ -89,7 +89,7 @@ export class FazNavItem extends FazStacheItem {
             return voidHref;
         }
         if (this.parent !== undefined) {
-            if (this.parent.tabs) {
+            if (this.parent.hasTabs) {
                 if (!validHef.startsWith("#") && this.href) {
                     return "#" + validHef;
                 }
@@ -128,14 +128,14 @@ export class FazNavItem extends FazStacheItem {
                     child.active = false;
                 });
                 if (this.isRoot) {
-                    if (this.parent.hasTabContents) {
-                        this.parent.tabContents.forEach(
-                            function(tabContent) {
-                                tabContent.active = false;
-                                if(tabContent.id == this.ariaControls) {
-                                    tabContent.active = true;
+                    if (this.parent.hasTabs) {
+                        this.parent.tabs.forEach(
+                            tab => {
+                                tab.active = false;
+                                if(tab.fazid == this.ariaControls) {
+                                    tab.active = true;
                                 }
-                            }.bind(this)
+                            }
                         );
                     }
                 }
@@ -148,6 +148,9 @@ export class FazNavItem extends FazStacheItem {
         for(let attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
                 case "active":
+                    document.addEventListener("DOMContentLoaded", event => {
+                        this.activate(this, event);
+                    });
                     this.active = attribute.value;
                     break;
                 case "disabled":
@@ -155,7 +158,7 @@ export class FazNavItem extends FazStacheItem {
                     break;
                 case "fazid":
                 case "id":
-                    this.id = attribute.value;
+                    this.fazid = attribute.value;
                     break;
                 case "current":
                     this.active = true;
@@ -218,7 +221,7 @@ export class FazNavItem extends FazStacheItem {
             return voidAriaControls;
         }
         if (this.parent !== undefined) {
-            if (this.parent.tabs) {
+            if (this.parent.hasTabs) {
                 if (validAriaControls.startsWith("#") && this.href) {
                     return validAriaControls.substring(1);
                 }
@@ -251,9 +254,9 @@ export class FazNavItem extends FazStacheItem {
 
         let children = undefined;
 
-        if(data.children !== undefined) {
-            children = data.children;
-            delete data.children;
+        if(data.items !== undefined) {
+            children = data.items;
+            delete data.items;
         }
 
         assign(this, data);
@@ -279,7 +282,13 @@ export class FazNavItemList extends ObservableArray {
             },
 
             get active() {
-                return this.filter({active: true});
+                let actives = this.filter({active: true});
+                if(actives.length===0) {
+                    console.log("buga")
+                    actives.push(this[0]);
+                    actives[0].active = true;
+                }
+                return actives;
             }
         };
     }
