@@ -1,6 +1,6 @@
 {
   "name": "faz",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "Candango Faz Javascript toolkit.",
   "main": "faz.js",
   "repository": "https://github.com/candango/faz.git",
@@ -42,10 +42,10 @@
   ],
   "devDependencies": {
     "can-stache-loader": "3.0.0",
-    "codemirror": "5.62.0",
+    "codemirror": "5.62.3",
     "copy-webpack-plugin": "9.0.1",
-    "electron": "13.1.2",
-    "http-server": "0.12.3",
+    "electron": "13.2.3",
+    "http-server": "0.13.0",
     "qunit": "2.16.0",
     "testee": "0.9.1",
     "webpack": "5.51.1",
