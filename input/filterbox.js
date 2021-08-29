@@ -53,8 +53,13 @@ export default class FazFilterbox extends FazStacheItem {
         return this.id + "-input";
     }
 
-    // afterConnectedCallback() {
-    // }
+    afterConnectedCallback() {
+        document.addEventListener("DOMContentLoaded", event => {
+            if (this.innitCallback !== undefined) {
+                this.innitCallback();
+            }
+        });
+    }
 
     beforeConnectedCallback() {
         for (let attribute of this.attributes) {
@@ -62,14 +67,17 @@ export default class FazFilterbox extends FazStacheItem {
                 case "items":
                     this.items = JSON.parse(attribute.value);
                     break;
-                case "initcallback":
-                    this.initCallback = eval(attribute.value);
+                case "filtercallback":
+                    document.addEventListener("DOMContentLoaded", event => {
+                        this.filterCallback = eval(attribute.value);
+                    });
+                    break;
+                case "innitcallback":
+                    document.addEventListener("DOMContentLoaded", event => {
+                        this.innitCallback = eval(attribute.value);
+                    });
                     break;
             }
-
-        }
-        if (this.initCallback !== undefined) {
-            this.initCallback();
         }
     }
 
