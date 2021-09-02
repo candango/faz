@@ -46,11 +46,11 @@ export default class FazFilterbox extends FazStacheItem {
     }
 
     get idOuterDiv() {
-        return this.id + "-div";
+        return this.fazid + "-div";
     }
 
     get idInput() {
-        return this.id + "-input";
+        return this.fazid + "-input";
     }
 
     afterConnectedCallback() {
