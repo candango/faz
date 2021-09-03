@@ -1,5 +1,3 @@
-import QUnit from "steal-qunit";
-
 import { default as FazItem } from "../item";
 
 QUnit.module("faz/item");

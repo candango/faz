@@ -1,9 +1,7 @@
-import QUnit from "steal-qunit";
-
-import FazNavbarBrand from "navbar/navbar-brand";
+import FazNavbarBrand from "../navbar/navbar-brand";
 import FazNavbar from "../navbar/navbar";
 
-QUnit.module("navbar/brand");
+QUnit.module("faz/navbar/brand");
 
 let navbarBrand = new FazNavbarBrand();
 
@@ -27,8 +25,8 @@ QUnit.test("Navbar defaults.", function(assert) {
         "View Model brand default is: null."
     );
     assert.notEqual(
-        navbar.id,
+        navbar.fazid,
         "",
-        "View Model id default is a random string: \"" + navbar.id + "\"."
+        "View Model id default is a random string: \"" + navbar.fazid + "\"."
     );
 });

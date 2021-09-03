@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import QUnit from "steal-qunit";
-
 import FazAlert from "../alert/alert";
 
 QUnit.module("faz/alert/alert");
