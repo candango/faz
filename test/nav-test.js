@@ -1,8 +1,6 @@
-import QUnit from "steal-qunit";
-
-import { default as FazNav } from "nav/nav";
-import { FazNavItem } from "nav/nav-item";
-import $ from "jquery"
+import { default as FazNav } from "../nav/nav";
+import { FazNavTabContent } from "../nav/nav-tab-content";
+import { FazNavItem } from "../nav/nav-item";
 
 QUnit.module("faz/nav/nav-item");
 
@@ -43,7 +41,8 @@ QUnit.test("NavItem getHref.", function(assert) {
 
 
     item.href = "my-content";
-    item.parent.tabs = true;
+    item.parent.tabs.push(new FazNavTabContent())
+    //item.parent.tabs = true;
 
     assert.equal(
         item.getHref(),
@@ -52,7 +51,7 @@ QUnit.test("NavItem getHref.", function(assert) {
     );
 
     item.href = "#my-content";
-    item.parent.tabs = true;
+    //item.parent.tabs = true;
 
     assert.equal(
         item.getHref(),
@@ -61,8 +60,9 @@ QUnit.test("NavItem getHref.", function(assert) {
     );
 
     item.disabled = false;
-    item.parent.tabs = false;
+    //item.parent.tabs = false;
     item.href = "http://a_url.com";
+    item.parent.tabs.pop();
 
     assert.equal(
         item.getHref(),
@@ -71,7 +71,7 @@ QUnit.test("NavItem getHref.", function(assert) {
     );
 });
 
-QUnit.module("faz/nav/nav-view-model");
+QUnit.module("faz/nav/nav");
 
 let fazNav = new FazNav();
 

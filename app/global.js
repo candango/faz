@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 Flavio Garcia
+ * Copyright 2018-2021 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import FazAlert from "../alert/alert";
 
-QUnit.module("faz/alert/alert");
-
-let alert = new FazAlert();
-
-QUnit.test("Alert view model defaults.", function(assert) {
-    assert.equal(
-        alert.isLoading,
-        true,
-        "Alert view model isLoading default is: true."
-    );
-});
+window.codemirrorit = function(name) {
+    document.getElementById(name + "Code").value =
+        document.getElementById(name).innerHTML;
+    CodeMirror.fromTextArea(
+        document.getElementById(name + "Code"), {
+            mode:  "xml",
+            fixedGutters: false,
+            lineNumbers: true,
+            readOnly: true,
+            viewportMargin: Infinity
+        });
+}
