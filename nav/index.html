@@ -85,10 +85,10 @@
                 <h5 class="card-title">Just vertical</h5>
                 <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
                 <div id="navVerticalExample"><faz-nav vertical="true">
-    <faz-nav-item id="active" active="true">Active</faz-nav-item>
-    <faz-nav-item id="item1">Item 1</faz-nav-item>
-    <faz-nav-item id="item2">Item 2</faz-nav-item>
-    <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
+    <faz-nav-item fazid="active" active="true">Active</faz-nav-item>
+    <faz-nav-item fazid="item1">Item 1</faz-nav-item>
+    <faz-nav-item fazid="item2">Item 2</faz-nav-item>
+    <faz-nav-item fazid="disabled" disabled="true">Disabled</faz-nav-item>
 </faz-nav></div>
             </div>
             <textarea id="navVerticalExampleCode"></textarea>
@@ -99,10 +99,10 @@
                 <h5 class="card-title">Vertical and pills</h5>
                 <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
                 <div id="navVerticalBulletExample"><faz-nav vertical="true" pills="true">
-    <faz-nav-item id="active" active>Active</faz-nav-item>
-    <faz-nav-item id="item1">Item 1</faz-nav-item>
-    <faz-nav-item id="item2">Item 2</faz-nav-item>
-    <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
+    <faz-nav-item fazid="active" active>Active</faz-nav-item>
+    <faz-nav-item fazid="item1">Item 1</faz-nav-item>
+    <faz-nav-item fazid="item2">Item 2</faz-nav-item>
+    <faz-nav-item fazid="disabled" disabled="true">Disabled</faz-nav-item>
 </faz-nav></div>
             </div>
             <textarea id="navVerticalBulletExampleCode"></textarea>
@@ -131,28 +131,28 @@
                 <h5 class="card-title">With children.</h5>
                 <div id="navSourceWithChildren"><faz-nav active="dropdown" justify="right">
     <faz-nav-item target="_blank" href="http://example.com" id="active">Active</faz-nav-item>
-    <faz-nav-item id="dropdown1">
+    <faz-nav-item fazid="dropdown1">
         <faz-nav-item-title>Dropdown 1</faz-nav-item-title>
-        <faz-nav-item id="sub11">Sub11</faz-nav-item>
-        <faz-nav-item id="sub12">Sub12</faz-nav-item>
-        <faz-nav-item id="sub13">
+        <faz-nav-item fazid="sub11">Sub11</faz-nav-item>
+        <faz-nav-item fazid="sub12">Sub12</faz-nav-item>
+        <faz-nav-item fazid="sub13">
             <faz-nav-item-title>Sub13</faz-nav-item-title>
-            <faz-nav-item id="sub131">Sub131</faz-nav-item>
-            <faz-nav-item id="sub132">
+            <faz-nav-item fazid="sub131">Sub131</faz-nav-item>
+            <faz-nav-item fazid="sub132">
                 <faz-nav-item-title>Sub132</faz-nav-item-title>
-                <faz-nav-item target="_blank" href="http://example.com" id="sub1321">sub1321</faz-nav-item>
-                <faz-nav-item id="sub1322">sub1322</faz-nav-item>
-                <faz-nav-item id="sub1323">sub1323</faz-nav-item>
+                <faz-nav-item target="_blank" href="http://example.com" fazid="sub1321">sub1321</faz-nav-item>
+                <faz-nav-item fazid="sub1322">sub1322</faz-nav-item>
+                <faz-nav-item fazid="sub1323">sub1323</faz-nav-item>
             </faz-nav-item>
         </faz-nav-item>
     </faz-nav-item>
-    <faz-nav-item id="dropdown2">
+    <faz-nav-item fazid="dropdown2">
         <faz-nav-item-title>Dropdown 2</faz-nav-item-title>
-        <faz-nav-item id="sub1">Sub21</faz-nav-item>
-        <faz-nav-item id="sub2">Sub22</faz-nav-item>
-        <faz-nav-item id="sub3">Sub23</faz-nav-item>
+        <faz-nav-item fazid="sub1">Sub21</faz-nav-item>
+        <faz-nav-item fazid="sub2">Sub22</faz-nav-item>
+        <faz-nav-item fazid="sub3">Sub23</faz-nav-item>
     </faz-nav-item>
-    <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
+    <faz-nav-item fazid="disabled" disabled="true">Disabled</faz-nav-item>
 </faz-nav></div>
             </div>
             <textarea id="navSourceWithChildrenCode"></textarea>
@@ -166,9 +166,9 @@
             <div class="card-body">
                 <h5 class="card-title">Horizontal.</h5>
                 <div id="navSourceWithTab1"><faz-nav active="item1" justify="right">
-    <faz-nav-item id="item1" href="item1-content">Item 1</faz-nav-item>
-    <faz-nav-item id="item2" href="item2-content">Item 2</faz-nav-item>
-    <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
+    <faz-nav-item fazid="item1" href="item1-content">Item 1</faz-nav-item>
+    <faz-nav-item fazid="item2" href="item2-content">Item 2</faz-nav-item>
+    <faz-nav-item fazid="disabled" disabled="true">Disabled</faz-nav-item>
 
     <faz-nav-tab-content id="item1-content">
         Item 1 content
@@ -187,10 +187,10 @@
             <div class="card-body">
                 <h5 class="card-title">Vertical.</h5>
                 <div id="navSourceWithTab2"><faz-nav vertical="true" pills="true">
-    <faz-nav-item id="firstItem">First Item</faz-nav-item>
-    <faz-nav-item id="item1" active="true" href="item21-content">Item 1(active)</faz-nav-item>
-    <faz-nav-item id="item2" href="item22-content">Item 2</faz-nav-item>
-    <faz-nav-item id="disabled" disabled="true">Disabled</faz-nav-item>
+    <faz-nav-item fazid="firstItem">First Item</faz-nav-item>
+    <faz-nav-item fazid="item1" active="true" href="item21-content">Item 1(active)</faz-nav-item>
+    <faz-nav-item fazid="item2" href="item22-content">Item 2</faz-nav-item>
+    <faz-nav-item fazid="disabled" disabled="true">Disabled</faz-nav-item>
 
     <faz-nav-tab-content id="item21-content" fade="true">
         Item 1 content
@@ -207,43 +207,28 @@
         </div>
         <br><br>
     </main><!-- /.container -->
-
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
     <script src="/dist/vendor/codemirror.js"></script>
     <script src="/dist/vendor/codemirror_mode_xml.js"></script>
+    <script src="/dist/global.bundle.js" ></script>
     <script>
-    function codemirrorit(name) {
-        document.getElementById(name + "Code").value =
-            document.getElementById(name).innerHTML;
-        CodeMirror.fromTextArea(
-            document.getElementById(name + "Code"), {
-                mode:  "xml",
-                fixedGutters: false,
-                lineNumbers: true,
-                readOnly: true,
-                viewportMargin: Infinity
-            });
-    }
-
-    codemirrorit("navBasicExample");
-    codemirrorit("navCenteredExample");
-    codemirrorit("navRightExample");
-    codemirrorit("navFillExample");
-    codemirrorit("navVerticalExample");
-    codemirrorit("navVerticalBulletExample");
-    codemirrorit("navSourceExample");
-    codemirrorit("navSourceExample2");
-    codemirrorit("navSourceWithChildren");
-    codemirrorit("navSourceWithTab2");
-    codemirrorit("navSourceWithTab1");
+        codemirrorit("navBasicExample");
+        codemirrorit("navCenteredExample");
+        codemirrorit("navRightExample");
+        codemirrorit("navFillExample");
+        codemirrorit("navVerticalExample");
+        codemirrorit("navVerticalBulletExample");
+        codemirrorit("navSourceExample");
+        codemirrorit("navSourceExample2");
+        codemirrorit("navSourceWithChildren");
+        codemirrorit("navSourceWithTab2");
+        codemirrorit("navSourceWithTab1");
     </script>
-
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="/dist/vendor/jquery.min.js"></script>
-    <script src="/dist/nav.bundle.js" ></script>
     <script src="/dist/vendor/popper.min.js"></script>
     <script src="/dist/vendor/bootstrap.min.js"></script>
+    <script src="/dist/nav.bundle.js" ></script>
 </body>
 </html>
