@@ -11,6 +11,7 @@ module.exports = {
         datepicker: "./app/datepicker.js",
         filterbox: "./app/filterbox.js",
         form: "./app/form.js",
+        global: "./app/global.js",
         input: "./app/input.js",
         nav: "./app/nav.js",
         navbar: "./app/navbar.js",

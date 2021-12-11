@@ -1,19 +1,44 @@
 {
   "name": "faz",
-  "version": "0.0.23",
+  "version": "0.0.25",
   "description": "Candango Faz Javascript toolkit.",
   "main": "faz.js",
   "repository": "https://github.com/candango/faz.git",
   "author": "Flavio Garcia <piraz@candango.org>",
   "license": "Apache-2.0",
+  "keywords": [
+    "canjs",
+    "bootstrap",
+    "toolkit"
+  ],
   "dependencies": {
-    "@popperjs/core": "2.9.2",
-    "bootstrap": "5.0.2",
-    "bootstrap-icons": "1.5.0",
-    "bootswatch": "5.0.2",
-    "can": "6.6.1",
+    "@popperjs/core": "2.10.2",
+    "bootstrap": "5.1.3",
+    "bootstrap-icons": "1.7.2",
+    "bootswatch": "5.1.3",
+    "can": "6.6.2",
     "jquery": "3.5.1",
-    "less": "4.1.1"
+    "less": "4.1.2"
+  },
+  "devDependencies": {
+    "@babel/core": "7.16.0",
+    "@babel/preset-env": "7.16.4",
+    "babel-loader": "8.2.3",
+    "can-stache-loader": "3.0.0",
+    "codemirror": "5.64.0",
+    "copy-webpack-plugin": "9.1.0",
+    "electron": "16.0.4",
+    "http-server": "14.0.0",
+    "karma": "6.3.9",
+    "karma-cli": "2.0.0",
+    "karma-electron": "7.1.0",
+    "karma-mocha": "2.0.1",
+    "karma-phantomjs-launcher": "1.0.4",
+    "karma-qunit": "4.1.2",
+    "karma-webpack": "5.0.0",
+    "qunit": "2.17.2",
+    "webpack": "5.65.0",
+    "webpack-cli": "4.9.1"
   },
   "scripts": {
     "watch": "webpack --watch",
@@ -29,26 +54,10 @@
     "lessc:dev:faz": "lessc stylesheets/faz.less stylesheets/faz.css --source-map",
     "lessc:dev:showcase": "lessc stylesheets/showcase.less stylesheets/showcase.css --source-map",
     "test": "npm run test:browser",
-    "test:browser": "testee test/*.html --config=testee.json",
+    "test:browser": "karma start --single-run",
     "yarn": "npm run yarn:clean && npm run yarn:v2 && npm run yarn:install",
     "yarn:install": "yarn install",
     "yarn:clean": "rm -rf yarn.lock .yarn .yarnrc.yml .next node_modules",
     "yarn:v2": "yarn set version berry && yarn config set nodeLinker node-modules"
-  },
-  "keywords": [
-    "canjs",
-    "bootstrap",
-    "toolkit"
-  ],
-  "devDependencies": {
-    "can-stache-loader": "3.0.0",
-    "codemirror": "5.62.3",
-    "copy-webpack-plugin": "9.0.1",
-    "electron": "13.2.3",
-    "http-server": "0.13.0",
-    "qunit": "2.16.0",
-    "testee": "0.9.1",
-    "webpack": "5.51.1",
-    "webpack-cli": "4.8.0"
   }
 }

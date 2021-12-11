@@ -147,12 +147,6 @@ export class FazNavItem extends FazStacheItem {
     process() {
         for(let attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
-                case "active":
-                    document.addEventListener("DOMContentLoaded", event => {
-                        this.activate(this, event);
-                    });
-                    this.active = attribute.value;
-                    break;
                 case "disabled":
                     this.disabled = attribute.value;
                     break;
@@ -160,16 +154,25 @@ export class FazNavItem extends FazStacheItem {
                 case "id":
                     this.fazid = attribute.value;
                     break;
+                case "active":
                 case "current":
                     this.active = true;
                     break;
                 case "href":
                     this.href = attribute.value;
                     break;
+                case "target":
+                    this.target = attribute.value;
+                    break;
             }
         }
         if (this.children.length > 0) {
             this.processChildren();
+        }
+        if(this.active) {
+            document.addEventListener("DOMContentLoaded", event => {
+                this.activate(this, event);
+            });
         }
     }
 
@@ -198,6 +201,10 @@ export class FazNavItem extends FazStacheItem {
 
     processChild(child) {
         let element = new FazNavItem();
+        for(let attribute of child.attributes) {
+            let newAttribute = attribute.cloneNode()
+            element.attributes.setNamedItem(newAttribute);
+        }
         element.parent = this;
         element.innerHTML = child.innerHTML;
         element.content = element.innerHTML;
@@ -284,7 +291,6 @@ export class FazNavItemList extends ObservableArray {
             get active() {
                 let actives = this.filter({active: true});
                 if(actives.length===0) {
-                    console.log("buga")
                     actives.push(this[0]);
                     actives[0].active = true;
                 }
