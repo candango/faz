@@ -36,6 +36,7 @@ export default class FazFilterbox extends FazStacheItem {
             overListGroup: {type: Boolean, default: false},
             selectedName: {type: String, default: ""},
             selectedValue: {type: String, default: ""},
+            autocomplete: {type: String, default: "off"},
             filterCallback: {type: Object },
             innitCallback: {type: Object },
             get hasItems() {
@@ -64,6 +65,9 @@ export default class FazFilterbox extends FazStacheItem {
     beforeConnectedCallback() {
         for (let attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
+                case "autocomplete":
+                    this.autocomplete = attribute.value;
+                    break;
                 case "items":
                     this.items = JSON.parse(attribute.value);
                     break;
