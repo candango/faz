@@ -4,6 +4,7 @@
            on:focus="doFilter(scope.event.target)"
            on:blur="clearFilter()"
            placeholder:from="label"
+           autocomplete:from="autocomplete"
     >
     {{#filtering}}
     <div style="position: absolute; margin-top: 5px; width: 100%;">
