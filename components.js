@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 Flavio Garcia
+ * Copyright 2018-2022 Flavio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 export { default as FazForm } from "./form/form";
-export { default as FazAlert } from "./alert/alert";
+export { default as FazAlertElement } from "./alert/alert";
 export { default as FazBreadcrumb} from "./breadcrumb/breadcrumb";
 export { default as FazDatepicker} from "./datepicker/datepicker";
 export { default as FazInputDatepicker} from "./input/datepicker";

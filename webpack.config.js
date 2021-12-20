@@ -1,7 +1,20 @@
 const path = require("path");
 const webpack = require("webpack");
+const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 // SEE: https://webpack.js.org/plugins/copy-webpack-plugin/
 const CopyPlugin = require("copy-webpack-plugin");
+
+const hasJsxRuntime = (() => {
+    if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
+        return false;
+    }
+    try {
+        require.resolve("react/jsx-runtime");
+        return true;
+    } catch (e) {
+        return false;
+    }
+})();
 
 module.exports = {
     entry: {
@@ -23,8 +36,28 @@ module.exports = {
         path: path.resolve(__dirname, "dist")
     },
     mode: "development",
+    resolve: {
+        extensions: [".js", ".jsx"]
+    },
     module: {
         rules: [
+            {
+                test: /\.js|\.jsx$/,
+                loader: 'babel-loader',
+                exclude: /node_modules/,
+                options: {
+                    presets: [
+                        [require.resolve("@babel/preset-env")],
+                        [
+                            require.resolve("@babel/preset-react"),
+                            {
+                                runtime: hasJsxRuntime ? "automatic" :
+                                    "classic",
+                            },
+                        ],
+                    ],
+                }
+            },
             {
                 test: /\.stache$/,
                 use: {
