@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 Flavio Garcia
+ * Copyright 2018-2022 Flavio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,34 +14,66 @@
  * limitations under the License.
  */
 
-import {StacheElement, type} from "can";
+import {FazElementItem, FazReactItem} from "../item";
+import React from 'react'
+import ReactDOM from "react-dom"
+import parse from "html-react-parser"
 
-import alertTemplate from "./stache/alert.stache";
 
-export default class FazAlert extends StacheElement {
-    static view = alertTemplate;
+class FazAlertReact extends FazReactItem {
 
-    static get props() {
-        return {
-            isLoading: {type: Boolean, default: true},
-            content: {type: type.convert(String)}
-        };
+    constructor(props) {
+        super(props);
+        let type = "primary"
+        if (props.type!==undefined) {
+            type = props.type.toLowerCase()
+        }
+        if (this.state.element!==undefined) {
+            for(let attribute of this.state.element.attributes) {
+                switch (attribute.name) {
+                    case "type":
+                        type = attribute.value;
+                        break;
+                }
+            }
+        }
+        this.state['type'] = type
+    }
+
+    get classNames() {
+        let classes = ["alert"]
+        classes.push("alert-" + this.state.type)
+        return classes.join(" ")
+    }
+
+    get content() {
+        return this.state.content
+    }
+
+    render() {
+        let content = parse(this.state.content)
+        return (
+            <div id={this.state.id}
+                className={this.classNames}
+                role="alert">{this.content}</div>
+        )
+    }
+
+}
+
+export default class FazAlertElement extends FazElementItem {
+    constructor(props) {
+        super(props)
+    }
+
+    beforeLoad() {
+        let alert = <FazAlertReact id={this.childId} element={this}></FazAlertReact>
+        ReactDOM.render(alert, this)
     }
 
     show() {
-        $(this).addClass("faz-alert-rendered");
-    }
-
-    connectedCallback() {
-        this.content = this.innerHTML;
-        super.connectedCallback();
-        this.isLoading = false;
-        this.show();
-    }
-
-    static get seal() {
-        return true;
+        $(this).addClass("faz-alert-rendered")
     }
 }
 
-customElements.define("faz-alert", FazAlert);
+customElements.define("faz-alert", FazAlertElement);
