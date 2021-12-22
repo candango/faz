@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 Flavio Garcia
+ * Copyright 2018-2022 Flavio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
+
 import { default as ID } from "./id";
 import {
     DeepObservable, ObservableArray, ObservableObject, StacheElement, type
 } from "can";
-
+import cloneDeep from "lodash/cloneDeep"
+import merge from "lodash/merge"
+import React from 'react'
 
 class FazItem extends ObservableObject {
     static get props() {
@@ -59,6 +62,45 @@ class FazItem extends ObservableObject {
 
 }
 
+export class FazReactItem extends React.Component {
+
+    constructor(props) {
+        super(props);
+        let id = props.id ?
+            props.id.replace("__child-prefix__", this.prefix) : ID.random
+        let element = props.element
+        if (element) {
+            element.reactChild = this
+        }
+        this.state = {
+            id: id,
+            element: element,
+            type: "primary",
+            content: "",
+        }
+    }
+
+    get prefix() {
+        return "faz-react-item"
+    }
+
+    updateState(someState) {
+        this.setState(prevState => {
+            return merge(cloneDeep(prevState), someState)
+        })
+    }
+
+    componentDidMount() {
+        let renderedElement = document.querySelector("#" + this.state.id)
+        if (this.state.element && renderedElement) {
+            this.state.element.originalNodes.forEach(
+                item => renderedElement.append(item)
+            )
+        }
+    }
+}
+
+
 export class FazItemList extends ObservableArray {
     static get props() {
         return {
@@ -75,6 +117,50 @@ export class FazItemList extends ObservableArray {
     static get items() {
         return type.convert(FazItem);
     }
+}
+
+export class FazElementItem extends HTMLElement {
+
+    constructor() {
+        super();
+        if (!this.id) {
+            this.id = ID.random
+        }
+        this.isLoading = true
+        this.originalNodes = []
+        this.fazChildren = []
+        this.reactChild = undefined
+        this.childPrefix = "__child-prefix__"
+    }
+
+    get childId() {
+        return this.childPrefix.concat(this.id)
+    }
+
+    connectedCallback() {
+        this.childNodes.forEach(item => {
+            if (item.tagName && item.tagName.toUpperCase().startsWith("FAZ-")) {
+                this.fazChildren.push(item)
+            }
+            this.originalNodes.push(item)
+        })
+        document.addEventListener("DOMContentLoaded", event => {
+            this.contentLoaded(event);
+        });
+        this.beforeLoad();
+        this.isLoading = false;
+        this.afterLoad();
+        this.show();
+    }
+
+    afterLoad() {}
+
+    beforeLoad() {}
+
+    show() {}
+
+    contentLoaded(event) {}
+
 }
 
 export class FazStacheItem extends StacheElement {
