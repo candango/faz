@@ -20,6 +20,7 @@ import {
     DeepObservable, ObservableArray, ObservableObject, StacheElement, type
 } from "can";
 import cloneDeep from "lodash/cloneDeep"
+import toPairs from "lodash/toPairs"
 import merge from "lodash/merge"
 import React from 'react'
 
@@ -33,7 +34,7 @@ class FazItem extends ObservableObject {
                 }
             },
             active: {type: type.convert(Boolean), default: false},
-            // Content should be written like that so we stop main-navbar stop
+            // Content should be written like that, so we stop main-navbar stop
             // to alter the first navbar from the example. It seems like somehow
             // they were sharing or invading contents.
             content: {
@@ -66,19 +67,39 @@ export class FazReactItem extends React.Component {
 
     constructor(props) {
         super(props);
-        let _id = props.id ?
-            props.id.replace("__child-prefix__", this.prefix) : ID.random
-        let _element = props.element
-        if (_element) {
-            _element.reactChild = this
-        }
         this.state = {
-            id: _id,
+            id: ID.random,
+            debug: false,
             disabled: false,
-            element: _element,
+            element: undefined,
             type: "primary",
-            content: "",
+            content: undefined,
             link: undefined
+        }
+        for(let key in props) {
+            switch (key) {
+                case "id":
+                    this.state.id = props[key].replace(
+                        "__child-prefix__", this.prefix)
+                    break
+                case "debug":
+                    this.state.debug = props[key]
+                    break
+                case "disabled":
+                    this.state.disabled = props[key]
+                    break
+                case "element":
+                    this.state.element = props[key]
+                    this.state.element.reactChild = this
+                    break
+                case "link":
+                    this.state.link = props[key]
+                    break
+            }
+        }
+        this.defineStates(props)
+        if (this.state.element) {
+            this.state.element.attributesToStates()
         }
     }
 
@@ -89,6 +110,8 @@ export class FazReactItem extends React.Component {
     get prefix() {
         return "faz-react-item"
     }
+
+    defineStates(props) {}
 
     updateState(someState) {
         this.setState(prevState => {
@@ -140,6 +163,24 @@ export class FazElementItem extends HTMLElement {
         this.fazChildren = []
         this.reactChild = undefined
         this.childPrefix = "__child-prefix__"
+    }
+
+    attributesToStates() {
+        for(let attribute of this.attributes) {
+            switch (attribute.name) {
+                case "debug":
+                    this.reactChild.state.debug =
+                        attribute.value.toLowerCase() === "true"
+                    break;
+                case "disabled":
+                    this.reactChild.state.disabled =
+                        attribute.value.toLowerCase() === "true"
+                    break;
+                case "link":
+                    this.reactChild.state.link = attribute.value
+                    break;
+            }
+        }
     }
 
     get childId() {
