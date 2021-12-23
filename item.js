@@ -66,18 +66,24 @@ export class FazReactItem extends React.Component {
 
     constructor(props) {
         super(props);
-        let id = props.id ?
+        let _id = props.id ?
             props.id.replace("__child-prefix__", this.prefix) : ID.random
-        let element = props.element
-        if (element) {
-            element.reactChild = this
+        let _element = props.element
+        if (_element) {
+            _element.reactChild = this
         }
         this.state = {
-            id: id,
-            element: element,
+            id: _id,
+            disabled: false,
+            element: _element,
             type: "primary",
             content: "",
+            link: undefined
         }
+    }
+
+    get disabled() {
+        return this.state.disabled
     }
 
     get prefix() {
@@ -97,7 +103,10 @@ export class FazReactItem extends React.Component {
                 item => renderedElement.append(item)
             )
         }
+        this.afterMount()
     }
+
+    afterMount() {}
 }
 
 
