@@ -90,7 +90,7 @@ export class FazReactItem extends React.Component {
                     break
                 case "element":
                     this.state.element = props[key]
-                    this.state.element.reactChild = this
+                    this.state.element.reactItem = this
                     break
                 case "link":
                     this.state.link = props[key]
@@ -161,7 +161,7 @@ export class FazElementItem extends HTMLElement {
         this.isLoading = true
         this.originalNodes = []
         this.fazChildren = []
-        this.reactChild = undefined
+        this.reactItem = undefined
         this.childPrefix = "__child-prefix__"
     }
 
@@ -169,15 +169,15 @@ export class FazElementItem extends HTMLElement {
         for(let attribute of this.attributes) {
             switch (attribute.name) {
                 case "debug":
-                    this.reactChild.state.debug =
+                    this.reactItem.state.debug =
                         attribute.value.toLowerCase() === "true"
                     break;
                 case "disabled":
-                    this.reactChild.state.disabled =
+                    this.reactItem.state.disabled =
                         attribute.value.toLowerCase() === "true"
                     break;
                 case "link":
-                    this.reactChild.state.link = attribute.value
+                    this.reactItem.state.link = attribute.value
                     break;
             }
         }
