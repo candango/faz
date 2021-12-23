@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 Flavio Garcia
+ * Copyright 2018-2022 Flavio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,305 @@
  * limitations under the License.
  */
 
-import { assign, StacheElement, type } from "can";
-import paginationTemplate from "./stache/pagination.stache";
+import { assign, StacheElement, type} from "can";
+
+import {FazElementItem, FazReactItem} from "../item"
+
+import paginationTemplate from "./stache/pagination.stache"
+import ReactDOM from "react-dom"
+import React from "react"
+
+
+export class FazPaginationReact extends FazReactItem {
+
+    constructor(props) {
+        super(props);
+        // Used to be currentPage
+        this.state['page'] = 1
+        // Used to be pagesPerBlock
+        this.state['perBlock'] = 10
+        // Used to be pagesPerPage
+        this.state['perPage'] = 10
+        // Used to be records
+        this.state['count'] = 0
+
+        this.state['labels'] = {
+            first : "First",
+            last : "Last",
+            previous : "Previous",
+            next : "Next"
+        }
+
+        this.state['debug'] = false
+        this.state['disabled'] = false
+        this.state['initCallback'] = undefined
+        this.state['pageCallback'] = undefined
+        this.state['ariaLabel'] = undefined
+
+        if (this.state.element!==undefined) {
+            for(let attribute of this.state.element.attributes) {
+                switch (attribute.name) {
+                    case "aria-label":
+                        this.state.ariaLabel=attribute.value
+                        break;
+                    case "count":
+                        this.state.count=attribute.value
+                        break;
+                }
+            }
+        }
+
+    }
+
+    render() {
+        return (
+            <nav aria-label={this.state.ariaLabel}>
+                <ul className="pagination">
+                    {this.renderFirstPage()}
+                    {this.renderPreviousPage()}
+                    {this.renderNumberedPages()}
+                </ul>
+            </nav>
+        )
+    }
+
+    renderFirstPage() {
+        return <li className={this.firstPreviousButtonClass}>
+            {this.isFirstPage ?
+                <span className="page-link">{this.state.labels.first}</span> :
+                <a className="page-link"
+                   onClick={(event) => this.goToFirstPage(event)}
+                   href={this.hrefLink(1)}>{this.state.labels.first}</a>}
+        </li>
+    }
+
+    renderPreviousPage() {
+        let page = this.state.page - 1
+        return <li className={this.firstPreviousButtonClass}>
+            {this.isFirstPage ?
+                <span className="page-link">{this.state.labels.previous}</span> :
+                <a className="page-link"
+                   onClick={(event) => this.goToPreviousPage(event)}
+                   href={this.hrefLink(page)}>{this.state.labels.previous}</a>}
+        </li>
+    }
+
+    renderNumberedPages() {
+        return this.pagesInCurrentBlock.map((page) =>
+            <li className={this.getButtonClass(page)}
+                key={this.state.id.concat("_page_button_", page)}>
+                <a className="page-link"
+                   onClick={(event) => this.goToPage(event, page)}
+                   href={this.hrefLink(page)}>{page}</a>
+            </li>
+        )
+    }
+
+    get firstPreviousButtonClass() {
+        let classes = ["page-item"]
+        if (this.isFirstPage || this.disabled) {
+            classes.push("disabled")
+        }
+        return classes.join(" ")
+    }
+
+    get lastNextButtonClass() {
+        let classes = ["page-item"]
+        if (this.isLastPage || this.disabled) {
+            classes.push("disabled")
+        }
+        return classes.join(" ")
+    }
+
+    getButtonClass(page) {
+        let classes = ["page-item"]
+        if (this.isCurrentPage(page)) {
+            classes.push("active")
+        }
+        if (this.disabled) {
+            classes.push("disabled")
+        }
+        return classes.join(" ")
+    }
+
+    get pages() {
+        if (this.state.count === 0) {
+            return 1
+        }
+        let pagesFloor = Math.floor(this.state.count/this.state.perPage)
+        let remainder = this.state.count % this.state.perPage
+        let addRemainder = remainder > 0 ? 1 : 0
+        return pagesFloor + addRemainder
+    }
+
+    /**
+     *  Page computed is used to protect the page limit.
+     *
+     *  If the state page is out of limits of 1 and pages we fix the state
+     *  page value.
+     *
+     * @returns {number|*}
+     */
+    get pageComputed() {
+        if (this.state.page > 1 || this.pages < this.state.page) {
+            this.updateState({page: this.pages})
+        }
+        return this.state.page
+    }
+
+    get recordsInLastPage() {
+        let lastPageRemainder = this.state.count % this.state.perPage;
+        return lastPageRemainder > 0 ? lastPageRemainder : this.state.perPage
+    }
+
+    get blocks() {
+        let blocksFloor = Math.floor(this.pages / this.state.perBlock);
+        let addReminder = this.pages % this.state.perBlock > 0 ? 1 : 0;
+        return blocksFloor + addReminder;
+    }
+
+    get pagesInLastBlock() {
+        if (!this.isLastPage) {
+            return this.pages
+        }
+        let lastBlockRemainder = this.pages % this.state.perBlock
+        return lastBlockRemainder > 0 ? lastBlockRemainder :
+            this.state.perBlock
+    }
+
+    get currentFirstRecord() {
+        return (this.pageComputed * this.state.perPage) - this.state.perPage + 1
+    }
+
+    get currentLastRecord() {
+        if (this.isLastPage) {
+            return this.currentFirstRecord + this.recordsInLastPage - 1
+        }
+        return this.pageComputed * this.state.perPage
+    }
+
+    get currentBlock() {
+        if (this.pageComputed <= this.state.perBlock) {
+            return 1
+        }
+        let currentBlockFloor = Math.floor(
+            this.pageComputed / this.state.perBlock)
+        let remainder = this.pageComputed % this.state.perBlock
+        let addRemainder = remainder > 0 ? 1 : 0
+
+        return currentBlockFloor + addRemainder
+    }
+
+    get currentFirstPage() {
+        return (this.currentBlock * this.state.perBlock) -
+            this.state.perBlock + 1
+    }
+
+    get currentLastPage() {
+        if (this.currentBlock === this.blocks) {
+            return this.currentFirstPage + this.pagesInLastBlock - 1
+        }
+        return this.currentBlock * this.state.perBlock
+    }
+
+    get pagesInCurrentBlock() {
+        let pages = this.isLastBlock ?
+            this.pagesInLastBlock : this.state.perBlock
+        return Array(pages).fill(
+            undefined).map((_, i) => i + this.currentFirstPage)
+    }
+
+    isCurrentPage(page) {
+        return page === this.pageComputed
+    }
+
+    get isFirstPage() {
+        return this.pageComputed === 1
+    }
+
+    get isLastPage() {
+        return this.pageComputed >= this.pages
+    }
+
+    get isLastBlock() {
+        return this.currentBlock >= this.blocks
+    }
+
+    get hasMultipleBlocks() {
+        return this.blocks > 1
+    }
+
+
+    /**
+     * Returns the nav item href. If item is disabled a javascript void
+     * function will be placed to avoid any action.
+     *
+     * @param {FazNavItem} item
+     * @returns {string}
+     */
+    hrefLink(page) {
+        // It is void because won't change the browser's location
+        let voidHref = "#"
+        let validHef = this.state.link === undefined ?
+            voidHref : this.state.link
+        if (this.disabled) {
+            return voidHref
+        }
+        return validHef.replace("{page}", page)
+    }
+
+    callInitCallback() {
+        if (this.initCallback !== undefined) {
+            this.initCallback(this);
+        }
+    }
+
+    callPageCallback(page) {
+        if (this.pageCallback !== undefined) {
+            this.pageCallback(page, this);
+        }
+    }
+
+    goToPage(event, page) {
+        this.updateState({page: page})
+        this.callPageCallback(page)
+    }
+
+    goToFirstPage(event) {
+        this.goToPage(event, 1);
+    }
+
+    goToLastPage(event) {
+        this.goToPage(event, this.pages);
+    }
+
+    goToPreviousPage(event) {
+        this.goToPage(event, this.state.page - 1)
+    }
+
+    goToNextPage(event) {
+        this.goToPage(event, this.state.page + 1);
+    }
+
+}
+
+export class FazPaginationElement extends FazElementItem {
+    constructor(props) {
+        super(props)
+        console.log("buga")
+    }
+
+    beforeLoad() {
+        ReactDOM.render(
+            <FazPaginationReact id={this.childId} element={this}/>,
+            this)
+    }
+
+    show() {
+        $(this).addClass("faz-alert-rendered")
+    }
+}
+
 
 export default class FazPagination extends StacheElement {
     static view = paginationTemplate;
@@ -235,3 +532,4 @@ export default class FazPagination extends StacheElement {
 }
 
 customElements.define("faz-pagination", FazPagination);
+customElements.define("faz-pagination-el", FazPaginationElement);
