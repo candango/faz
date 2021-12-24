@@ -33,7 +33,7 @@
             <p class="card-text">Pagination has count equals 9 (9 records counted).</p>
             <p class="card-text">Records per page(perPage property) by default is 10 resulting in a pagination with only one page.</p>
             <p class="card-text">All navigation buttons won't be displayed.</p>
-            <div id="onePageExample"><faz-pagination-el pageCallback="showPage" debug="true" count="9"></faz-pagination-el></div>
+            <div id="onePageExample"><faz-pagination-el debug="true" count="9"></faz-pagination-el></div>
         </div>
         <textarea id="onePageExampleCode"></textarea>
     </div>
@@ -44,7 +44,7 @@
             <p class="card-text">A pagination with count equals 91 resulting in multiple pages.</p>
             <p class="card-text">Pages per page(perBlock property) by default is 10 resulting in a pagination with only one block.</p>
             <p class="card-text">All block navigation buttons won't be displayed.</p>
-            <div id="multiplePagesOneBlockExample"><faz-pagination-el pageCallback="showPage" debug="true" count="91"></faz-pagination-el></div>
+            <div id="multiplePagesOneBlockExample"><faz-pagination-el debug="true" count="91"></faz-pagination-el></div>
         </div>
         <textarea id="multiplePagesOneBlockExampleCode"></textarea>
     </div>
@@ -53,7 +53,7 @@
         <div class="card-body">
             <h2 class="card-title">Multiple pages and multiple blocks</h2>
             <p class="card-text">A pagination with count equals 340 resulting in multiple pages and multiple blocks.</p>
-            <div id="multiplePagesMultipleBlocksExample"><faz-pagination-el pageCallback="showPage" debug="true" count="340"></faz-pagination-el></div>
+            <div id="multiplePagesMultipleBlocksExample"><faz-pagination-el debug="true" count="340"></faz-pagination-el></div>
         </div>
         <textarea id="multiplePagesMultipleBlocksExampleCode"></textarea>
     </div>
@@ -64,7 +64,7 @@
             <p class="card-text">Set current page as 173.</p>
             <p class="card-text">The pagination will be rendered with the page 173 selected at the block of pages 18, displaying pages from 171 to 180.</p>
             <p class="card-text">Block navigation buttons will be displayed.</p>
-            <div id="definedPageExample"><faz-pagination-el pageCallback="showPage" debug="true" page="173" count="1840"></faz-pagination-el></div>
+            <div id="definedPageExample"><faz-pagination-el debug="true" page="173" count="1840"></faz-pagination-el></div>
         </div>
         <textarea id="definedPageExampleCode"></textarea>
     </div>
@@ -81,18 +81,25 @@
     <div class="card">
         <div class="card-body">
             <h2 class="card-title">Initial callback to be called after pagination is rendered</h2>
-            <p class="card-text">Pagination is disabled but we still show the
-                current page.</p>
             <div id="innitCallbackExample"><faz-pagination-el init-callback="initPagination" debug="true" page="38" count="8000"></faz-pagination-el></div>
         </div>
         <textarea id="innitCallbackExampleCode"></textarea>
     </div>
 
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Page callback to be called after page is changed</h2>
+            <div id="pageCallbackExample"><faz-pagination-el page-callback="showPage" debug="true" page="2" count="120"></faz-pagination-el></div>
+        </div>
+        <textarea id="pageCallbackExampleCode"></textarea>
+    </div>
     <br>
     <br>
     <script type="application/javascript">
-        function showPage(page, pagination){
-            console.log(page);
+        function showPage(page, pagination) {
+            console.log("Page callback called after clicking in the page " +
+                "{page} from pagination {id}.".replace(
+                    "{page}", page).replace("{id}", pagination.state.id))
             console.log(pagination);
         }
         function initPagination(pagination) {
@@ -114,6 +121,7 @@
     codemirrorit("definedPageExample");
     codemirrorit("disabledExample");
     codemirrorit("innitCallbackExample");
+    codemirrorit("pageCallbackExample");
 </script>
 <!-- Bootstrap core JavaScript
 ================================================== -->

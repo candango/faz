@@ -76,9 +76,7 @@ export class FazReactPagination extends FazReactItem {
     }
 
     afterMount() {
-        if(this.state.initCallback) {
-            this.state.initCallback(this)
-        }
+        this.callInitCallback()
     }
 
     get prefix() {
@@ -90,9 +88,6 @@ export class FazReactPagination extends FazReactItem {
     }
 
     render() {
-        if (this.state.disabled) {
-           console.log(this)
-        }
         return <div className="faz-pagination-container" id={this.containerId}>
             <nav aria-label={this.state.ariaLabel}>
                 <ul className="pagination">
@@ -477,14 +472,14 @@ export class FazReactPagination extends FazReactItem {
     }
 
     callInitCallback() {
-        if (this.initCallback !== undefined) {
-            this.initCallback(this);
+        if (this.state.initCallback !== undefined) {
+            this.state.initCallback(this);
         }
     }
 
     callPageCallback(page) {
-        if (this.pageCallback !== undefined) {
-            this.pageCallback(page, this);
+        if (this.state.pageCallback !== undefined) {
+            this.state.pageCallback(page, this);
         }
     }
 
@@ -540,6 +535,10 @@ export class FazPaginationElement extends FazElementItem {
                     break;
                 case "init-callback":
                     this.reactItem.state['initCallback'] = eval(
+                        attribute.value)
+                    break;
+                case "page-callback":
+                    this.reactItem.state['pageCallback'] = eval(
                         attribute.value)
                     break;
             }
