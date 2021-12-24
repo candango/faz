@@ -17,27 +17,19 @@
 import {FazElementItem, FazReactItem} from "../item";
 import React from 'react'
 import ReactDOM from "react-dom"
-import parse from "html-react-parser"
 
 
 class FazAlertReact extends FazReactItem {
 
-    constructor(props) {
-        super(props);
-        let type = "primary"
-        if (props.type!==undefined) {
-            type = props.type.toLowerCase()
+    defineStates(props) {
+        this.state['type'] = "primary"
+        if (props.type) {
+            this.state['type'] = props.type.toLowerCase()
         }
-        if (this.state.element!==undefined) {
-            for(let attribute of this.state.element.attributes) {
-                switch (attribute.name) {
-                    case "type":
-                        type = attribute.value;
-                        break;
-                }
-            }
-        }
-        this.state['type'] = type
+    }
+
+    get prefix() {
+        return "faz-react-alert"
     }
 
     get classNames() {
@@ -46,12 +38,7 @@ class FazAlertReact extends FazReactItem {
         return classes.join(" ")
     }
 
-    get content() {
-        return this.state.content
-    }
-
     render() {
-        let content = parse(this.state.content)
         return (
             <div id={this.state.id}
                 className={this.classNames}
@@ -67,8 +54,18 @@ export default class FazAlertElement extends FazElementItem {
     }
 
     beforeLoad() {
-        let alert = <FazAlertReact id={this.childId} element={this}></FazAlertReact>
-        ReactDOM.render(alert, this)
+        ReactDOM.render(<FazAlertReact id={this.childId} element={this}/>, this)
+    }
+
+    attributesToStates() {
+        super.attributesToStates();
+        for (let attribute of this.attributes) {
+            switch (attribute.name) {
+                case "type":
+                    this.reactItem.state['type'] = attribute.value
+                    break
+            }
+        }
     }
 
     show() {
@@ -76,4 +73,4 @@ export default class FazAlertElement extends FazElementItem {
     }
 }
 
-customElements.define("faz-alert", FazAlertElement);
+customElements.define("faz-alert", FazAlertElement)
