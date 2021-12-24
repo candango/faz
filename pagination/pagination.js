@@ -456,15 +456,7 @@ export class FazReactPagination extends FazReactItem {
      * @returns {string}
      */
     paginatedLink(page) {
-        // It is void because won't change the browser's location
-        // TODO: need to handle voidHref better
-        let voidHref = "#!"
-        let validHef = this.state.link === undefined ?
-            voidHref : this.state.link
-        if (this.disabled) {
-            return voidHref
-        }
-        return validHef.replace("{page}", page)
+        return this.link.replace("{page}", page)
     }
 
     callInitCallback() {
@@ -574,4 +566,4 @@ export default class FazPaginationElement extends FazElementItem {
     }
 }
 
-customElements.define("faz-pagination", FazPaginationElement);
+customElements.define("faz-pagination", FazPaginationElement)
