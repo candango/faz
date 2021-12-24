@@ -78,6 +78,7 @@
         </div>
         <textarea id="disabledExampleCode"></textarea>
     </div>
+    <br>
     <div class="card">
         <div class="card-body">
             <h2 class="card-title">Initial callback to be called after pagination is rendered</h2>
@@ -85,13 +86,35 @@
         </div>
         <textarea id="innitCallbackExampleCode"></textarea>
     </div>
-
+    <br>
     <div class="card">
         <div class="card-body">
             <h2 class="card-title">Page callback to be called after page is changed</h2>
             <div id="pageCallbackExample"><faz-pagination page-callback="showPage" debug="true" page="2" count="120"></faz-pagination></div>
         </div>
         <textarea id="pageCallbackExampleCode"></textarea>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Negative page value</h2>
+            <p class="card-text">A negative page value will be informed
+                defaulting the current page value to 1 and sending a warning at
+                the console.</p>
+            <div id="limitDownExample"><faz-pagination debug="true" page="-1" count="21"></faz-pagination></div>
+        </div>
+        <textarea id="limitDownExampleCode"></textarea>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Page value bigger than the page count</h2>
+            <p class="card-text">A page valu bigger than the page count will be
+                informed defaulting the current page value as the page count
+                and sending a warning at the console.</p>
+            <div id="limitUpExample"><faz-pagination debug="true" page="18" count="57"></faz-pagination></div>
+        </div>
+        <textarea id="limitUpExampleCode"></textarea>
     </div>
     <br>
     <br>
@@ -122,6 +145,8 @@
     codemirrorit("disabledExample");
     codemirrorit("innitCallbackExample");
     codemirrorit("pageCallbackExample");
+    codemirrorit("limitDownExample");
+    codemirrorit("limitUpExample");
 </script>
 <!-- Bootstrap core JavaScript
 ================================================== -->
