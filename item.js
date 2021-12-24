@@ -21,8 +21,10 @@ import {
 } from "can";
 import cloneDeep from "lodash/cloneDeep"
 import toPairs from "lodash/toPairs"
+import parse from "html-react-parser"
 import merge from "lodash/merge"
 import React from 'react'
+
 
 class FazItem extends ObservableObject {
     static get props() {
@@ -103,8 +105,23 @@ export class FazReactItem extends React.Component {
         }
     }
 
+    get content() {
+        return this.state.content ? parse(this.state.content) : ""
+    }
+
     get disabled() {
         return this.state.disabled
+    }
+
+    get link() {
+        // From: https://stackoverflow.com/a/66717705/2887989
+        let voidHref = "#!"
+        let validHef = this.state.link === undefined ?
+            voidHref : this.state.link
+        if (this.disabled) {
+            return voidHref
+        }
+        return validHef
     }
 
     get prefix() {
