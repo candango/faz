@@ -126,10 +126,11 @@ export class FazElementItem extends HTMLElement {
         this.parent = undefined
         this.isLoading = true
         this.originalNodes = []
+        // Those are the faz element items inside the element item
         this.items = []
+        this.childItemDepthLimit = 5
         this.reactItem = undefined
         this.childPrefix = "__child-prefix__"
-        console.log(this)
     }
 
     attributesToStates() {
@@ -168,18 +169,21 @@ export class FazElementItem extends HTMLElement {
         this.show();
     }
 
-    findItems(node) {
-        // TODO: I a depth limit here could be a good thing to avoid a deep
-        // search inside a long DOM structure
+    findItems(node, depth = 1) {
+        // To constitute a relationship between the current faz item and another
+        // item inside, the depth should respect childItemDepthLimit.
+        // After that we don't set the parent/child faz relationship.
+        // If you need more depth in a specific element, increase the
+        // childItemDepthLimit value.
         let found = false
         if (node.tagName && node.tagName.toUpperCase().startsWith("FAZ-")) {
             this.items.push(node)
             node.parent = this
             found = true
         }
-        if (!found) {
+        if (!found && depth < this.childItemDepthLimit) {
             node.childNodes.forEach( childNode => {
-                this.findItems(childNode)
+                this.findItems(childNode, depth + 1)
             })
         }
     }
