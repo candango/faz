@@ -24,3 +24,4 @@ export { default as FazNav } from "./nav/nav";
 export { default as FazNavbar} from "./navbar/navbar";
 export { default as FazPaginationElement} from "./pagination/pagination";
 export { default as FazPicklist} from "./input/picklist";
+export { default as FazSidebarElement } from "./sidebar/sidebar";

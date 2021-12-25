@@ -4,6 +4,9 @@ const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 // SEE: https://webpack.js.org/plugins/copy-webpack-plugin/
 const CopyPlugin = require("copy-webpack-plugin");
 
+// This is related to the new jsx transform
+// SEE: https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html
+// Yanked from the create react app. O.o
 const hasJsxRuntime = (() => {
     if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
         return false;
@@ -29,7 +32,8 @@ module.exports = {
         nav: "./app/nav.js",
         navbar: "./app/navbar.js",
         pagination: "./app/pagination.js",
-        picklist: "./app/picklist.js"
+        picklist: "./app/picklist.js",
+        sidebar: "./app/sidebar.js"
     },
     output: {
         filename: '[name].bundle.js',

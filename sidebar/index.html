@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Candango Faz Toolkit - Sidebar</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/dist/vendor/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/dist/css/faz.css" rel="stylesheet"/>
+    <link href="/dist/css/showcase.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/dist/vendor/css/codemirror.css">
+    <!-- Custom styles for this template -->
+</head>
+
+<body>
+<main-navbar></main-navbar>
+
+<main role="main" class="container">
+
+    <h1>Sidebar</h1>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">An alert</h2>
+            <p class="card-text">This is just an alert example.</p>
+            <div id="oneAlertExample"><faz-alert>
+                An Alert
+            </faz-alert></div>
+        </div>
+        <textarea id="oneAlertExampleCode"></textarea>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Nested alerts</h2>
+            <p class="card-text">An example with an alert inside another alert.</p>
+            <p class="card-text">Testing if the nested custom html tags are rendered without issues.</p>
+            <div id="nestedAlertsExample"><faz-alert>
+    <span>Another Alert
+        <faz-alert type="danger">
+        An alert inside Another Alert
+        </faz-alert>
+    </span>
+            </faz-alert></div>
+        </div>
+        <textarea id="nestedAlertsExampleCode"></textarea>
+    </div>
+    <br>
+    <br>
+</main><!-- /.container -->
+
+<script src="/dist/vendor/codemirror.js"></script>
+<script src="/dist/vendor/codemirror_mode_xml.js"></script>
+<script src="/dist/global.bundle.js" ></script>
+<script>
+    // codemirrorit("oneAlertExample")
+    // codemirrorit("nestedAlertsExample")
+</script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/dist/vendor/jquery.min.js"></script>
+<script src="/dist/vendor/popper.min.js"></script>
+<script src="/dist/vendor/bootstrap.min.js"></script>
+<script src="/dist/sidebar.bundle.js"></script>
+
+</body>
+</html>
