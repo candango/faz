@@ -26,57 +26,20 @@ import merge from "lodash/merge"
 import React from 'react'
 
 
-class FazItem extends ObservableObject {
-    static get props() {
-        return {
-            id: {
-                type: type.convert(String),
-                get default() {
-                    return ID.random;
-                }
-            },
-            active: {type: type.convert(Boolean), default: false},
-            // Content should be written like that, so we stop main-navbar stop
-            // to alter the first navbar from the example. It seems like somehow
-            // they were sharing or invading contents.
-            content: {
-                type: type.convert(String),
-                get default() {
-                    return "";
-                }
-            },
-            element: type.convert(ObservableObject),
-            href: String,
-            parent: "*",
-            type: String,
-            get isLink() {
-                return this.href !== undefined;
-            }
-        };
-    }
-
-    static get propertyDefaults() {
-        return DeepObservable;
-    }
-
-    static get seal() {
-        return true;
-    }
-
-}
-
 export class FazReactItem extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             id: ID.random,
+            children: [],
             debug: false,
             disabled: false,
             element: undefined,
             type: "primary",
             content: undefined,
-            link: undefined
+            link: undefined,
+            parent: undefined
         }
         for(let key in props) {
             switch (key) {
@@ -96,6 +59,9 @@ export class FazReactItem extends React.Component {
                     break
                 case "link":
                     this.state.link = props[key]
+                    break
+                case "parent":
+                    this.state.parent = props[key]
                     break
             }
         }
@@ -140,7 +106,7 @@ export class FazReactItem extends React.Component {
         let renderedElement = document.querySelector("#" + this.state.id)
         if (this.state.element && renderedElement) {
             this.state.element.originalNodes.forEach(
-                item => renderedElement.append(item)
+                node => renderedElement.append(node)
             )
         }
         this.afterMount()
@@ -150,24 +116,6 @@ export class FazReactItem extends React.Component {
 }
 
 
-export class FazItemList extends ObservableArray {
-    static get props() {
-        return {
-            get enabled() {
-                return this.filter({disabled: false});
-            },
-
-            get active() {
-                return this.filter({active: true});
-            }
-        };
-    }
-
-    static get items() {
-        return type.convert(FazItem);
-    }
-}
-
 export class FazElementItem extends HTMLElement {
 
     constructor() {
@@ -175,11 +123,13 @@ export class FazElementItem extends HTMLElement {
         if (!this.id) {
             this.id = ID.random
         }
+        this.parent = undefined
         this.isLoading = true
         this.originalNodes = []
-        this.fazChildren = []
+        this.items = []
         this.reactItem = undefined
         this.childPrefix = "__child-prefix__"
+        console.log(this)
     }
 
     attributesToStates() {
@@ -205,11 +155,9 @@ export class FazElementItem extends HTMLElement {
     }
 
     connectedCallback() {
-        this.childNodes.forEach(item => {
-            if (item.tagName && item.tagName.toUpperCase().startsWith("FAZ-")) {
-                this.fazChildren.push(item)
-            }
-            this.originalNodes.push(item)
+        this.childNodes.forEach(node => {
+            this.findItems(node)
+            this.originalNodes.push(node)
         })
         document.addEventListener("DOMContentLoaded", event => {
             this.contentLoaded(event);
@@ -220,6 +168,22 @@ export class FazElementItem extends HTMLElement {
         this.show();
     }
 
+    findItems(node) {
+        // TODO: I a depth limit here could be a good thing to avoid a deep
+        // search inside a long DOM structure
+        let found = false
+        if (node.tagName && node.tagName.toUpperCase().startsWith("FAZ-")) {
+            this.items.push(node)
+            node.parent = this
+            found = true
+        }
+        if (!found) {
+            node.childNodes.forEach( childNode => {
+                this.findItems(childNode)
+            })
+        }
+    }
+
     afterLoad() {}
 
     beforeLoad() {}
@@ -228,6 +192,64 @@ export class FazElementItem extends HTMLElement {
 
     contentLoaded(event) {}
 
+}
+
+
+class FazItem extends ObservableObject {
+    static get props() {
+        return {
+            id: {
+                type: type.convert(String),
+                get default() {
+                    return ID.random;
+                }
+            },
+            active: {type: type.convert(Boolean), default: false},
+            // Content should be written like that, so we stop main-navbar stop
+            // to alter the first navbar from the example. It seems like somehow
+            // they were sharing or invading contents.
+            content: {
+                type: type.convert(String),
+                get default() {
+                    return "";
+                }
+            },
+            element: type.convert(ObservableObject),
+            href: String,
+            parent: "*",
+            type: String,
+            get isLink() {
+                return this.href !== undefined;
+            }
+        };
+    }
+
+    static get propertyDefaults() {
+        return DeepObservable;
+    }
+
+    static get seal() {
+        return true;
+    }
+
+}
+
+export class FazItemList extends ObservableArray {
+    static get props() {
+        return {
+            get enabled() {
+                return this.filter({disabled: false});
+            },
+
+            get active() {
+                return this.filter({active: true});
+            }
+        };
+    }
+
+    static get items() {
+        return type.convert(FazItem);
+    }
 }
 
 export class FazStacheItem extends StacheElement {
