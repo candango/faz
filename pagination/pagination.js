@@ -506,9 +506,10 @@ export default class FazPaginationElement extends FazElementItem {
         super(props)
     }
 
-    beforeLoad() {
+    show() {
         ReactDOM.render(
             <FazReactPagination id={this.childId} element={this}/>, this)
+        $(this).addClass("faz-alert-rendered")
     }
 
     attributesToStates() {
@@ -559,10 +560,6 @@ export default class FazPaginationElement extends FazElementItem {
             }
 
         }
-    }
-
-    show() {
-        $(this).addClass("faz-alert-rendered")
     }
 }
 

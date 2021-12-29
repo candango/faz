@@ -53,8 +53,9 @@ export default class FazAlertElement extends FazElementItem {
         super(props)
     }
 
-    beforeLoad() {
+    show() {
         ReactDOM.render(<FazAlertReact id={this.childId} element={this}/>, this)
+        $(this).addClass("faz-alert-rendered")
     }
 
     attributesToStates() {
@@ -66,10 +67,6 @@ export default class FazAlertElement extends FazElementItem {
                     break
             }
         }
-    }
-
-    show() {
-        $(this).addClass("faz-alert-rendered")
     }
 }
 
