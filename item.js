@@ -20,7 +20,6 @@ import {
     DeepObservable, ObservableArray, ObservableObject, StacheElement, type
 } from "can";
 import cloneDeep from "lodash/cloneDeep"
-import toPairs from "lodash/toPairs"
 import parse from "html-react-parser"
 import merge from "lodash/merge"
 import React from 'react'
@@ -30,44 +29,51 @@ export class FazReactItem extends React.Component {
 
     constructor(props) {
         super(props);
+        this.children = []
+        this.element = undefined
+        this.parent = undefined
         this.state = {
             id: ID.random,
-            children: [],
+            active: false,
             debug: false,
             disabled: false,
-            element: undefined,
             type: "primary",
             content: undefined,
             link: undefined,
-            parent: undefined
+            target: undefined
         }
+
+
         for(let key in props) {
             switch (key) {
                 case "id":
                     this.state.id = props[key].replace(
                         "__child-prefix__", this.prefix)
                     break
+                case "active":
+                    this.state.active = props[key].toLowerCase() === "true"
+                    break
                 case "debug":
                     this.state.debug = props[key]
                     break
                 case "disabled":
-                    this.state.disabled = props[key]
+                    this.state.disabled = props[key].toLowerCase() === "true"
                     break
                 case "element":
-                    this.state.element = props[key]
-                    this.state.element.reactItem = this
+                    this.element = props[key]
+                    this.element.reactItem = this
                     break
                 case "link":
                     this.state.link = props[key]
                     break
                 case "parent":
-                    this.state.parent = props[key]
+                    this.parent = props[key]
                     break
             }
         }
         this.defineStates(props)
-        if (this.state.element) {
-            this.state.element.attributesToStates()
+        if (this.element) {
+            this.element.attributesToStates()
         }
     }
 
@@ -104,12 +110,17 @@ export class FazReactItem extends React.Component {
 
     componentDidMount() {
         let renderedElement = document.querySelector("#" + this.state.id)
-        if (this.state.element && renderedElement) {
-            this.state.element.originalNodes.forEach(
+        if (this.element && renderedElement) {
+            this.element.originalNodes.forEach(
                 node => renderedElement.append(node)
             )
         }
         this.afterMount()
+        if (this.element) {
+            this.element.isLoading = false
+            this.element.afterShow()
+        }
+
     }
 
     afterMount() {}
@@ -161,12 +172,14 @@ export class FazElementItem extends HTMLElement {
             this.originalNodes.push(node)
         })
         document.addEventListener("DOMContentLoaded", event => {
-            this.contentLoaded(event);
+            this.items.forEach((item) => {
+                item.parent = this
+            })
+            this.cleanFazTag()
+            this.contentLoaded(event)
         });
-        this.beforeLoad();
-        this.isLoading = false;
-        this.afterLoad();
-        this.show();
+        this.beforeShow()
+        this.show()
     }
 
     findItems(node, depth = 1) {
@@ -178,7 +191,6 @@ export class FazElementItem extends HTMLElement {
         let found = false
         if (node.tagName && node.tagName.toUpperCase().startsWith("FAZ-")) {
             this.items.push(node)
-            node.parent = this
             found = true
         }
         if (!found && depth < this.childItemDepthLimit) {
@@ -188,14 +200,21 @@ export class FazElementItem extends HTMLElement {
         }
     }
 
-    afterLoad() {}
+    afterShow() {}
 
-    beforeLoad() {}
+    beforeShow() {}
 
     show() {}
 
     contentLoaded(event) {}
 
+    cleanFazTag() {
+        let parentElement = this.parentElement
+        this.remove()
+        this.childNodes.forEach(node => {
+            parentElement.append(node)
+        })
+    }
 }
 
 
