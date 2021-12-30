@@ -42,9 +42,22 @@ export class FazReactItem extends React.Component {
             link: undefined,
             target: undefined
         }
+        this.processProps(props)
+        this.defineStates(props)
+        if (this.element) {
+            if(this.element.attributesToStates) {
+                this.element.attributesToStates()
+            } else {
+                console.log(this.element.attributesToStates)
+            }
+        }
+    }
 
-
+    processProps(props) {
         for(let key in props) {
+            if(!props[key]) {
+                continue
+            }
             switch (key) {
                 case "id":
                     this.state.id = props[key].replace(
@@ -70,10 +83,6 @@ export class FazReactItem extends React.Component {
                     this.parent = props[key]
                     break
             }
-        }
-        this.defineStates(props)
-        if (this.element) {
-            this.element.attributesToStates()
         }
     }
 
@@ -111,14 +120,19 @@ export class FazReactItem extends React.Component {
     componentDidMount() {
         let renderedElement = document.querySelector("#" + this.state.id)
         if (this.element && renderedElement) {
-            this.element.originalNodes.forEach(
-                node => renderedElement.append(node)
-            )
+
+            if (this.element.originalNodes) {
+                this.element.originalNodes.forEach(
+                    node => renderedElement.append(node)
+                )
+            }
         }
         this.afterMount()
         if (this.element) {
             this.element.isLoading = false
-            this.element.afterShow()
+            if(this.element.afterShow) {
+                this.element.afterShow()
+            }
         }
 
     }
@@ -131,17 +145,34 @@ export class FazElementItem extends HTMLElement {
 
     constructor() {
         super();
-        if (!this.id) {
-            this.id = ID.random
+        this.id = ID.random
+        for(let attribute of this.attributes) {
+            switch (attribute.name) {
+                case "fazid":
+                    this.id = attribute.value
+                    break;
+            }
         }
-        this.parent = undefined
+        // console.log(this.tagName, "a")
         this.isLoading = true
-        this.originalNodes = []
+        this.detach = false
+        this.originalElements = []
+        this.originalParent = this.parentElement
         // Those are the faz element items inside the element item
         this.items = []
         this.childItemDepthLimit = 5
         this.reactItem = undefined
         this.childPrefix = "__child-prefix__"
+        for (let element of this.children) {
+            // console.log("A node: ", node)
+            this.findItems(element)
+            this.originalElements.push(element)
+        }
+    }
+
+    get parent() {
+        let fazParentId = this.dataset['fazParentId']
+        return fazParentId ? document.getElementById(fazParentId) : undefined
     }
 
     attributesToStates() {
@@ -167,37 +198,43 @@ export class FazElementItem extends HTMLElement {
     }
 
     connectedCallback() {
-        this.childNodes.forEach(node => {
-            this.findItems(node)
-            this.originalNodes.push(node)
-        })
         document.addEventListener("DOMContentLoaded", event => {
-            this.items.forEach((item) => {
-                item.parent = this
-            })
-            this.cleanFazTag()
             this.contentLoaded(event)
-        });
+        })
+        this.isLoading = false
+        this.load()
+        if (this.parent) {
+            if(this.detach) {
+                this.originalParent.removeChild(this)
+            }
+        }
         this.beforeShow()
         this.show()
     }
 
-    findItems(node, depth = 1) {
+    findItems(element, depth = 1) {
+        // console.log("Finding nodes at: ", node.tagName)
+        // console.log(node.tagName && node.tagName.toUpperCase().startsWith("FAZ-"))
         // To constitute a relationship between the current faz item and another
         // item inside, the depth should respect childItemDepthLimit.
         // After that we don't set the parent/child faz relationship.
         // If you need more depth in a specific element, increase the
         // childItemDepthLimit value.
         let found = false
-        if (node.tagName && node.tagName.toUpperCase().startsWith("FAZ-")) {
-            this.items.push(node)
+        if (element.tagName && element.tagName.toUpperCase().startsWith("FAZ-")) {
+            this.items.push(element)
+            element.dataset['fazParentId'] = this.id
             found = true
         }
         if (!found && depth < this.childItemDepthLimit) {
-            node.childNodes.forEach( childNode => {
-                this.findItems(childNode, depth + 1)
-            })
+            for(let elementChild of element.children){
+                this.findItems(elementChild, depth + 1)
+            }
         }
+    }
+
+    load() {
+
     }
 
     afterShow() {}
@@ -210,10 +247,10 @@ export class FazElementItem extends HTMLElement {
 
     cleanFazTag() {
         let parentElement = this.parentElement
-        this.remove()
         this.childNodes.forEach(node => {
             parentElement.append(node)
         })
+        parentElement.removeChild(this)
     }
 }
 
