@@ -20,9 +20,9 @@ import axios from "axios";
 import {
     DeepObservable, ObservableArray, ObservableObject, StacheElement, type
 } from "can";
-import cloneDeep from "lodash/cloneDeep"
-import parse from "html-react-parser"
 import includes from "lodash/includes"
+import fromPairs from "lodash/fromPairs"
+import toPairs from "lodash/toPairs"
 import merge from "lodash/merge"
 import PropTypes from "prop-types"
 import React from 'react'
@@ -36,6 +36,10 @@ export class FazReactItem extends React.Component {
         this.element = undefined
         this.parent = undefined
         this.data = undefined
+        this.lookForProps = [ "id", "active", "disabled", "data", "debug",
+            "disabled", "type", "content", "link", "source", "sourceMethod",
+            "target"
+        ]
         this.state = {
             id: ID.random,
             active: false,
@@ -158,6 +162,20 @@ export class FazReactItem extends React.Component {
             if(this.element.afterShow) {
                 this.element.afterShow()
             }
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        let propsToUpdate = []
+
+        toPairs(this.props).filter(
+            prop => includes(this.lookForProps, prop[0])).filter(
+                prop => prop[1] !== prevState[prop[0]]).forEach(prop =>
+            propsToUpdate.push(prop)
+        )
+
+        if(propsToUpdate.length) {
+            this.updateState(fromPairs(propsToUpdate))
         }
     }
 
