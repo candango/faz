@@ -47,20 +47,28 @@ module.exports = {
         rules: [
             {
                 test: /\.js|\.jsx$/,
-                loader: 'babel-loader',
                 exclude: /node_modules/,
-                options: {
-                    presets: [
-                        [require.resolve("@babel/preset-env")],
-                        [
-                            require.resolve("@babel/preset-react"),
-                            {
-                                runtime: hasJsxRuntime ? "automatic" :
-                                    "classic",
-                            },
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            [
+                                require.resolve("@babel/preset-env")
+                            ],
+                            [
+                                require.resolve("@babel/preset-react"),
+                                {
+                                    runtime: hasJsxRuntime ? "automatic" :
+                                        "classic",
+                                }
+                            ],
                         ],
-                    ],
-                }
+                        // SEE: https://newbedev.com/babel-7-referenceerror-regeneratorruntime-is-not-defined
+                        plugins: [
+                            require.resolve("@babel/plugin-transform-runtime")
+                        ],
+                    }
+                },
             },
             {
                 test: /\.stache$/,
