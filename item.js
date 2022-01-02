@@ -16,30 +16,38 @@
 
 
 import { default as ID } from "./id";
+import axios from "axios";
 import {
     DeepObservable, ObservableArray, ObservableObject, StacheElement, type
 } from "can";
 import cloneDeep from "lodash/cloneDeep"
 import parse from "html-react-parser"
+import includes from "lodash/includes"
 import merge from "lodash/merge"
+import PropTypes from "prop-types"
 import React from 'react'
+
 
 
 export class FazReactItem extends React.Component {
 
     constructor(props) {
         super(props);
-        this.children = []
         this.element = undefined
         this.parent = undefined
+        this.data = undefined
         this.state = {
             id: ID.random,
             active: false,
+            data: undefined,
             debug: false,
             disabled: false,
+            items: {},
             type: "primary",
             content: undefined,
             link: undefined,
+            source: undefined,
+            sourceMethod: "get",
             target: undefined
         }
         this.processProps(props)
@@ -47,8 +55,6 @@ export class FazReactItem extends React.Component {
         if (this.element) {
             if(this.element.attributesToStates) {
                 this.element.attributesToStates()
-            } else {
-                console.log(this.element.attributesToStates)
             }
         }
     }
@@ -63,14 +69,20 @@ export class FazReactItem extends React.Component {
                     this.state.id = props[key].replace(
                         "__child-prefix__", this.prefix)
                     break
+                case "content":
+                    this.state.content = props[key]
+                    break
+                case "items":
+                    this.items = props[key]
+                    break
                 case "active":
-                    this.state.active = props[key].toLowerCase() === "true"
+                    this.state.active = props[key]
                     break
                 case "debug":
                     this.state.debug = props[key]
                     break
                 case "disabled":
-                    this.state.disabled = props[key].toLowerCase() === "true"
+                    this.state.disabled = props[key]
                     break
                 case "element":
                     this.element = props[key]
@@ -78,6 +90,9 @@ export class FazReactItem extends React.Component {
                     break
                 case "link":
                     this.state.link = props[key]
+                    break
+                case "target":
+                    this.state.target = props[key]
                     break
                 case "parent":
                     this.parent = props[key]
@@ -87,7 +102,9 @@ export class FazReactItem extends React.Component {
     }
 
     get content() {
-        return this.state.content ? parse(this.state.content) : ""
+        if(!this.state.element) {
+            return this.state.content ? this.state.content : ""
+        }
     }
 
     get disabled() {
@@ -105,6 +122,13 @@ export class FazReactItem extends React.Component {
         return validHef
     }
 
+    get linkIsVoid() {
+        if (this.disabled) {
+            return true
+        }
+        return this.state.link === undefined
+    }
+
     get prefix() {
         return "faz-react-item"
     }
@@ -112,16 +136,17 @@ export class FazReactItem extends React.Component {
     defineStates(props) {}
 
     updateState(someState) {
-        this.setState(prevState => {
-            return merge(cloneDeep(prevState), someState)
+        this.setState((prevState) => {
+            return merge(prevState, someState)
         })
+        return this.state
     }
 
     componentDidMount() {
         let renderedElement = document.querySelector("#" + this.state.id)
         if (this.element && renderedElement) {
-
-            if (this.element.originalNodes) {
+            if(this.element.originalNodes.length) {
+                this.updateState({content:undefined})
                 this.element.originalNodes.forEach(
                     node => renderedElement.append(node)
                 )
@@ -134,10 +159,39 @@ export class FazReactItem extends React.Component {
                 this.element.afterShow()
             }
         }
-
     }
 
-    afterMount() {}
+    afterMount() {
+    }
+
+    async requestData(conf, cached=true) {
+        if(this.state.items.length==0) {
+            cached = false
+        }
+        if (!cached) {
+            return await this.handleResponse(conf)
+        }
+        return this.state.items
+    }
+
+    async handleResponse(conf={}) {
+        conf = merge({
+            method: this.state.sourceMethod,
+            url: this.state.source,
+        }, conf)
+        try {
+            const response = await axios(conf)
+            this.updateState({items:response.data.items})
+            return response
+        } catch (error) {
+            console.error(error)
+            return error
+        }
+    }
+}
+
+FazReactItem.propTypes = {
+    active: PropTypes.bool
 }
 
 
@@ -153,20 +207,27 @@ export class FazElementItem extends HTMLElement {
                     break;
             }
         }
-        // console.log(this.tagName, "a")
         this.isLoading = true
         this.detach = false
-        this.originalElements = []
+        this.originalNodes = []
         this.originalParent = this.parentElement
         // Those are the faz element items inside the element item
         this.items = []
         this.childItemDepthLimit = 5
         this.reactItem = undefined
         this.childPrefix = "__child-prefix__"
-        for (let element of this.children) {
-            // console.log("A node: ", node)
-            this.findItems(element)
-            this.originalElements.push(element)
+        if (this.source) {
+            console.debug("The element" + this.id + " has a source " +
+                "attribute. All child nodes will be removed.")
+            console.debug(this)
+            this.childNodes.forEach(node =>{
+                node.remove()
+            })
+        } else {
+            this.childNodes.forEach(node =>{
+                this.findItems(node)
+                this.originalNodes.push(node)
+            })
         }
     }
 
@@ -175,19 +236,47 @@ export class FazElementItem extends HTMLElement {
         return fazParentId ? document.getElementById(fazParentId) : undefined
     }
 
+    attributesToProps(addProps=[]) {
+        let props = []
+        props['active'] = false
+        props['debug'] = false
+        props['disabled'] = false
+        props['content'] = this.innerHTML
+        let boolProperties = ["active", "debug", "disabled"]
+        for (let attribute of this.attributes) {
+            if (includes(boolProperties, attribute.name.toLowerCase())) {
+                props[attribute.name.toLowerCase()] =
+                    attribute.value.toLowerCase() === "true"
+                continue
+            }
+            props[attribute.name.toLowerCase()] = attribute.value
+        }
+        props['type'] = this.tagName.toLowerCase()
+        props['element'] = this
+        props['combinedId'] = this.combinedId
+        if (this.parent) {
+            props['parentElement'] = this.parent
+        }
+        return merge(props, addProps)
+    }
+
     attributesToStates() {
         for(let attribute of this.attributes) {
             switch (attribute.name) {
                 case "debug":
-                    this.reactItem.state.debug =
-                        attribute.value.toLowerCase() === "true"
+                    this.reactItem.state.debug = attribute.value
                     break;
                 case "disabled":
-                    this.reactItem.state.disabled =
-                        attribute.value.toLowerCase() === "true"
+                    this.reactItem.state.disabled = attribute.value
                     break;
                 case "link":
                     this.reactItem.state.link = attribute.value
+                    break;
+                case "source":
+                    this.reactItem.state.source = attribute.value
+                    break;
+                case "sourceMethod":
+                    this.reactItem.state.sourceMethod = attribute.value
                     break;
             }
         }
@@ -195,6 +284,13 @@ export class FazElementItem extends HTMLElement {
 
     get childId() {
         return this.childPrefix.concat(this.id)
+    }
+
+    get combinedId() {
+        if (this.parent) {
+            return this.parent.id.concat("_", this.id)
+        }
+        return this.id
     }
 
     connectedCallback() {
@@ -205,14 +301,14 @@ export class FazElementItem extends HTMLElement {
         this.load()
         if (this.parent) {
             if(this.detach) {
-                this.originalParent.removeChild(this)
+                this.parentElement.removeChild(this)
             }
         }
         this.beforeShow()
         this.show()
     }
 
-    findItems(element, depth = 1) {
+    findItems(node, depth = 1) {
         // console.log("Finding nodes at: ", node.tagName)
         // console.log(node.tagName && node.tagName.toUpperCase().startsWith("FAZ-"))
         // To constitute a relationship between the current faz item and another
@@ -221,15 +317,15 @@ export class FazElementItem extends HTMLElement {
         // If you need more depth in a specific element, increase the
         // childItemDepthLimit value.
         let found = false
-        if (element.tagName && element.tagName.toUpperCase().startsWith("FAZ-")) {
-            this.items.push(element)
-            element.dataset['fazParentId'] = this.id
+        if (node.tagName && node.tagName.toUpperCase().startsWith("FAZ-")) {
+            this.items.push(node)
+            node.dataset['fazParentId'] = this.id
             found = true
         }
         if (!found && depth < this.childItemDepthLimit) {
-            for(let elementChild of element.children){
-                this.findItems(elementChild, depth + 1)
-            }
+            node.childNodes.forEach( childNode => {
+                this.findItems(childNode, depth + 1)
+            })
         }
     }
 
