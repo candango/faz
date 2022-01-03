@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 Flavio Garcia
+ * Copyright 2018-2022 Flavio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,81 +14,102 @@
  * limitations under the License.
  */
 
-import { default as ID } from "../id";
-import { DeepObservable, ObservableArray, StacheElement, type } from "can";
+import {FazElementItem, FazReactItem} from "../item"
+import React from 'react'
 
 
-export default class FazForm extends StacheElement {
-    static get props() {
-        return {
-            id: {
-                type: type.convert(String),
-                get default() {
-                    return ID.random;
-                }
-            },
-            active: {type: type.convert(Boolean), default: false},
-            method: {type: String, default: "get"},
-            isLoading: {type: Boolean, default: true},
-            // Content should be written like that so we stop main-navbar stop
-            // to alter the first navbar from the example. It seems like somehow
-            // they were sharing or invading contents.
-            content: {
-                type: type.convert(String),
-                get default() {
-                    return "";
-                }
-            },
-            message: {type: String, default: ""},
-            errors: {type: type.convert(ObservableArray),
-                get default() {
-                    return new ObservableArray([]);
-                }
-            },
-            action: String,
-            parent: "*"
-        };
-    }
+export class FazFormReact extends FazReactItem {
 
-    initForm() {
-        for(let attribute of this.attributes) {
-            switch (attribute.name) {
-                case "action":
-                    this.action = attribute.value;
-                    break;
-                case "method":
-                    this.action = attribute.value;
-                    break;
-                case "active":
-                    this.active = attribute.value;
-                    break;
-            }
+    defineStates(props) {
+        this.values = {}
+        this.state['action'] = undefined
+        this.state['method'] = "get"
+        this.state['type'] = "primary"
+        this.state['message'] = undefined
+        this.state['errors'] = []
+        this.state['valueUpdated'] = 0
+        if (props.action) {
+            this.state['action'] = props.action
         }
+        if (props.method) {
+            this.state['method'] = props.method.toLowerCase()
+        }
+        if (props.message) {
+            this.state['message'] = props.message
+        }
+        if (props.errors) {
+            this.state['errors'] = props.errors
+        }
+        this.from = this.from.bind(this)
+        this.to = this.to.bind(this)
     }
 
-    connectedCallback() {
-        this.initForm();
-        super.connectedCallback();
-        this.isLoading = false;
-        this.show();
+    hasValue(index) {
+        return this.values[index] !== undefined
     }
 
-    show() {}
+    valueIsEmpty(index) {
+        if (this.hasValue(index)) {
+            return this.values[index] === ""
+        }
+        return false
+    }
+
+    /**
+     *
+     * @param index
+     */
+    from(index) {
+        if(!this.hasValue(index)) {
+            this.values[index] = ""
+        }
+        return this.values[index]
+    }
+
+    /**
+     *
+     * @param {Event} event
+     * @param {string} index
+     */
+    to(event, index) {
+        this.values[index] = event.target.value
+        this.incrementState(index)
+    }
+
+    get prefix() {
+        return "faz-form-react"
+    }
 
     get hasMessage() {
-        return this.message !== "";
+        return this.state.message !== "";
     }
 
     get hasErrors() {
-        return this.errors.length > 0;
+        return this.state.errors.length > 0;
     }
 
-    static get propertyDefaults() {
-        return DeepObservable;
+}
+
+export default class FazFormElement extends FazElementItem {
+
+    constructor(props) {
+        super(props)
     }
 
-    static get seal() {
-        return true;
+    attributesToStates() {
+        super.attributesToStates()
+        for (let attribute of this.attributes) {
+            switch (attribute.name.toLowerCase()) {
+                case "action":
+                    this.reactItem.state['action'] = attribute.value
+                    break
+                case "method":
+                    this.reactItem.state['method'] = attribute.value
+                    break
+                case "active":
+                    this.reactItem.state['active'] = attribute.value
+                    break
+            }
+        }
     }
-
 }

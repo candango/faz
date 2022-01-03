@@ -146,6 +146,11 @@ export class FazReactItem extends React.Component {
         return this.state
     }
 
+    incrementState(stateName, add = 1) {
+        let stateValue = this.state[stateName]
+        this.updateState(fromPairs([[stateName, stateValue + add]]))
+    }
+
     componentDidMount() {
         let renderedElement = document.querySelector("#" + this.state.id)
         if (this.element && renderedElement) {
