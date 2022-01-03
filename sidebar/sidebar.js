@@ -19,7 +19,7 @@ import React from 'react'
 import ReactDOM from "react-dom"
 
 
-class FazAlertReact extends FazReactItem {
+class FazSidebarReact extends FazReactItem {
 
     defineStates(props) {
         this.state['type'] = "primary"
@@ -29,7 +29,7 @@ class FazAlertReact extends FazReactItem {
     }
 
     get prefix() {
-        return "faz-react-alert"
+        return "faz-sidebar-react"
     }
 
     get classNames() {
@@ -48,14 +48,14 @@ class FazAlertReact extends FazReactItem {
 
 }
 
-export default class FazAlertElement extends FazElementItem {
+export default class FazSidebarElement extends FazElementItem {
     constructor(props) {
         super(props)
     }
 
-    show() {
-        ReactDOM.render(<FazAlertReact id={this.childId} element={this}/>, this)
-        $(this).addClass("faz-alert-rendered")
+    beforeLoad() {
+        ReactDOM.render(<FazSidebarReact id={this.childId} element={this}/>,
+            this)
     }
 
     attributesToStates() {
@@ -68,6 +68,10 @@ export default class FazAlertElement extends FazElementItem {
             }
         }
     }
+
+    show() {
+        $(this).addClass("faz-sidebar-rendered")
+    }
 }
 
-customElements.define("faz-alert", FazAlertElement)
+customElements.define("faz-sidebar", FazSidebarElement)

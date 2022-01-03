@@ -35,7 +35,6 @@
             <p class="card-text">All navigation buttons won't be displayed.</p>
             <div id="onePageExample"><faz-pagination debug="true" count="9"></faz-pagination></div>
         </div>
-        <textarea id="onePageExampleCode"></textarea>
     </div>
     <br>
     <div class="card">
@@ -46,7 +45,6 @@
             <p class="card-text">All block navigation buttons won't be displayed.</p>
             <div id="multiplePagesOneBlockExample"><faz-pagination debug="true" count="91"></faz-pagination></div>
         </div>
-        <textarea id="multiplePagesOneBlockExampleCode"></textarea>
     </div>
     <br>
     <div class="card">
@@ -55,7 +53,6 @@
             <p class="card-text">A pagination with count equals 340 resulting in multiple pages and multiple blocks.</p>
             <div id="multiplePagesMultipleBlocksExample"><faz-pagination debug="true" count="340"></faz-pagination></div>
         </div>
-        <textarea id="multiplePagesMultipleBlocksExampleCode"></textarea>
     </div>
     <br>
     <div class="card">
@@ -66,7 +63,6 @@
             <p class="card-text">Block navigation buttons will be displayed.</p>
             <div id="definedPageExample"><faz-pagination debug="true" page="173" count="1840"></faz-pagination></div>
         </div>
-        <textarea id="definedPageExampleCode"></textarea>
     </div>
     <br>
     <div class="card">
@@ -78,20 +74,39 @@
         </div>
         <textarea id="disabledExampleCode"></textarea>
     </div>
+    <br>
     <div class="card">
         <div class="card-body">
             <h2 class="card-title">Initial callback to be called after pagination is rendered</h2>
             <div id="innitCallbackExample"><faz-pagination init-callback="initPagination" debug="true" page="38" count="8000"></faz-pagination></div>
         </div>
-        <textarea id="innitCallbackExampleCode"></textarea>
     </div>
-
+    <br>
     <div class="card">
         <div class="card-body">
             <h2 class="card-title">Page callback to be called after page is changed</h2>
             <div id="pageCallbackExample"><faz-pagination page-callback="showPage" debug="true" page="2" count="120"></faz-pagination></div>
         </div>
-        <textarea id="pageCallbackExampleCode"></textarea>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Negative page value</h2>
+            <p class="card-text">A negative page value will be informed
+                defaulting the current page value to 1 and sending a warning at
+                the console.</p>
+            <div id="limitDownExample"><faz-pagination debug="true" page="-1" count="21"></faz-pagination></div>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Page value bigger than the page count</h2>
+            <p class="card-text">A page valu bigger than the page count will be
+                informed defaulting the current page value as the page count
+                and sending a warning at the console.</p>
+            <div id="limitUpExample"><faz-pagination debug="true" page="18" count="57"></faz-pagination></div>
+        </div>
     </div>
     <br>
     <br>
@@ -122,6 +137,8 @@
     codemirrorit("disabledExample");
     codemirrorit("innitCallbackExample");
     codemirrorit("pageCallbackExample");
+    codemirrorit("limitDownExample");
+    codemirrorit("limitUpExample");
 </script>
 <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -130,7 +147,6 @@
 <script src="/dist/vendor/popper.min.js"></script>
 <script src="/dist/vendor/bootstrap.min.js"></script>
 <script src="/dist/pagination.bundle.js"></script>
-<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
 
 </body>
 </html>

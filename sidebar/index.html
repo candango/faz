@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
 
-    <title>Candango Faz Toolkit - Alerts</title>
+    <title>Candango Faz Toolkit - Sidebar</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/dist/vendor/css/bootstrap.min.css" rel="stylesheet">
@@ -22,15 +22,16 @@
 
 <main role="main" class="container">
 
-    <h1>Alerts</h1>
+    <h1>Sidebar</h1>
     <div class="card">
         <div class="card-body">
             <h2 class="card-title">An alert</h2>
             <p class="card-text">This is just an alert example.</p>
             <div id="oneAlertExample"><faz-alert>
-An Alert
-</faz-alert></div>
+                An Alert
+            </faz-alert></div>
         </div>
+        <textarea id="oneAlertExampleCode"></textarea>
     </div>
     <br>
     <div class="card">
@@ -44,8 +45,9 @@ An Alert
         An alert inside Another Alert
         </faz-alert>
     </span>
-</faz-alert></div>
+            </faz-alert></div>
         </div>
+        <textarea id="nestedAlertsExampleCode"></textarea>
     </div>
     <br>
     <br>
@@ -55,8 +57,8 @@ An Alert
 <script src="/dist/vendor/codemirror_mode_xml.js"></script>
 <script src="/dist/global.bundle.js" ></script>
 <script>
-    codemirrorit("oneAlertExample")
-    codemirrorit("nestedAlertsExample")
+    // codemirrorit("oneAlertExample")
+    // codemirrorit("nestedAlertsExample")
 </script>
 
 <!-- Bootstrap core JavaScript
@@ -65,7 +67,7 @@ An Alert
 <script src="/dist/vendor/jquery.min.js"></script>
 <script src="/dist/vendor/popper.min.js"></script>
 <script src="/dist/vendor/bootstrap.min.js"></script>
-<script src="/dist/alert.bundle.js"></script>
+<script src="/dist/sidebar.bundle.js"></script>
 
 </body>
 </html>

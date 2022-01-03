@@ -16,13 +16,363 @@
 
 
 import { default as ID } from "./id";
+import axios from "axios";
 import {
     DeepObservable, ObservableArray, ObservableObject, StacheElement, type
 } from "can";
-import cloneDeep from "lodash/cloneDeep"
+import includes from "lodash/includes"
+import fromPairs from "lodash/fromPairs"
 import toPairs from "lodash/toPairs"
 import merge from "lodash/merge"
+import PropTypes from "prop-types"
 import React from 'react'
+
+
+
+export class FazReactItem extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.element = undefined
+        this.parent = undefined
+        this.data = undefined
+        this.lookForProps = [ "id", "active", "disabled", "data", "debug",
+            "disabled", "type", "content", "link", "source", "sourceMethod",
+            "target"
+        ]
+        this.state = {
+            id: ID.random,
+            active: false,
+            data: undefined,
+            debug: false,
+            disabled: false,
+            items: {},
+            type: "primary",
+            content: undefined,
+            link: undefined,
+            source: undefined,
+            sourceMethod: "get",
+            target: undefined
+        }
+        this.processProps(props)
+        this.defineStates(props)
+        if (this.element) {
+            if(this.element.attributesToStates) {
+                this.element.attributesToStates()
+            }
+        }
+    }
+
+    processProps(props) {
+        for(let key in props) {
+            if(!props[key]) {
+                continue
+            }
+            switch (key) {
+                case "id":
+                    this.state.id = props[key].replace(
+                        "__child-prefix__", this.prefix)
+                    break
+                case "content":
+                    this.state.content = props[key]
+                    break
+                case "items":
+                    this.items = props[key]
+                    break
+                case "active":
+                    this.state.active = props[key]
+                    break
+                case "debug":
+                    this.state.debug = props[key]
+                    break
+                case "disabled":
+                    this.state.disabled = props[key]
+                    break
+                case "element":
+                    this.element = props[key]
+                    this.element.reactItem = this
+                    break
+                case "link":
+                    this.state.link = props[key]
+                    break
+                case "target":
+                    this.state.target = props[key]
+                    break
+                case "parent":
+                    this.parent = props[key]
+                    break
+            }
+        }
+    }
+
+    get content() {
+        if(!this.state.element) {
+            return this.state.content ? this.state.content : ""
+        }
+    }
+
+    get disabled() {
+        return this.state.disabled
+    }
+
+    get link() {
+        // From: https://stackoverflow.com/a/66717705/2887989
+        let voidHref = "#!"
+        let validHef = this.state.link === undefined ?
+            voidHref : this.state.link
+        if (this.disabled) {
+            return voidHref
+        }
+        return validHef
+    }
+
+    get linkIsVoid() {
+        if (this.disabled) {
+            return true
+        }
+        return this.state.link === undefined
+    }
+
+    get prefix() {
+        return "faz-react-item"
+    }
+
+    defineStates(props) {}
+
+    updateState(someState) {
+        this.setState((prevState) => {
+            return merge(prevState, someState)
+        })
+        return this.state
+    }
+
+    incrementState(stateName, add = 1) {
+        let stateValue = this.state[stateName]
+        this.updateState(fromPairs([[stateName, stateValue + add]]))
+    }
+
+    componentDidMount() {
+        let renderedElement = document.querySelector("#" + this.state.id)
+        if (this.element && renderedElement) {
+            if(this.element.originalNodes.length) {
+                this.updateState({content:undefined})
+                this.element.originalNodes.forEach(
+                    node => renderedElement.append(node)
+                )
+            }
+        }
+        this.afterMount()
+        if (this.element) {
+            this.element.isLoading = false
+            if(this.element.afterShow) {
+                this.element.afterShow()
+            }
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        let propsToUpdate = []
+
+        toPairs(this.props).filter(
+            prop => includes(this.lookForProps, prop[0])).filter(
+                prop => prop[1] !== prevState[prop[0]]).forEach(prop =>
+            propsToUpdate.push(prop)
+        )
+
+        if(propsToUpdate.length) {
+            this.updateState(fromPairs(propsToUpdate))
+        }
+    }
+
+    afterMount() {
+    }
+
+    async requestData(conf, cached=true) {
+        if(this.state.items.length==0) {
+            cached = false
+        }
+        if (!cached) {
+            return await this.handleResponse(conf)
+        }
+        return this.state.items
+    }
+
+    async handleResponse(conf={}) {
+        conf = merge({
+            method: this.state.sourceMethod,
+            url: this.state.source,
+        }, conf)
+        try {
+            const response = await axios(conf)
+            this.updateState({items:response.data.items})
+            return response
+        } catch (error) {
+            console.error(error)
+            return error
+        }
+    }
+}
+
+FazReactItem.propTypes = {
+    active: PropTypes.bool
+}
+
+
+export class FazElementItem extends HTMLElement {
+
+    constructor() {
+        super();
+        this.id = ID.random
+        for(let attribute of this.attributes) {
+            switch (attribute.name) {
+                case "fazid":
+                    this.id = attribute.value
+                    break;
+            }
+        }
+        this.isLoading = true
+        this.detach = false
+        this.originalNodes = []
+        this.originalParent = this.parentElement
+        // Those are the faz element items inside the element item
+        this.items = []
+        this.childItemDepthLimit = 5
+        this.reactItem = undefined
+        this.childPrefix = "__child-prefix__"
+        if (this.source) {
+            console.debug("The element" + this.id + " has a source " +
+                "attribute. All child nodes will be removed.")
+            console.debug(this)
+            this.childNodes.forEach(node =>{
+                node.remove()
+            })
+        } else {
+            this.childNodes.forEach(node =>{
+                this.findItems(node)
+                this.originalNodes.push(node)
+            })
+        }
+    }
+
+    get parent() {
+        let fazParentId = this.dataset['fazParentId']
+        return fazParentId ? document.getElementById(fazParentId) : undefined
+    }
+
+    attributesToProps(addProps=[]) {
+        let props = []
+        props['active'] = false
+        props['debug'] = false
+        props['disabled'] = false
+        props['content'] = this.innerHTML
+        let boolProperties = ["active", "debug", "disabled"]
+        for (let attribute of this.attributes) {
+            if (includes(boolProperties, attribute.name.toLowerCase())) {
+                props[attribute.name.toLowerCase()] =
+                    attribute.value.toLowerCase() === "true"
+                continue
+            }
+            props[attribute.name.toLowerCase()] = attribute.value
+        }
+        props['type'] = this.tagName.toLowerCase()
+        props['element'] = this
+        props['combinedId'] = this.combinedId
+        if (this.parent) {
+            props['parentElement'] = this.parent
+        }
+        return merge(props, addProps)
+    }
+
+    attributesToStates() {
+        for(let attribute of this.attributes) {
+            switch (attribute.name) {
+                case "debug":
+                    this.reactItem.state.debug = attribute.value
+                    break;
+                case "disabled":
+                    this.reactItem.state.disabled = attribute.value
+                    break;
+                case "link":
+                    this.reactItem.state.link = attribute.value
+                    break;
+                case "source":
+                    this.reactItem.state.source = attribute.value
+                    break;
+                case "sourceMethod":
+                    this.reactItem.state.sourceMethod = attribute.value
+                    break;
+            }
+        }
+    }
+
+    get childId() {
+        return this.childPrefix.concat(this.id)
+    }
+
+    get combinedId() {
+        if (this.parent) {
+            return this.parent.id.concat("_", this.id)
+        }
+        return this.id
+    }
+
+    connectedCallback() {
+        document.addEventListener("DOMContentLoaded", event => {
+            this.contentLoaded(event)
+        })
+        this.isLoading = false
+        this.load()
+        if (this.parent) {
+            if(this.detach) {
+                this.parentElement.removeChild(this)
+            }
+        }
+        this.beforeShow()
+        this.show()
+    }
+
+    findItems(node, depth = 1) {
+        // console.log("Finding nodes at: ", node.tagName)
+        // console.log(node.tagName && node.tagName.toUpperCase().startsWith("FAZ-"))
+        // To constitute a relationship between the current faz item and another
+        // item inside, the depth should respect childItemDepthLimit.
+        // After that we don't set the parent/child faz relationship.
+        // If you need more depth in a specific element, increase the
+        // childItemDepthLimit value.
+        let found = false
+        if (node.tagName && node.tagName.toUpperCase().startsWith("FAZ-")) {
+            this.items.push(node)
+            node.dataset['fazParentId'] = this.id
+            found = true
+        }
+        if (!found && depth < this.childItemDepthLimit) {
+            node.childNodes.forEach( childNode => {
+                this.findItems(childNode, depth + 1)
+            })
+        }
+    }
+
+    load() {
+
+    }
+
+    afterShow() {}
+
+    beforeShow() {}
+
+    show() {}
+
+    contentLoaded(event) {}
+
+    cleanFazTag() {
+        let parentElement = this.parentElement
+        this.childNodes.forEach(node => {
+            parentElement.append(node)
+        })
+        parentElement.removeChild(this)
+    }
+}
+
 
 class FazItem extends ObservableObject {
     static get props() {
@@ -63,76 +413,6 @@ class FazItem extends ObservableObject {
 
 }
 
-export class FazReactItem extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            id: ID.random,
-            debug: false,
-            disabled: false,
-            element: undefined,
-            type: "primary",
-            content: undefined,
-            link: undefined
-        }
-        for(let key in props) {
-            switch (key) {
-                case "id":
-                    this.state.id = props[key].replace(
-                        "__child-prefix__", this.prefix)
-                    break
-                case "debug":
-                    this.state.debug = props[key]
-                    break
-                case "disabled":
-                    this.state.disabled = props[key]
-                    break
-                case "element":
-                    this.state.element = props[key]
-                    this.state.element.reactItem = this
-                    break
-                case "link":
-                    this.state.link = props[key]
-                    break
-            }
-        }
-        this.defineStates(props)
-        if (this.state.element) {
-            this.state.element.attributesToStates()
-        }
-    }
-
-    get disabled() {
-        return this.state.disabled
-    }
-
-    get prefix() {
-        return "faz-react-item"
-    }
-
-    defineStates(props) {}
-
-    updateState(someState) {
-        this.setState(prevState => {
-            return merge(cloneDeep(prevState), someState)
-        })
-    }
-
-    componentDidMount() {
-        let renderedElement = document.querySelector("#" + this.state.id)
-        if (this.state.element && renderedElement) {
-            this.state.element.originalNodes.forEach(
-                item => renderedElement.append(item)
-            )
-        }
-        this.afterMount()
-    }
-
-    afterMount() {}
-}
-
-
 export class FazItemList extends ObservableArray {
     static get props() {
         return {
@@ -149,68 +429,6 @@ export class FazItemList extends ObservableArray {
     static get items() {
         return type.convert(FazItem);
     }
-}
-
-export class FazElementItem extends HTMLElement {
-
-    constructor() {
-        super();
-        if (!this.id) {
-            this.id = ID.random
-        }
-        this.isLoading = true
-        this.originalNodes = []
-        this.fazChildren = []
-        this.reactItem = undefined
-        this.childPrefix = "__child-prefix__"
-    }
-
-    attributesToStates() {
-        for(let attribute of this.attributes) {
-            switch (attribute.name) {
-                case "debug":
-                    this.reactItem.state.debug =
-                        attribute.value.toLowerCase() === "true"
-                    break;
-                case "disabled":
-                    this.reactItem.state.disabled =
-                        attribute.value.toLowerCase() === "true"
-                    break;
-                case "link":
-                    this.reactItem.state.link = attribute.value
-                    break;
-            }
-        }
-    }
-
-    get childId() {
-        return this.childPrefix.concat(this.id)
-    }
-
-    connectedCallback() {
-        this.childNodes.forEach(item => {
-            if (item.tagName && item.tagName.toUpperCase().startsWith("FAZ-")) {
-                this.fazChildren.push(item)
-            }
-            this.originalNodes.push(item)
-        })
-        document.addEventListener("DOMContentLoaded", event => {
-            this.contentLoaded(event);
-        });
-        this.beforeLoad();
-        this.isLoading = false;
-        this.afterLoad();
-        this.show();
-    }
-
-    afterLoad() {}
-
-    beforeLoad() {}
-
-    show() {}
-
-    contentLoaded(event) {}
-
 }
 
 export class FazStacheItem extends StacheElement {
