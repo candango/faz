@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-import { FazAlert, FazNav, FazNavbar } from "../faz";
+import { FazAlert, FazNav, FazNavElement, FazNavbar } from "../faz";
 
 import { MainNavbar } from "./main-navbar";

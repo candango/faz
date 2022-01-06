@@ -12,14 +12,32 @@
       "items": [
         {
           "type": "faz-nav-item",
-          "id": "item1Child1Data1",
-          "value": "Item1 Child 1 Data1"
+          "id": "item1Data1Child1",
+          "value": "Item1 Data1 Child 1"
+        },
+        {
+          "type": "faz-nav-item",
+          "id": "item1Data1Child2",
+          "value": "Item1 Data1 Child 2",
+          "items": [
+            {
+              "type": "faz-nav-item",
+              "id": "item1Data1Child2Grandchild1",
+              "value": "Item1 Data1 Child 2 Grandchild 1"
+            },
+            {
+              "type": "faz-nav-item",
+              "id": "item1Data1Child2Grandchild2",
+              "value": "Item1 Data1 Child 2 Grandchild 2"
+            }
+          ]
         }
       ]
     },
     {
       "type": "faz-nav-item",
       "id": "item2Data",
+      "active": true,
       "value": "Item 2 Data 1"
     },
     {
