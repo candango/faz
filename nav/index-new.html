@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Candango Faz Toolkit</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/dist/vendor/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/dist/css/faz.css" rel="stylesheet"/>
+    <link href="/dist/css/showcase.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/dist/vendor/css/codemirror.css">
+    <!-- Custom styles for this template -->
+</head>
+
+<body>
+<main-navbar></main-navbar>
+
+    <main role="main" class="container">
+
+        <h1>Navs</h1>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Basic example</h5>
+                <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+                <div id="navBasicExample"><faz-nav-el fazid="navBasic">
+    <faz-nav-item-el fazid="navBasicExampleActive" active="true">Buga</faz-nav-item-el>
+    <faz-nav-item-el fazid="navBasicExampleItem1">Item 11</faz-nav-item-el>
+    <faz-nav-item-el fazid="navBasicExampleItem2">Item 23</faz-nav-item-el>
+    <faz-nav-item-el fazid="navBasicExampleDisabled" disabled="true">Disabled</faz-nav-item-el>
+</faz-nav-el></div>
+            </div>
+        </div>
+        <br><br>
+        <h2>Horizontal alignment</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Centered</h5>
+                <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+                <div id="navCenteredExample"><faz-nav-el id="navCentered" justify="center">
+    <faz-nav-item-el id="navCenteredActive" active="true">Active</faz-nav-item-el>
+    <faz-nav-item-el id="navCenteredItem1">Item 1</faz-nav-item-el>
+    <faz-nav-item-el id="navCenteredItem2">Item 2</faz-nav-item-el>
+    <faz-nav-item-el id="navCenteredDisabled" disabled="true">Disabled</faz-nav-item-el>
+</faz-nav-el></div>
+            </div>
+        </div>
+        <br><br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Right Aligned and pills</h5>
+                <div id="navRightExample"><faz-nav-el id="navRight" justify="right" pills="true">
+    <faz-nav-item-el id="navRightActive" active="true">Active</faz-nav-item-el>
+    <faz-nav-item-el id="navRightItem1">Item 1</faz-nav-item-el>
+    <faz-nav-item-el id="navRightItem2">Item 2</faz-nav-item-el>
+    <faz-nav-item-el id="navRightDisabled" disabled="true">Disabled</faz-nav-item-el>
+</faz-nav-el></div>
+            </div>
+        </div>
+        <br><br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Fill and pills</h5>
+                <div id="navFillExample"><faz-nav-el id="navPill" fill="true" pills="true">
+    <faz-nav-item-el id="navFillActive" active="true">Active</faz-nav-item-el>
+    <faz-nav-item-el id="navFillItem1">Item 1</faz-nav-item-el>
+    <faz-nav-item-el id="navFillItem2">Item 2</faz-nav-item-el>
+    <faz-nav-item-el id="navFillDisabled" disabled="true">Disabled</faz-nav-item-el>
+</faz-nav-el></div>
+            </div>
+        </div>
+        <br><br>
+        <h2>Vertical alignment</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Just vertical</h5>
+                <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+                <div id="navVerticalExample"><faz-nav-el vertical="true">
+    <faz-nav-item-el id="active" active="true">Active</faz-nav-item-el>
+    <faz-nav-item-el id="item1">Item 1</faz-nav-item-el>
+    <faz-nav-item-el id="item2">Item 2</faz-nav-item-el>
+    <faz-nav-item-el id="disabledabc" disabled="true">Disabled</faz-nav-item-el>
+</faz-nav-el></div>
+            </div>
+        </div>
+        <br><br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Vertical and pills</h5>
+                <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+                <div id="navVerticalBulletExample"><faz-nav-el vertical="true" pills="true">
+    <faz-nav-item-el fazid="active" active="true">Active</faz-nav-item-el>
+    <faz-nav-item-el fazid="item1">Item 1</faz-nav-item-el>
+    <faz-nav-item-el fazid="item2">Item 2</faz-nav-item-el>
+    <faz-nav-item-el fazid="disableddsfsdf" disabled="true">Disabled</faz-nav-item-el>
+</faz-nav-el></div>
+            </div>
+        </div>
+        <br><br>
+        <h2>From a json data source</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Basic example.</h5>
+                <div id="navSourceExample"><faz-nav-el fazid="navBasicData" pills="true" source="/nav/nav-data-example1.json"></faz-nav-el></div>
+            </div>
+        </div>
+        <br><br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">With children.</h5>
+                <div id="navSourceExample2"><faz-nav-el active="item1Data1" pills="true" id="navBasicData" source="/nav/nav-data-example2.json"></faz-nav-el></div>
+            </div>
+        </div>
+        <br><br>
+        <h2>With children, justified to the right</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">With children.</h5>
+                <div id="navSourceWithChildren"><faz-nav-el justify="right">
+    <faz-nav-item-el target="_blank" content="Dropdown 1">
+        <faz-nav-item-el fazid="sub11">Sub11</faz-nav-item-el>
+        <faz-nav-item-el fazid="sub12">Sub12</faz-nav-item-el>
+        <faz-nav-item-el fazid="sub13">
+            <faz-nav-item-content-el>Sub13</faz-nav-item-content-el>
+            <faz-nav-item-el fazid="sub131">Sub131</faz-nav-item-el>
+            <faz-nav-item-el fazid="sub132" content="Sub132">
+                <faz-nav-item-el target="_blank" href="http://example.com" fazid="sub1321">sub1321</faz-nav-item-el>
+                <faz-nav-item-el fazid="sub1322">sub1322</faz-nav-item-el>
+                <faz-nav-item-el fazid="sub1323">sub1323</faz-nav-item-el>
+            </faz-nav-item-el>
+        </faz-nav-item-el>
+    </faz-nav-item-el>
+    <faz-nav-item-el fazid="dropdown2" content="Dropdown 2">
+        <faz-nav-item-el fazid="sub1">Sub21</faz-nav-item-el>
+        <faz-nav-item-el fazid="sub2">Sub22</faz-nav-item-el>
+        <faz-nav-item-el fazid="sub3">Sub23</faz-nav-item-el>
+    </faz-nav-item-el>
+    <faz-nav-item-el fazid="disabled123" disabled="true">Disabled</faz-nav-item-el>
+</faz-nav-el></div>
+            </div>
+        </div>
+        <br><br>
+        <h2>With tabs</h2>
+
+        <br><br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Horizontal.</h5>
+                <div id="navSourceWithTab1"><faz-nav-el active="item1" justify="right">
+    <faz-nav-item-el fazid="item1-buga" href="item1-content">Item 1</faz-nav-item-el>
+    <faz-nav-item-el fazid="item2-buga" href="item2-content">Item 2</faz-nav-item-el>
+    <faz-nav-item-el fazid="disabled222" disabled="true">Disabled</faz-nav-item-el>
+
+    <faz-nav-tab-content-el id="item1-content">
+        Item 1 content
+    </faz-nav-tab-content-el>
+
+    <faz-nav-tab-content-el id="item2-content">
+        Item 2 content
+    </faz-nav-tab-content-el>
+</faz-nav-el></div>
+            </div>
+        </div>
+        <br>
+        <br>
+    </main><!-- /.container -->
+    <script src="/dist/vendor/codemirror.js"></script>
+    <script src="/dist/vendor/codemirror_mode_xml.js"></script>
+    <script src="/dist/global.bundle.js" ></script>
+    <script>
+        codemirrorit("navBasicExample");
+        codemirrorit("navCenteredExample");
+        codemirrorit("navRightExample");
+        codemirrorit("navFillExample");
+        codemirrorit("navVerticalExample");
+        codemirrorit("navVerticalBulletExample");
+        codemirrorit("navSourceExample");
+        codemirrorit("navSourceExample2");
+        codemirrorit("navSourceWithChildren");
+        // codemirrorit("navSourceWithTab2");
+        // codemirrorit("navSourceWithTab1");
+    </script>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/dist/vendor/jquery.min.js"></script>
+    <script src="/dist/vendor/popper.min.js"></script>
+    <script src="/dist/vendor/bootstrap.min.js"></script>
+    <script src="/dist/nav.bundle.js" ></script>
+</body>
+</html>

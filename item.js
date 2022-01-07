@@ -33,13 +33,18 @@ export class FazReactItem extends React.Component {
 
     constructor(props) {
         super(props);
+        this.hash = ID.random
         this.element = undefined
         this.parent = undefined
         this.data = undefined
-        this.lookForProps = [ "id", "active", "disabled", "data", "debug",
-            "disabled", "type", "content", "link", "source", "sourceMethod",
-            "target"
-        ]
+        this.renderedItems = []
+        // TODO: I think this should not be used as we are using rendered
+        // items. Properties won't be updated as used to be.
+        // We could also keep this approach as the excessive amount of
+        // objects being rendered was being caused by the items keys being set
+        // randomly, now it is tied to it's id.
+        this.lookForProps = [ "id", "data", "debug", "type", "content",
+            "link", "source", "sourceMethod", "target"]
         this.state = {
             id: ID.random,
             active: false,
@@ -77,7 +82,7 @@ export class FazReactItem extends React.Component {
                     this.state.content = props[key]
                     break
                 case "items":
-                    this.items = props[key]
+                    this.state.items = props[key]
                     break
                 case "active":
                     this.state.active = props[key]
@@ -106,7 +111,7 @@ export class FazReactItem extends React.Component {
     }
 
     get content() {
-        if(!this.state.element) {
+        if (!this.state.element) {
             return this.state.content ? this.state.content : ""
         }
     }
@@ -141,7 +146,12 @@ export class FazReactItem extends React.Component {
 
     updateState(someState) {
         this.setState((prevState) => {
-            return merge(prevState, someState)
+            let changedPairs = toPairs(someState).filter(
+                pair => prevState[pair[0]] !== pair[1]
+            )
+            if(changedPairs.length) {
+                return(merge(prevState, fromPairs(changedPairs)))
+            }
         })
         return this.state
     }
@@ -149,6 +159,10 @@ export class FazReactItem extends React.Component {
     incrementState(stateName, add = 1) {
         let stateValue = this.state[stateName]
         this.updateState(fromPairs([[stateName, stateValue + add]]))
+    }
+
+    toggleState(stateName) {
+        this.updateState(fromPairs([[stateName, !this.state[stateName]]]))
     }
 
     componentDidMount() {
@@ -172,14 +186,13 @@ export class FazReactItem extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         let propsToUpdate = []
-
         toPairs(this.props).filter(
             prop => includes(this.lookForProps, prop[0])).filter(
-                prop => prop[1] !== prevState[prop[0]]).forEach(prop =>
+                prop => prop[1] && prop[1] !== prevState[prop[0]]).forEach(prop =>
             propsToUpdate.push(prop)
         )
-
         if(propsToUpdate.length) {
+            console.log(this, this.state.id, fromPairs(propsToUpdate))
             this.updateState(fromPairs(propsToUpdate))
         }
     }
@@ -187,8 +200,18 @@ export class FazReactItem extends React.Component {
     afterMount() {
     }
 
+    requestDataCallback(response) {
+    }
+
+    requestDataErrorCallback(error) {
+        console.error(error)
+    }
+
+    requestDataFinallyCallback() {
+    }
+
     async requestData(conf, cached=true) {
-        if(this.state.items.length==0) {
+        if(this.state.items.length===0) {
             cached = false
         }
         if (!cached) {
@@ -204,11 +227,13 @@ export class FazReactItem extends React.Component {
         }, conf)
         try {
             const response = await axios(conf)
-            this.updateState({items:response.data.items})
+            this.requestDataCallback(response, undefined)
             return response
         } catch (error) {
-            console.error(error)
+            this.requestDataErrorCallback(error)
             return error
+        } finally {
+            this.requestDataFinallyCallback()
         }
     }
 }
@@ -223,11 +248,15 @@ export class FazElementItem extends HTMLElement {
     constructor() {
         super();
         this.id = ID.random
+        this.content = undefined
         for(let attribute of this.attributes) {
             switch (attribute.name) {
+                case "content":
+                    this.content = attribute.value
+                    break
                 case "fazid":
                     this.id = attribute.value
-                    break;
+                    break
             }
         }
         this.isLoading = true
@@ -264,7 +293,7 @@ export class FazElementItem extends HTMLElement {
         props['active'] = false
         props['debug'] = false
         props['disabled'] = false
-        props['content'] = this.innerHTML
+        props['content'] = this.content ? this.content : this.innerHTML
         let boolProperties = ["active", "debug", "disabled"]
         for (let attribute of this.attributes) {
             if (includes(boolProperties, attribute.name.toLowerCase())) {
@@ -279,6 +308,20 @@ export class FazElementItem extends HTMLElement {
         props['combinedId'] = this.combinedId
         if (this.parent) {
             props['parentElement'] = this.parent
+        }
+        if (this.items.length) {
+            props['items'] = []
+            props['content'] = this.content
+            this.items.forEach(item => {
+                if (item.constructor.name==="HTMLElement") {
+                    console.warn(`The element ${item.tagName} is not loaded` +
+                    `properly. It's constructor is  still ` +
+                    `${item.constructor.name}. See:`)
+                    console.log(item)
+                } else {
+                    props['items'].push(item.attributesToProps({}))
+                }
+            })
         }
         return merge(props, addProps)
     }
@@ -319,28 +362,40 @@ export class FazElementItem extends HTMLElement {
     connectedCallback() {
         document.addEventListener("DOMContentLoaded", event => {
             this.contentLoaded(event)
+            if (this.parent) {
+                if(this.detach) {
+                    this.parentElement.removeChild(this)
+                }
+            }
         })
         this.isLoading = false
         this.load()
-        if (this.parent) {
-            if(this.detach) {
-                this.parentElement.removeChild(this)
-            }
-        }
         this.beforeShow()
         this.show()
     }
 
+    /**
+     * A faz item html node is a node that has a tag name and starts with our
+     * prefix.
+     *
+     * @param node
+     * @returns {*|boolean|boolean}
+     */
+    isFazItem(node) {
+        return node.tagName && node.tagName.toUpperCase().startsWith("FAZ-")
+    }
+
     findItems(node, depth = 1) {
         // console.log("Finding nodes at: ", node.tagName)
-        // console.log(node.tagName && node.tagName.toUpperCase().startsWith("FAZ-"))
+        // console.log(node.tagName && node.tagName.toUpperCase().startsWith(
+        // "FAZ-"))
         // To constitute a relationship between the current faz item and another
         // item inside, the depth should respect childItemDepthLimit.
         // After that we don't set the parent/child faz relationship.
         // If you need more depth in a specific element, increase the
         // childItemDepthLimit value.
         let found = false
-        if (node.tagName && node.tagName.toUpperCase().startsWith("FAZ-")) {
+        if (this.isFazItem(node)) {
             this.items.push(node)
             node.dataset['fazParentId'] = this.id
             found = true
@@ -353,7 +408,6 @@ export class FazElementItem extends HTMLElement {
     }
 
     load() {
-
     }
 
     afterShow() {}
