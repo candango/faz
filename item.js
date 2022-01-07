@@ -111,7 +111,7 @@ export class FazReactItem extends React.Component {
     }
 
     get content() {
-        if(!this.state.element) {
+        if (!this.state.element) {
             return this.state.content ? this.state.content : ""
         }
     }
@@ -248,11 +248,15 @@ export class FazElementItem extends HTMLElement {
     constructor() {
         super();
         this.id = ID.random
+        this.content = undefined
         for(let attribute of this.attributes) {
             switch (attribute.name) {
+                case "content":
+                    this.content = attribute.value
+                    break
                 case "fazid":
                     this.id = attribute.value
-                    break;
+                    break
             }
         }
         this.isLoading = true
@@ -289,7 +293,7 @@ export class FazElementItem extends HTMLElement {
         props['active'] = false
         props['debug'] = false
         props['disabled'] = false
-        props['content'] = this.innerHTML
+        props['content'] = this.content ? this.content : this.innerHTML
         let boolProperties = ["active", "debug", "disabled"]
         for (let attribute of this.attributes) {
             if (includes(boolProperties, attribute.name.toLowerCase())) {
@@ -304,6 +308,20 @@ export class FazElementItem extends HTMLElement {
         props['combinedId'] = this.combinedId
         if (this.parent) {
             props['parentElement'] = this.parent
+        }
+        if (this.items.length) {
+            props['items'] = []
+            props['content'] = this.content
+            this.items.forEach(item => {
+                if (item.constructor.name==="HTMLElement") {
+                    console.warn(`The element ${item.tagName} is not loaded` +
+                    `properly. It's constructor is  still ` +
+                    `${item.constructor.name}. See:`)
+                    console.log(item)
+                } else {
+                    props['items'].push(item.attributesToProps({}))
+                }
+            })
         }
         return merge(props, addProps)
     }
@@ -344,16 +362,27 @@ export class FazElementItem extends HTMLElement {
     connectedCallback() {
         document.addEventListener("DOMContentLoaded", event => {
             this.contentLoaded(event)
+            if (this.parent) {
+                if(this.detach) {
+                    this.parentElement.removeChild(this)
+                }
+            }
         })
         this.isLoading = false
         this.load()
-        if (this.parent) {
-            if(this.detach) {
-                this.parentElement.removeChild(this)
-            }
-        }
         this.beforeShow()
         this.show()
+    }
+
+    /**
+     * A faz item html node is a node that has a tag name and starts with our
+     * prefix.
+     *
+     * @param node
+     * @returns {*|boolean|boolean}
+     */
+    isFazItem(node) {
+        return node.tagName && node.tagName.toUpperCase().startsWith("FAZ-")
     }
 
     findItems(node, depth = 1) {
@@ -366,7 +395,7 @@ export class FazElementItem extends HTMLElement {
         // If you need more depth in a specific element, increase the
         // childItemDepthLimit value.
         let found = false
-        if (node.tagName && node.tagName.toUpperCase().startsWith("FAZ-")) {
+        if (this.isFazItem(node)) {
             this.items.push(node)
             node.dataset['fazParentId'] = this.id
             found = true
@@ -379,7 +408,6 @@ export class FazElementItem extends HTMLElement {
     }
 
     load() {
-
     }
 
     afterShow() {}
