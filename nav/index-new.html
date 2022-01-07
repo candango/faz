@@ -84,7 +84,7 @@
     <faz-nav-item-el id="active" active="true">Active</faz-nav-item-el>
     <faz-nav-item-el id="item1">Item 1</faz-nav-item-el>
     <faz-nav-item-el id="item2">Item 2</faz-nav-item-el>
-    <faz-nav-item-el id="disabled" disabled="true">Disabled</faz-nav-item-el>
+    <faz-nav-item-el id="disabledabc" disabled="true">Disabled</faz-nav-item-el>
 </faz-nav-el></div>
             </div>
         </div>
@@ -97,7 +97,7 @@
     <faz-nav-item-el fazid="active" active="true">Active</faz-nav-item-el>
     <faz-nav-item-el fazid="item1">Item 1</faz-nav-item-el>
     <faz-nav-item-el fazid="item2">Item 2</faz-nav-item-el>
-    <faz-nav-item-el fazid="disabled" disabled="true">Disabled</faz-nav-item-el>
+    <faz-nav-item-el fazid="disableddsfsdf" disabled="true">Disabled</faz-nav-item-el>
 </faz-nav-el></div>
             </div>
         </div>
@@ -117,24 +117,57 @@
             </div>
         </div>
         <br><br>
-        asdfasd<br>
-        asdf<br>
-        asdf<br>
-        asdf<br>
-        asdf<br>
-        asdf<br>
-        fasd<br>
-        fasd<br>
-        fasd<br>
-        fasd<br>
-        fas<br>
-        df<br>
-        asdf<br>
-        asd<br>
-        fasd<br>
-        fasd<br>
-        fsad<br>
-        fsadfsad<br>
+        <h2>With children, justified to the right</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">With children.</h5>
+                <div id="navSourceWithChildren"><faz-nav-el justify="right">
+    <faz-nav-item-el target="_blank" content="Dropdown 1">
+        <faz-nav-item-el fazid="sub11">Sub11</faz-nav-item-el>
+        <faz-nav-item-el fazid="sub12">Sub12</faz-nav-item-el>
+        <faz-nav-item-el fazid="sub13">
+            <faz-nav-item-content-el>Sub13</faz-nav-item-content-el>
+            <faz-nav-item-el fazid="sub131">Sub131</faz-nav-item-el>
+            <faz-nav-item-el fazid="sub132" content="Sub132">
+                <faz-nav-item-el target="_blank" href="http://example.com" fazid="sub1321">sub1321</faz-nav-item-el>
+                <faz-nav-item-el fazid="sub1322">sub1322</faz-nav-item-el>
+                <faz-nav-item-el fazid="sub1323">sub1323</faz-nav-item-el>
+            </faz-nav-item-el>
+        </faz-nav-item-el>
+    </faz-nav-item-el>
+    <faz-nav-item-el fazid="dropdown2" content="Dropdown 2">
+        <faz-nav-item-el fazid="sub1">Sub21</faz-nav-item-el>
+        <faz-nav-item-el fazid="sub2">Sub22</faz-nav-item-el>
+        <faz-nav-item-el fazid="sub3">Sub23</faz-nav-item-el>
+    </faz-nav-item-el>
+    <faz-nav-item-el fazid="disabled123" disabled="true">Disabled</faz-nav-item-el>
+</faz-nav-el></div>
+            </div>
+        </div>
+        <br><br>
+        <h2>With tabs</h2>
+
+        <br><br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Horizontal.</h5>
+                <div id="navSourceWithTab1"><faz-nav-el active="item1" justify="right">
+    <faz-nav-item-el fazid="item1-buga" href="item1-content">Item 1</faz-nav-item-el>
+    <faz-nav-item-el fazid="item2-buga" href="item2-content">Item 2</faz-nav-item-el>
+    <faz-nav-item-el fazid="disabled222" disabled="true">Disabled</faz-nav-item-el>
+
+    <faz-nav-tab-content-el id="item1-content">
+        Item 1 content
+    </faz-nav-tab-content-el>
+
+    <faz-nav-tab-content-el id="item2-content">
+        Item 2 content
+    </faz-nav-tab-content-el>
+</faz-nav-el></div>
+            </div>
+        </div>
+        <br>
+        <br>
     </main><!-- /.container -->
     <script src="/dist/vendor/codemirror.js"></script>
     <script src="/dist/vendor/codemirror_mode_xml.js"></script>
@@ -148,7 +181,7 @@
         codemirrorit("navVerticalBulletExample");
         codemirrorit("navSourceExample");
         codemirrorit("navSourceExample2");
-        // codemirrorit("navSourceWithChildren");
+        codemirrorit("navSourceWithChildren");
         // codemirrorit("navSourceWithTab2");
         // codemirrorit("navSourceWithTab1");
     </script>

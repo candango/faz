@@ -31,6 +31,7 @@ class FazNavReact extends FazReactItem {
         this.state['vertical'] = false
         this.state['loaded'] = false
         this.timeout = 0
+        this.current = undefined
 
         this.state['tabs'] = []
         for (let key in props) {
@@ -55,8 +56,15 @@ class FazNavReact extends FazReactItem {
                     break
             }
         }
-        this.beOverDatePicker = this.beOverDatePicker.bind(this)
-        this.leaveDatePicker = this.leaveDatePicker.bind(this)
+        this.beOverMe = this.beOverMe.bind(this)
+        this.leaveMe = this.leaveMe.bind(this)
+    }
+
+    get onEdge() {
+        if(this.current) {
+            return !this.current.isDropdown
+        }
+        return false
     }
 
     get activeItems() {
@@ -134,12 +142,13 @@ class FazNavReact extends FazReactItem {
             if(item.element) {
                 return item.element.toReact(item, this, this)
             }
+            let content = item.content ? item.content : item.value
             return <FazNavItemReact key={item.id}
                                         active={item.active}
                                         disabled={item.disabled}
                                         id={item.id}
                                         parent={this}
-                                        content={item.value}
+                                        content={content}
                                         root={this}
                                         items={item.items}
                                         link={item.link}
@@ -148,15 +157,15 @@ class FazNavReact extends FazReactItem {
         })
     }
 
-    beOverDatePicker(event) {
+    beOverMe(event) {
         clearTimeout(this.timeout)
     }
 
-    leaveDatePicker(event) {
+    leaveMe(event) {
         clearTimeout(this.timeout)
         this.timeout = setTimeout(() => {
             this.activeItems.forEach(item => {
-                if (item.isDropdown) {
+                if (item.isDropdown && !this.onEdge) {
                     if (item.previousItem) {
                         item.previousItem.updateState({active: true})
                     }
@@ -168,14 +177,14 @@ class FazNavReact extends FazReactItem {
 
     render() {
         return (
-            <div onMouseOver={this.beOverDatePicker}
-                 onMouseLeave={this.leaveDatePicker}
+            <div onMouseOver={this.beOverMe}
+                 onMouseLeave={this.leaveMe}
                  className="faz-nav-container" id={this.containerId}>
-                <nav className={this.classNames}
+                <ul className={this.classNames}
                      id={this.state.id}
                      aria-orientation={this.orientation}>
                         {this.renderItems()}
-                </nav>
+                </ul>
             </div>
         )
     }
@@ -188,8 +197,8 @@ Object.assign(FazNavReact, {
 
 
 export default class FazNavElement extends FazElementItem {
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
     }
 
     contentLoaded(event) {
@@ -228,8 +237,8 @@ export default class FazNavElement extends FazElementItem {
 
 
 export class FazNavItemElement extends FazElementItem {
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.detach = true
     }
 
@@ -242,14 +251,53 @@ export class FazNavItemElement extends FazElementItem {
                                  active={props.active}
                                  combinedId={props.combinedId}
                                  disabled={props.disabled}
+                                 content={props.content}
                                  element={props.element}
                                  id={props.id}
                                  parent={props.parent}
                                  parentElement={props.parentElement}
-                                 root={root}
-        />
+                                 root={root}>
+            {this.items.map(item=>item.attributesToProps({root: root,
+                parent: parent}))}
+        </FazNavReact.Item>
+    }
+
+    attributesToProps(addProps = []) {
+        let props = super.attributesToProps(addProps)
+        // Fixing with original nodes and not dropdowns
+        if (this.originalNodes.length && !this.items.length) {
+            if (this.parentElement.tagName.toLowerCase().toLowerCase() ===
+                "faz-nav-el") {
+                props['content'] = undefined
+            }
+        }
+        if (this.items.length) {
+            this.items.forEach(item => {
+                if (item.constructor.name === "FazNavItemTitleElement") {
+                    props['content'] = item.innerHTML
+                }
+            })
+        }
+        return props;
+    }
+}
+
+export class FazNavItemTitleElement extends FazElementItem {
+    constructor() {
+        super()
+        this.detach = true
+    }
+}
+
+
+export class FazNavTabContentElement extends FazElementItem {
+    constructor() {
+        super()
+        this.detach = true
     }
 }
 
 customElements.define("faz-nav-el", FazNavElement)
 customElements.define("faz-nav-item-el", FazNavItemElement)
+customElements.define("faz-nav-item-content-el", FazNavItemTitleElement)
+customElements.define("faz-nav-tab-content-el", FazNavTabContentElement)

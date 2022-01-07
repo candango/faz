@@ -18,38 +18,22 @@ import {FazReactItem} from "../item";
 import React from 'react'
 
 
-export default class FazNavItemReact extends FazReactItem {
+export default class FazNavTabContentReact extends FazReactItem {
 
     processProps(props) {
         super.processProps(props)
         this.previousItem = undefined
         for(let key in props) {
             switch (key) {
-                case "children":
-                    this.state['items'] = props[key]
+                case "fade":
+                    this.state['fade'] = props[key]
                     break
                 case "parent":
                     this.parent = props[key]
-                    let filterMe = this.parent.renderedItems.filter(
-                        item => item.hash === this.hash)
-                    if(!filterMe.length){
-                        this.parent.renderedItems.push(this)
-                    }
-                    break
-                case "root":
-                    this.root = props[key]
                     break
             }
         }
         this.handleClick = this.handleClick.bind(this)
-    }
-
-    get isDropdown() {
-        return this.state.items.length > 0
-    }
-
-    get isRoot() {
-        return this.parent === this.root
     }
 
     defineStates(props) {
@@ -74,22 +58,23 @@ export default class FazNavItemReact extends FazReactItem {
     }
 
     get prefix() {
-        return "faz-nav-react"
+        return "faz-nav-tab-content-react"
     }
 
     get classNames() {
-        let classes = []
-        if(this.isRoot) {
-            classes.push("nav-item")
-            if (this.isDropdown) {
-                classes.push("dropdown")
-            }
-        } else {
-            if (this.isDropdown) {
-                classes.push("dropdown-submenu")
+        let classes = ["tab-pane"];
+        if (this.fade) {
+            classes.push("fade");
+            if (this.active) {
+                classes.push("show");
             }
         }
-        return classes.join(" ")
+        if (this.active) {
+            classes.push("anchor")
+            classes.push("active");
+        }
+
+        return classes.join(" ");
     }
 
     get linkClassNames() {
@@ -112,6 +97,7 @@ export default class FazNavItemReact extends FazReactItem {
         }
         return classes.join(" ")
     }
+
 
     get dropdownClassNames() {
         let classes = ["dropdown-menu"]
@@ -180,7 +166,6 @@ export default class FazNavItemReact extends FazReactItem {
                    aria-expanded={this.ariaExpanded}
                    data-bs-toggle={this.dataBsToggle}
                 >{this.content}</a>
-                {this.isDropdown ? this.renderItems() : ""}
             </li>
         )
     }

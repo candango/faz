@@ -89,6 +89,7 @@ export class FazNavTabContent extends FazStacheItem {
             }
         }
         if (this.active) {
+            classes.push("anchor")
             classes.push("active");
         }
 
