@@ -28,7 +28,6 @@ import PropTypes from "prop-types"
 import React from 'react'
 
 
-
 export class FazReactItem extends React.Component {
 
     constructor(props) {
@@ -192,7 +191,6 @@ export class FazReactItem extends React.Component {
             propsToUpdate.push(prop)
         )
         if(propsToUpdate.length) {
-            console.log(this, this.state.id, fromPairs(propsToUpdate))
             this.updateState(fromPairs(propsToUpdate))
         }
     }
