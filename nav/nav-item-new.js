@@ -32,7 +32,7 @@ export default class FazNavItemReact extends FazReactItem {
                     this.parent = props[key]
                     let filterMe = this.parent.renderedItems.filter(
                         item => item.hash === this.hash)
-                    if(!filterMe.length){
+                    if (!filterMe.length) {
                         this.parent.renderedItems.push(this)
                     }
                     break
@@ -126,7 +126,10 @@ export default class FazNavItemReact extends FazReactItem {
     }
 
     get link() {
-        if(!this.isDropdown) {
+        if (!this.isDropdown) {
+            if (this.isRoot && this.root.hasTabs) {
+                return `#${super.link}`
+            }
             return super.link;
         }
     }
@@ -171,6 +174,13 @@ export default class FazNavItemReact extends FazReactItem {
         }
     }
 
+    get content() {
+        if (this.isDropdown && this.isRoot) {
+            return this.state.content
+        }
+        return super.content
+    }
+
     render() {
         return (
             <li className={this.classNames} id={this.containerId}>
@@ -207,10 +217,21 @@ export default class FazNavItemReact extends FazReactItem {
     }
 
     activate() {
-        this.parent.activeItems.forEach((item)=> {
-            this.previousItem = item
-            item.deactivate()
+        this.parent.activeItems.forEach((item) => {
+            if (item instanceof FazNavItemReact) {
+                this.previousItem = item
+                item.deactivate()
+            }
         })
+        if (this.root.hasTabs) {
+            this.root.renderedTabItems.forEach((item) => {
+                if(item.state.id === this.link.replace("#", "")){
+                    item.updateState({active: true})
+                    return
+                }
+                item.deactivate()
+            })
+        }
         this.updateState({active: true})
     }
 

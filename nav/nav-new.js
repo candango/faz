@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2022 Flavio Gonçalves Garcia
+ * Copyright 2018-2022 Flávio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,24 @@ class FazNavReact extends FazReactItem {
             return !this.current.isDropdown
         }
         return false
+    }
+
+    get renderedNavItems() {
+        return this.renderedItems.filter(item => {
+            return item instanceof FazNavItemReact
+        })
+    }
+
+    get renderedTabItems() {
+        return this.renderedItems.filter(item => {
+            return item instanceof FazNavTabReact
+        })
+    }
+
+    get activeNavItems() {
+        return this.renderedNavItems.filter(item => {
+            return item.state.active
+        })
     }
 
     get activeItems() {
@@ -138,8 +156,8 @@ class FazNavReact extends FazReactItem {
         super.componentDidMount()
         // Activate first item if no nav items are selected and nav has tabs
         if (this.hasTabs) {
-            if (!this.activeItems.length) {
-                this.renderedItems[0].activate()
+            if (!this.activeNavItems.length) {
+                this.renderedNavItems[0].activate()
             }
         }
     }
@@ -158,7 +176,7 @@ class FazNavReact extends FazReactItem {
 
     renderItems() {
         return this.navItems.map((item) => {
-            if(item.element) {
+            if (item.element) {
                 return item.element.toReact(item, this, this)
             }
             let content = item.content ? item.content : item.value
@@ -214,9 +232,6 @@ class FazNavReact extends FazReactItem {
     }
 
     render() {
-        if (this.hasTabs) {
-            console.log(this.state.items)
-        }
         return (
             <div onMouseOver={this.beOverMe}
                  onMouseLeave={this.leaveMe}
@@ -316,12 +331,16 @@ export class FazNavItemElement extends FazElementItem {
                 props['content'] = undefined
             }
         }
+        let hasTitle = false
         if (this.items.length) {
             this.items.forEach(item => {
                 if (item.constructor.name === "FazNavItemTitleElement") {
                     props['content'] = item.innerHTML
                 }
             })
+        }
+        if (hasTitle) {
+            console.log(props)
         }
         return props;
     }
@@ -339,6 +358,14 @@ export class FazNavTabElement extends FazElementItem {
     constructor() {
         super()
         this.detach = true
+        this.fade = false
+        for(let attribute of this.attributes) {
+            switch (attribute.name) {
+                case "fade":
+                    this.fade = attribute.value
+                    break
+            }
+        }
     }
 
     toReact(props, parent, root) {
