@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2022 Flavio Gonçalves Garcia
+ * Copyright 2018-2022 Flávio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import React from 'react'
 import ReactDOM from "react-dom"
 
 
-class FazAlertReact extends FazReactItem {
+export class FazAlertReact extends FazReactItem {
 
     defineStates(props) {
         this.state['type'] = "primary"
@@ -29,7 +29,7 @@ class FazAlertReact extends FazReactItem {
     }
 
     get prefix() {
-        return "faz-react-alert"
+        return "faz-alert-react"
     }
 
     get classNames() {
@@ -54,12 +54,13 @@ export default class FazAlertElement extends FazElementItem {
     }
 
     show() {
-        ReactDOM.render(<FazAlertReact id={this.childId} element={this}/>, this)
+        ReactDOM.render(<FazAlertReact id={this.childId} element={this}/>,
+            this)
         $(this).addClass("faz-alert-rendered")
     }
 
     attributesToStates() {
-        super.attributesToStates();
+        super.attributesToStates()
         for (let attribute of this.attributes) {
             switch (attribute.name) {
                 case "type":

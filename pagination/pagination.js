@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2022 Flavio Gonçalves Garcia
+ * Copyright 2018-2022 Flávio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -509,7 +509,6 @@ export default class FazPaginationElement extends FazElementItem {
     show() {
         ReactDOM.render(
             <FazReactPagination id={this.childId} element={this}/>, this)
-        $(this).addClass("faz-alert-rendered")
     }
 
     attributesToStates() {

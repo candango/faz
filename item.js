@@ -28,7 +28,6 @@ import PropTypes from "prop-types"
 import React from 'react'
 
 
-
 export class FazReactItem extends React.Component {
 
     constructor(props) {
@@ -111,7 +110,7 @@ export class FazReactItem extends React.Component {
     }
 
     get content() {
-        if (!this.state.element) {
+        if (!this.element) {
             return this.state.content ? this.state.content : ""
         }
     }
@@ -192,7 +191,6 @@ export class FazReactItem extends React.Component {
             propsToUpdate.push(prop)
         )
         if(propsToUpdate.length) {
-            console.log(this, this.state.id, fromPairs(propsToUpdate))
             this.updateState(fromPairs(propsToUpdate))
         }
     }
@@ -303,6 +301,9 @@ export class FazElementItem extends HTMLElement {
             }
             props[attribute.name.toLowerCase()] = attribute.value
         }
+        if (props['href']) {
+            props['link'] = props['href']
+        }
         props['type'] = this.tagName.toLowerCase()
         props['element'] = this
         props['combinedId'] = this.combinedId
@@ -317,7 +318,6 @@ export class FazElementItem extends HTMLElement {
                     console.warn(`The element ${item.tagName} is not loaded` +
                     `properly. It's constructor is  still ` +
                     `${item.constructor.name}. See:`)
-                    console.log(item)
                 } else {
                     props['items'].push(item.attributesToProps({}))
                 }
@@ -335,6 +335,7 @@ export class FazElementItem extends HTMLElement {
                 case "disabled":
                     this.reactItem.state.disabled = attribute.value
                     break;
+                case "href":
                 case "link":
                     this.reactItem.state.link = attribute.value
                     break;

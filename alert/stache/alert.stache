@@ -1,5 +1,0 @@
-{{# isLoading}}
-    <div class="alert alert-primary" role="alert">Loading...</div>
-{{ else }}
-    <div class="alert alert-primary" role="alert">{{{ content }}}</div>
-{{/ isLoading}}

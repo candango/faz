@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2022 Flavio Gonçalves Garcia
+ * Copyright 2018-2022 Flávio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {FazReactItem} from "../item";
-import React from 'react'
+import {FazReactItem} from "../item"
+import React from "react"
 
 
-export default class FazNavTabContentReact extends FazReactItem {
+export default class FazNavTabReact extends FazReactItem {
 
     processProps(props) {
         super.processProps(props)
@@ -30,6 +30,11 @@ export default class FazNavTabContentReact extends FazReactItem {
                     break
                 case "parent":
                     this.parent = props[key]
+                    let filterMe = this.parent.renderedItems.filter(
+                        item => item.hash === this.hash)
+                    if (!filterMe.length) {
+                        this.parent.renderedItems.push(this)
+                    }
                     break
             }
         }
@@ -62,42 +67,20 @@ export default class FazNavTabContentReact extends FazReactItem {
     }
 
     get classNames() {
-        let classes = ["tab-pane"];
-        if (this.fade) {
-            classes.push("fade");
-            if (this.active) {
-                classes.push("show");
+        let classes = ["tab-pane"]
+        if (this.state.fade) {
+            classes.push("fade")
+            if (this.state.active) {
+                classes.push("show")
             }
         }
-        if (this.active) {
+        if (this.state.active) {
             classes.push("anchor")
-            classes.push("active");
-        }
-
-        return classes.join(" ");
-    }
-
-    get linkClassNames() {
-        let classes = ["nav-link"]
-
-        if (!this.isRoot) {
-            classes.pop()
-            classes.push("dropdown-item")
-        }
-
-        if (this.state.active && !this.state.disabled) {
-            this.root.current = this
             classes.push("active")
         }
-        if (this.state.disabled) {
-            classes.push("disabled")
-        }
-        if (this.isDropdown) {
-            classes.push("dropdown-toggle")
-        }
+
         return classes.join(" ")
     }
-
 
     get dropdownClassNames() {
         let classes = ["dropdown-menu"]
@@ -113,27 +96,8 @@ export default class FazNavTabContentReact extends FazReactItem {
 
     get link() {
         if(!this.isDropdown) {
-            return super.link;
+            return super.link
         }
-    }
-
-    renderItems() {
-        return <ul className={this.dropdownClassNames}>
-            {this.state.items.map((item) => {
-                let content = item.content ? item.content : item.value
-                return <FazNavItemReact key={item.id}
-                                        active={item.active}
-                                        disabled={item.disabled}
-                                        id={item.id}
-                                        parent={this}
-                                        content={content}
-                                        root={this.root}
-                                        items={item.items}
-                                        link={item.link}
-                                        target={item.target}
-                />
-            })}
-        </ul>
     }
 
     get role() {
@@ -151,23 +115,22 @@ export default class FazNavTabContentReact extends FazReactItem {
         }
     }
 
-    get ariaExpanded() {
-        if (this.isDropdown) {
-            return this.state.active
-        }
+    get ariaLabelledby() {
+        let labelledby = ""
+        this.parent.navItems.forEach((item) => {
+            if (this.state.id === item.href) {
+                labelledby = item.id
+                return
+            }
+        })
+        return labelledby
     }
 
     render() {
-        return (
-            <li className={this.classNames} id={this.containerId}>
-                <a id={this.state.id} className={this.linkClassNames}
-                   role={this.role} target={this.state.target} href={this.link}
-                   onClick={(event) => {this.handleClick(event)}}
-                   aria-expanded={this.ariaExpanded}
-                   data-bs-toggle={this.dataBsToggle}
-                >{this.content}</a>
-            </li>
-        )
+        return <div className={this.classNames} id={this.state.id}
+                    role="tabpanel" aria-labelledby={this.ariaLabelledby}>
+            {this.content}
+        </div>
     }
 
     handleClick(event) {

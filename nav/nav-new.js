@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2022 Flavio Gonçalves Garcia
+ * Copyright 2018-2022 Flávio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import {FazElementItem, FazReactItem} from "../item";
+import {FazElementItem, FazReactItem} from "../item"
 import FazNavItemReact from "./nav-item-new"
-import React from 'react'
+import FazNavTabReact from "./nav-tab"
+import React from "react"
 import ReactDOM from "react-dom"
 import includes from "lodash/includes"
 
@@ -67,6 +68,24 @@ class FazNavReact extends FazReactItem {
         return false
     }
 
+    get renderedNavItems() {
+        return this.renderedItems.filter(item => {
+            return item instanceof FazNavItemReact
+        })
+    }
+
+    get renderedTabItems() {
+        return this.renderedItems.filter(item => {
+            return item instanceof FazNavTabReact
+        })
+    }
+
+    get activeNavItems() {
+        return this.renderedNavItems.filter(item => {
+            return item.state.active
+        })
+    }
+
     get activeItems() {
         return this.renderedItems.filter(item => {
             return item.state.active
@@ -74,7 +93,7 @@ class FazNavReact extends FazReactItem {
     }
 
     get hasTabs() {
-        return !!this.state.tabs.length;
+        return !!this.tabItems.length;
     }
 
     get orientation() {
@@ -88,7 +107,7 @@ class FazNavReact extends FazReactItem {
     get classNames() {
         let classes = ["nav"]
 
-        if (this.state.pills) {
+        if (this.state.pills && !this.hasTabs) {
             classes.push("nav-pills")
         }
 
@@ -116,13 +135,31 @@ class FazNavReact extends FazReactItem {
         return "faz-nav-container-".concat(this.state.id)
     }
 
-    get allowedItems() {
+    get navItems() {
         let itemsToRender = [
             "faz-nav-item",
             "faz-nav-item-el"
         ]
         return this.state.items.filter(
             item => includes(itemsToRender, item['type']))
+    }
+
+    get tabItems() {
+        let itemsToRender = [
+            "faz-nav-tab"
+        ]
+        return this.state.items.filter(
+            item => includes(itemsToRender, item['type']))
+    }
+
+    componentDidMount() {
+        super.componentDidMount()
+        // Activate first item if no nav items are selected and nav has tabs
+        if (this.hasTabs) {
+            if (!this.activeNavItems.length) {
+                this.renderedNavItems[0].activate()
+            }
+        }
     }
 
     requestDataCallback(response) {
@@ -138,8 +175,8 @@ class FazNavReact extends FazReactItem {
     }
 
     renderItems() {
-        return this.allowedItems.map((item) => {
-            if(item.element) {
+        return this.navItems.map((item) => {
+            if (item.element) {
                 return item.element.toReact(item, this, this)
             }
             let content = item.content ? item.content : item.value
@@ -154,6 +191,25 @@ class FazNavReact extends FazReactItem {
                                         link={item.link}
                                         target={item.target}
                                         ariaExpanded={item.ariaExpanded}/>
+        })
+    }
+
+    renderTabs() {
+        return this.tabItems.map((item) => {
+            if(item.element) {
+                return item.element.toReact(item, this, this)
+            }
+            let content = item.content ? item.content : item.value
+            return <FazNavTabReact key={item.id}
+                                    active={item.active}
+                                    disabled={item.disabled}
+                                    id={item.id}
+                                    parent={this}
+                                    content={content}
+                                    root={this}
+                                    link={item.link}
+                                    target={item.target}
+                                    ariaExpanded={item.ariaExpanded}/>
         })
     }
 
@@ -185,6 +241,10 @@ class FazNavReact extends FazReactItem {
                      aria-orientation={this.orientation}>
                         {this.renderItems()}
                 </ul>
+                {this.hasTabs ?
+                <div className="tab-content">
+                    {this.renderTabs()}
+                </div> : ""}
             </div>
         )
     }
@@ -192,7 +252,8 @@ class FazNavReact extends FazReactItem {
 }
 
 Object.assign(FazNavReact, {
-    Item: FazNavItemReact
+    Item: FazNavItemReact,
+    Tab: FazNavTabReact
 })
 
 
@@ -266,17 +327,20 @@ export class FazNavItemElement extends FazElementItem {
         let props = super.attributesToProps(addProps)
         // Fixing with original nodes and not dropdowns
         if (this.originalNodes.length && !this.items.length) {
-            if (this.parentElement.tagName.toLowerCase().toLowerCase() ===
-                "faz-nav-el") {
+            if (this.parentElement.tagName.toLowerCase() === "faz-nav-el") {
                 props['content'] = undefined
             }
         }
+        let hasTitle = false
         if (this.items.length) {
             this.items.forEach(item => {
                 if (item.constructor.name === "FazNavItemTitleElement") {
                     props['content'] = item.innerHTML
                 }
             })
+        }
+        if (hasTitle) {
+            console.log(props)
         }
         return props;
     }
@@ -290,14 +354,40 @@ export class FazNavItemTitleElement extends FazElementItem {
 }
 
 
-export class FazNavTabContentElement extends FazElementItem {
+export class FazNavTabElement extends FazElementItem {
     constructor() {
         super()
         this.detach = true
+        this.fade = false
+        for(let attribute of this.attributes) {
+            switch (attribute.name) {
+                case "fade":
+                    this.fade = attribute.value
+                    break
+            }
+        }
+    }
+
+    toReact(props, parent, root) {
+        props['parent'] = parent
+        if (root) {
+            props['root'] = root
+        }
+        return <FazNavReact.Tab key={this.combinedId}
+                                 active={props.active}
+                                 combinedId={props.combinedId}
+                                 disabled={props.disabled}
+                                 content={props.content}
+                                 element={props.element}
+                                 id={props.id}
+                                 parent={props.parent}
+                                 parentElement={props.parentElement}
+                                 root={root}>
+        </FazNavReact.Tab>
     }
 }
 
 customElements.define("faz-nav-el", FazNavElement)
 customElements.define("faz-nav-item-el", FazNavItemElement)
 customElements.define("faz-nav-item-content-el", FazNavItemTitleElement)
-customElements.define("faz-nav-tab-content-el", FazNavTabContentElement)
+customElements.define("faz-nav-tab", FazNavTabElement)
