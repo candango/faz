@@ -15,7 +15,7 @@
  */
 
 import {FazElementItem, FazReactItem} from "../item"
-import React from 'react'
+import React from "react"
 
 
 export class FazFormReact extends FazReactItem {
@@ -57,11 +57,12 @@ export class FazFormReact extends FazReactItem {
 
     /**
      *
-     * @param index
+     * @param {String} index
+     * @param defaultValue
      */
-    from(index) {
+    from(index, defaultValue="") {
         if(!this.hasValue(index)) {
-            this.values[index] = ""
+            this.values[index] = defaultValue
         }
         return this.values[index]
     }
