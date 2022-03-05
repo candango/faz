@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 Flavio Garcia
+ * Copyright 2018-2022 Flávio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-import { FazAlert, FazNav, FazNavElement, FazNavbar } from "../faz";
+import { FazAlert, FazNavElement, FazNavbar } from "../faz";
 
 import { MainNavbar } from "./main-navbar";
