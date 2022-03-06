@@ -36,7 +36,7 @@
     "can-stache-loader": "3.0.0",
     "codemirror": "5.65.2",
     "copy-webpack-plugin": "10.2.4",
-    "electron": "16.0.4",
+    "electron": "17.1.0",
     "http-server": "14.0.0",
     "karma": "6.3.17",
     "karma-cli": "2.0.0",
