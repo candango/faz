@@ -29,9 +29,9 @@
   },
   "devDependencies": {
     "@babel/core": "7.16.12",
-    "@babel/plugin-transform-runtime": "7.16.5",
-    "@babel/preset-env": "7.16.5",
-    "@babel/preset-react": "7.16.5",
+    "@babel/plugin-transform-runtime": "7.16.10",
+    "@babel/preset-env": "7.16.11",
+    "@babel/preset-react": "7.16.7",
     "babel-loader": "8.2.3",
     "can-stache-loader": "3.0.0",
     "codemirror": "5.64.0",
