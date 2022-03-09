@@ -1,6 +1,21 @@
 const path = require("path");
 const webpack = require("webpack");
 
+// This is related to the new jsx transform
+// SEE: https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html
+// Yanked from the create react app. O.o
+const hasJsxRuntime = (() => {
+    if (process.env.DISABLE_NEW_JSX_TRANSFORM === "true") {
+        return false;
+    }
+    try {
+        require.resolve("react/jsx-runtime");
+        return true;
+    } catch (e) {
+        return false;
+    }
+})();
+
 const defaultWebpackOptions = {
     mode: 'development',
     output: {
@@ -21,13 +36,27 @@ const defaultWebpackOptions = {
                 }
             },
             {
-                test: /\.m?js$/,
+                test: /\.js|\.jsx$/,
+                exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
                     options: {
                         presets: [
-                            ['@babel/preset-env', { targets: "defaults" }]
-                        ]
+                            [
+                                require.resolve("@babel/preset-env")
+                            ],
+                            [
+                                require.resolve("@babel/preset-react"),
+                                {
+                                    runtime: hasJsxRuntime ? "automatic" :
+                                        "classic",
+                                }
+                            ],
+                        ],
+                        // SEE: https://newbedev.com/babel-7-referenceerror-regeneratorruntime-is-not-defined
+                        plugins: [
+                            require.resolve("@babel/plugin-transform-runtime")
+                        ],
                     }
                 }
             }

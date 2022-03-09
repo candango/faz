@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2022 Flavio Gonçalves Garcia
+ * Copyright 2018-2022 Flávio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import React from 'react'
 export class FazReactItem extends React.Component {
 
     constructor(props) {
-        super(props);
+        super(props)
         this.hash = ID.random
         this.element = undefined
         this.parent = undefined
@@ -50,7 +50,7 @@ export class FazReactItem extends React.Component {
             data: undefined,
             debug: false,
             disabled: false,
-            items: {},
+            items: [],
             type: "primary",
             content: undefined,
             link: undefined,
@@ -233,6 +233,23 @@ export class FazReactItem extends React.Component {
         } finally {
             this.requestDataFinallyCallback()
         }
+    }
+
+    elementClasses(element) {
+        return element.className.split(" ")
+    }
+
+    elementAddClass(element, className) {
+        this.elementRemoveClass(element, className)
+        let classes = this.elementClasses(element)
+        classes.push(className)
+        element.className = classes.join(" ")
+    }
+
+    elementRemoveClass(element, className) {
+        element.className = this.elementClasses(element).filter(
+            item => {return item != className}
+        ).join(" ")
     }
 }
 
@@ -426,6 +443,7 @@ export class FazElementItem extends HTMLElement {
         })
         parentElement.removeChild(this)
     }
+
 }
 
 

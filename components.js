@@ -19,7 +19,7 @@ export { default as FazAlertElement, FazAlertReact } from "./alert/alert"
 export { default as FazBreadcrumb} from "./breadcrumb/breadcrumb"
 export { default as FazDatepicker} from "./datepicker/datepicker"
 export { default as FazInputDatepicker} from "./input/datepicker"
-export { default as FazFilterbox, FazFilterboxItem} from "./input/filterbox"
+export { default as FazFilterbox} from "./input/filterbox"
 export { default as FazNavElement } from "./nav/nav"
 export { default as FazNavbar} from "./navbar/navbar"
 export { default as FazPaginationElement,
