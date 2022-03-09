@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 Flavio Garcia
+ * Copyright 2018-2022 Flávio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,79 +14,81 @@
  * limitations under the License.
  */
 
-import {ObservableArray, type} from "can";
-import { FazStacheItem } from "../item";
-import filterboxTemplate from "./stache/filterbox.stache";
+import {FazElementItem, FazReactItem} from "../item"
+import {isString} from "lodash"
+import ReactDOM from "react-dom"
+import React from "react"
 
 
-export default class FazFilterbox extends FazStacheItem {
-    static view = filterboxTemplate;
+export class FazFilterboxReact extends FazReactItem {
 
-    static get props() {
-        return $.extend(super.props, {
-            buffer: {type: String, default: ""},
-            displayFilter: {type: Boolean, default: false},
-            items: {type: type.convert(ObservableArray), get default() {
-                return new ObservableArray([]);
-            }},
-            filtering: {type: Boolean, default: false},
-            filterDelay: {type:Number, default: 300},
-            label: {type:String, default: "Type something to filter"},
-            filterTimeoutHandler: {type: Number, default: -1},
-            overListGroup: {type: Boolean, default: false},
-            selectedName: {type: String, default: ""},
-            selectedValue: {type: String, default: ""},
-            autocomplete: {type: String, default: "off"},
-            filterCallback: {type: Object },
-            innitCallback: {type: Object },
-            get hasItems() {
-                return this.items.length > 0;
-            }
+    constructor(props) {
+        super(props)
+        this.state['autocomplete'] = "off"
+        this.state['filterCallback'] = undefined
+        this.state['isFiltering'] = false
+        this.state['displayFilter'] = false
+        this.state['innitCallback'] = undefined
+        this.state['label'] = "Type something to filter"
+        this.state['selectedName'] = ""
+        this.state['selectedValue'] = ""
 
-        });
+        this.buffer = ""
+        this.filterDelay = 300
+        this.filterTimeoutHandler = -1
+        this.beOverTimeoutHandler = -1
+        this.overListGroup = false
+        this.inputHasFocus = false
+        this.innitCallback = undefined
+        this.filterInput = undefined
+
+        this.doFilter = this.doFilter.bind(this)
+        this.clearFilter = this.clearFilter.bind(this)
+        this.beOverListGroup = this.beOverListGroup.bind(this)
+        this.leaveListGroup = this.leaveListGroup.bind(this)
+        this.activateOption = this.activateOption.bind(this)
+        this.deactivateOption = this.deactivateOption.bind(this)
+        this.selectOption = this.selectOption.bind(this)
     }
 
-    get idOuterDiv() {
-        return this.fazid + "-div";
-    }
-
-    get idInput() {
-        return this.fazid + "-input";
-    }
-
-    afterConnectedCallback() {
-        document.addEventListener("DOMContentLoaded", event => {
-            if (this.innitCallback !== undefined) {
-                this.innitCallback();
-            }
-        });
-    }
-
-    beforeConnectedCallback() {
-        for (let attribute of this.attributes) {
-            switch (attribute.name.toLowerCase()) {
+    defineStates(props) {
+        for (let key in props) {
+            switch (key) {
                 case "autocomplete":
-                    this.autocomplete = attribute.value;
-                    break;
-                case "items":
-                    this.items = JSON.parse(attribute.value);
-                    break;
-                case "filtercallback":
-                    document.addEventListener("DOMContentLoaded", event => {
-                        this.filterCallback = eval(attribute.value);
-                    });
-                    break;
-                case "innitcallback":
-                    document.addEventListener("DOMContentLoaded", event => {
-                        this.innitCallback = eval(attribute.value);
-                    });
-                    break;
+                    this.state['autocomplete'] = props[key].toLowerCase()
+                    break
+                case "innitCallback":
+                    this.innitCallback = props[key]
+                    break
+                case "filterCallback":
+                    this.state['filterCallback'] = props[key]
+                    break
+                case "label":
+                    this.state['justify'] = props[key]
+                    break
             }
         }
     }
 
-    // show() {
-    // }
+    hasItems() {
+        return this.state.items.length > 0
+    }
+
+    get prefix() {
+        return "faz-filterbox-react"
+    }
+
+    get idOuterDiv() {
+        return this.state.id + "-div";
+    }
+
+    get idInput() {
+        return this.state.id + "-input";
+    }
+
+    get idFilterboxListContainer() {
+        return this.state.id + "-filterbox-list-container";
+    }
 
     get categories() {
         return this.filteredItems.reduce((categories, item)=> {
@@ -98,109 +100,275 @@ export default class FazFilterbox extends FazStacheItem {
         }, []);
     }
 
-    doFilter(input) {
-        this.verifySelectedValue(input);
-        this.filtering = true;
-        this.displayFilter = false;
-        this.buffer = input.value;
-        this.clearFilterTimeout();
-        if(this.buffer!="") {
+    doFilter(event) {
+        this.verifySelectedValue(event.target)
+        this.updateState({isFiltering: true})
+        this.updateState({displayFilter: false})
+        this.overListGroup = true
+        this.inputHasFocus = true
+        this.buffer = event.target.value
+        this.clearFilterTimeout()
+        if(this.state.buffer !== "") {
             this.filterTimeoutHandler = setTimeout(
                 this.showFilter.bind(this),
                 this.filterDelay
-            );
-            return;
+            )
+            return
         }
-        this.filtering = false;
+        this.updateState({isFiltering: false})
     }
 
     defaultFilterCallback() {
-        return this.items.filter(
+        return this.state.items.filter(
             item => item.name.toLowerCase().indexOf(
                 this.buffer.toLowerCase()
             ) !== -1
-        );
+        )
     }
 
     get filteredItems() {
-        if(this.filterCallback===undefined) {
-            return this.defaultFilterCallback();
+        if(this.state.filterCallback===undefined) {
+            return this.defaultFilterCallback()
         }
-        return this.filterCallback();
+        return this.state.filterCallback()
     }
 
     get filteredItemsUncategorized() {
         return this.filteredItems.filter(
             (item) => {
-                return !item.hasOwnProperty("category");
+                return !item.hasOwnProperty("category")
             }
-        );
+        )
     }
 
     filteredItemsByCategory(category) {
         return this.filteredItems.filter(
             (item) => {
                 return item.hasOwnProperty("category") &&
-                    item.category==category;
+                    item.category === category
             }
-        );
+        )
     }
 
     showFilter() {
-        this.filtering = false;
-        this.displayFilter = true;
+        this.updateState({isFiltering: false})
+        this.updateState({displayFilter: true})
     }
 
     clearFilter() {
+        console.log(this.overListGroup)
+        this.inputHasFocus = false
         if (!this.overListGroup) {
-            this.buffer = "";
-            this.filtering = false;
-            this.displayFilter = false;
+            this.buffer = ""
+            this.leaveListGroup()
         }
     }
 
     clearFilterTimeout() {
         if(this.filterTimeoutHandler > 0) {
-            clearTimeout(this.filterTimeoutHandler);
-            this.filterTimeoutHandler = -1;
+            clearTimeout(this.filterTimeoutHandler)
+            this.filterTimeoutHandler = -1
         }
     }
 
     verifySelectedValue(input) {
-        if(this.selectedName!="" && input.value != this.selectedName) {
-            let inputValue = input.value;
-            this.selectedName = "";
-            this.selectedValue = "";
-            input.value = inputValue;
+        if(this.state.selectedName !== "" &&
+            input.value !== this.state.selectedName) {
+            let inputValue = input.value
+            this.updateState({
+                selectedName: "",
+                selectedValue: ""
+            })
+            input.value = inputValue
         }
     }
 
-    activateOption(option) {
-        this.elementAddClass(option, "list-group-item-secondary");
+    activateOption(event) {
+        let option = event.target
+        this.elementAddClass(option, "list-group-item-secondary")
     }
 
-    deactivateOption(option) {
-        this.elementRemoveClass(option, "list-group-item-secondary");
+    deactivateOption(event) {
+        let option = event.target
+        this.elementRemoveClass(option, "list-group-item-secondary")
     }
 
-    selectOption(option) {
-        this.selectedName = option.getAttribute("item-name");
-        this.selectedValue = option.getAttribute("item-value");
-        this.overListGroup = false;
-        this.clearFilter();
+    selectOption(event) {
+        let option = event.target
+        this.updateState({
+            selectedName: option.getAttribute("item-name"),
+            selectedValue: option.getAttribute("item-value")
+        })
+        document.getElementById(this.idInput).value =
+            option.getAttribute("item-name")
+        this.overListGroup = false
+        this.clearFilter()
     }
 
     beOverListGroup() {
-        this.overListGroup = true;
+        this.overListGroup = true
+        clearTimeout(this.beOverTimeoutHandler)
     }
 
     leaveListGroup() {
-        this.overListGroup = false;
+        this.overListGroup = false
+        this.beOverTimeoutHandler = setTimeout(() => {
+            if(!this.overListGroup && !this.inputHasFocus) {
+                this.updateState({isFiltering: false})
+                this.updateState({displayFilter: false})
+            }
+        }, 150)
     }
 
-    static get seal() {
-        return true;
+    get filterContainer() {
+        return <div key={this.idFilterboxListContainer}
+                    className="filterbox-list-container"
+                    onMouseOver={this.beOverListGroup()}
+                    onMouseOut={this.leaveListGroup()}
+        >
+            <div className="list-group">
+                {this.uncategorizedResults}
+                {this.categorizedResults}
+            </div>
+        </div>
+    }
+
+
+    get uncategorizedResults() {
+
+        return this.filteredItemsUncategorized.map((item) => {
+            return <a href="#"
+                      className="list-group-item list-group-item-action"
+                      key={item.value + "-" + item.name}
+                      item-value={item.value} item-name={item.name}
+                      onClick={this.selectOption}
+                      onMouseOver={this.activateOption}
+                      onMouseOut={this.deactivateOption}>{item.name}</a>
+        })
+    }
+
+    get categorizedResults() {
+        let className = [
+            "list-group-item",
+            "list-group-item-action",
+            "list-group-item-dark"].join(" ")
+        return this.categories.map((category) => {
+            return <React.Fragment key={"category-fragment-" + category}>
+                <a key={"category-" + category } href="#"
+                   className={className}>
+                    <h6 className="mb-1">{category}</h6>
+                </a>
+                {this.categorizedResultItems(category)}
+
+            </React.Fragment>
+        })
+    }
+
+    categorizedResultItems(category) {
+        return this.filteredItemsByCategory(category).map((item) => {
+            return <a href="#"
+                      className="list-group-item list-group-item-action"
+                      key={item.value + "-" + item.name}
+                      item-value={item.value} item-name={item.name}
+                      onClick={this.selectOption}
+                      onMouseOver={this.activateOption}
+                      onMouseOut={this.deactivateOption}>{item.name}</a>
+        })
+    }
+
+    get filterInputElement() {
+        return (
+            <input key={this.idInput} id={this.idInput} type="text"
+                   defaultValue={this.state.selectedName}
+                   className="form-control"
+                   onKeyUp={this.doFilter}
+                   onFocus={this.doFilter}
+                   onBlur={this.clearFilter}
+                   placeholder={this.state.label}
+                   autoComplete={this.state.autocomplete}
+            />
+        )
+    }
+
+    get filteringMessage() {
+        return (
+            <div
+                style={{position: "absolute", marginTop: "5px", width: "100%"}}>
+                <div className="list-group">
+                    <a href="#"
+                       className="list-group-item list-group-item-action"
+                       aria-current="true">
+                        Filtering....
+                    </a>
+                </div>
+            </div>
+        )
+    }
+
+    render() {
+        return (
+            <div key={this.idOuterDiv}
+                 id={this.idOuterDiv}
+                 className="filterbox-outer-container">
+                {this.filterInputElement}
+                {this.state.isFiltering ? this.filteringMessage : ""}
+                {this.state.displayFilter ? this.filterContainer : ""}
+            </div>
+        )
+    }
+
+    afterMount() {
+        super.afterMount()
+
+        document.addEventListener("DOMContentLoaded", event => {
+            if(isString(this.innitCallback)) {
+                // TODO: need to check this better
+                this.innitCallback = eval(this.innitCallback)
+            }
+            if(this.filterCallback) {
+                if(isString(this.filterCallback)) {
+                    // TODO: need to check this better
+                    this.filterCallback = eval(this.filterCallback)
+                }
+            }
+            this.innitCallback(this);
+        })
     }
 }
 
-customElements.define("faz-filterbox", FazFilterbox);
+export class FazFilterboxItem extends FazElementItem {
+    constructor(props) {
+        super(props)
+    }
+
+    show() {
+        ReactDOM.render(
+            <FazFilterboxReact id={this.childId} element={this}/>, this)
+    }
+
+    attributesToStates() {
+        super.attributesToStates();
+        for(let attribute of this.attributes) {
+            switch (attribute.name.toLowerCase()) {
+                case "autocomplete":
+                    this.reactItem.updateState({autocomplete: attribute.value})
+                    break
+                case "items":
+                    this.reactItem.items = JSON.parse(attribute.value);
+                    break
+                case "filtercallback":
+                    document.addEventListener("DOMContentLoaded", event => {
+                        this.filterCallback = eval(attribute.value);
+                    });
+                    break;
+                case "innitcallback":
+                    document.addEventListener("DOMContentLoaded", event => {
+                        this.reactItem.innitCallback = eval(attribute.value)
+                    });
+                    break
+            }
+        }
+    }
+}
+
+customElements.define("faz-filterbox", FazFilterboxItem);
