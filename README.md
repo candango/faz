@@ -6,7 +6,7 @@
 
 ## Introduction
 
-Candango faz is a toolkit based on bootstrap and react.
+Candango faz is a toolkit based on bootstrap and solid-js.
 
 # Installation
 
