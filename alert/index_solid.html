@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Candango Faz Toolkit - Alerts</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/dist/vendor/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/dist/css/faz.css" rel="stylesheet"/>
+    <link href="/dist/css/showcase.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/dist/vendor/css/codemirror.css">
+    <!-- Custom styles for this template -->
+</head>
+
+<body>
+<main-navbar></main-navbar>
+
+<main role="main" class="container">
+
+    <h1>Alerts</h1>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">An alert</h2>
+            <p class="card-text">This is just an alert example.</p>
+            <div id="oneAlertExample"><faz-bs-alert fazid="anAlert">
+                An Alert
+            </faz-bs-alert></div>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Nested Alerts</h2>
+            <p class="card-text">This is just an example with nested alerts.</p>
+            <div id="oneAlertExample"><faz-bs-alert fazid="anAlertFather">
+            <faz-bs-alert fazid="anAlertNested">
+               Nested Alert 
+            </faz-bs-alert>   
+            </faz-bs-alert></div>
+        </div>
+    </div>
+    <br>
+
+    <br>
+    <br>
+</main><!-- /.container -->
+
+<script src="/dist/vendor/codemirror.js"></script>
+<script src="/dist/vendor/codemirror_mode_xml.js"></script>
+<script src="/dist/global.bundle.js" ></script>
+<script>
+    codemirrorit("oneAlertExample")
+
+    //codemirrorit("nestedAlertsExample")
+</script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/dist/vendor/jquery.min.js"></script>
+<script src="/dist/vendor/popper.min.js"></script>
+<script src="/dist/vendor/bootstrap.min.js"></script>
+<script src="/dist/alert-solid.bundle.js"></script>
+
+</body>
+</html>
