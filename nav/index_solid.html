@@ -1,0 +1,128 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Candango Faz Toolkit - Navs</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/dist/vendor/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/dist/css/faz.css" rel="stylesheet"/>
+    <link href="/dist/css/showcase.css" rel="stylesheet"/>
+    <!-- Custom styles for this template -->
+</head>
+
+<body>
+<main-navbar></main-navbar>
+
+<main role="main" class="container">
+
+    <h1>Navs</h1>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Nav</h2>
+            <p class="card-text">Basic Example</p>
+            <div id="navBasicExample"><faz-nav fazid="basicFazNav">
+    <faz-nav-item active="true">Item1</faz-nav-item>
+    <faz-nav-item>Item2</faz-nav-item>
+    <faz-nav-item>Item3</faz-nav-item>
+    <faz-nav-item disabled="true">Item 4</faz-nav-item>
+</faz-nav></div>
+        </div>
+    </div>
+    <br>
+    <h2>Horizontal alignment</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Centered</h5>
+            <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+            <div id="navCenteredExample"><faz-nav fazid="navCentered" justify="center">
+    <faz-nav-item id="navCenteredActive" active="true">Active</faz-nav-item>
+    <faz-nav-item id="navCenteredItem1">Item 1</faz-nav-item>
+    <faz-nav-item id="navCenteredItem2">Item 2</faz-nav-item>
+    <faz-nav-item id="navCenteredDisabled" disabled="true">Disabled</faz-nav-item>
+</faz-nav></div>
+        </div>
+    </div>
+    <br><br>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Right Aligned and pills</h5>
+            <div id="navRightExample"><faz-nav fazid="navRight" justify="right" pills="true">
+    <faz-nav-item id="navRightActive" active="true">Active</faz-nav-item>
+    <faz-nav-item id="navRightItem1">Item 1</faz-nav-item>
+    <faz-nav-item id="navRightItem2">Item 2</faz-nav-item>
+    <faz-nav-item id="navRightDisabled" disabled="true">Disabled</faz-nav-item>
+</faz-nav></div>
+        </div>
+    </div>
+    <br><br>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Fill and pills</h5>
+            <div id="navFillExample"><faz-nav fazid="navPill" fill="true" pills="true">
+                <faz-nav-item id="navFillActive" active="true">Active</faz-nav-item>
+                <faz-nav-item id="navFillItem1">Item 1</faz-nav-item>
+                <faz-nav-item id="navFillItem2">Item 2</faz-nav-item>
+                <faz-nav-item id="navFillDisabled" disabled="true">Disabled</faz-nav-item>
+            </faz-nav></div>
+        </div>
+    </div>
+    <br><br>
+
+    <br><br>
+    <h2>Vertical alignment</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Just vertical</h5>
+            <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+            <div id="navVerticalExample"><faz-nav vertical="true">
+                <faz-nav-item id="active" active="true">Active</faz-nav-item>
+                <faz-nav-item id="item1">Item 1</faz-nav-item>
+                <faz-nav-item id="item2">Item 2</faz-nav-item>
+                <faz-nav-item id="disabledabc" disabled="true">Disabled</faz-nav-item>
+            </faz-nav></div>
+        </div>
+    </div>
+    <br><br>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Vertical and pills</h5>
+            <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+            <div id="navVerticalBulletExample"><faz-nav vertical="true" pills="true">
+                <faz-nav-item fazid="active" active="true">Active</faz-nav-item>
+                <faz-nav-item fazid="item1">Item 1</faz-nav-item>
+                <faz-nav-item fazid="item2">Item 2</faz-nav-item>
+                <faz-nav-item fazid="disableddsfsdf" disabled="true">Disabled</faz-nav-item>
+            </faz-nav></div>
+        </div>
+    </div>
+    <br><br>
+    <br>
+    <br>
+</main><!-- /.container -->
+
+<script src="/dist/global.bundle.js" ></script>
+<script>
+    codemirrorit("navBasicExample")
+    codemirrorit("navCenteredExample")
+    codemirrorit("navRightExample")
+
+    //codemirrorit("nestedAlertsExample")
+</script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/dist/vendor/jquery.min.js"></script>
+<script src="/dist/vendor/popper.min.js"></script>
+<script src="/dist/vendor/bootstrap.min.js"></script>
+<script src="/dist/nav-solid.bundle.js"></script>
+
+</body>
+</html>

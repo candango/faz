@@ -13,7 +13,6 @@
     <link href="/dist/vendor/css/bootstrap.min.css" rel="stylesheet">
     <link href="/dist/css/faz.css" rel="stylesheet"/>
     <link href="/dist/css/showcase.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="/dist/vendor/css/codemirror.css">
     <!-- Custom styles for this template -->
 </head>
 
@@ -28,8 +27,8 @@
             <h2 class="card-title">An alert</h2>
             <p class="card-text">This is just an alert example.</p>
             <div id="oneAlertExample"><faz-bs-alert fazid="anAlert">
-                An Alert
-            </faz-bs-alert></div>
+    An Alert
+</faz-bs-alert></div>
         </div>
     </div>
     <br>
@@ -37,11 +36,11 @@
         <div class="card-body">
             <h2 class="card-title">Nested Alerts</h2>
             <p class="card-text">This is just an example with nested alerts.</p>
-            <div id="oneAlertExample"><faz-bs-alert fazid="anAlertFather">
-            <faz-bs-alert fazid="anAlertNested">
-               Nested Alert 
-            </faz-bs-alert>   
-            </faz-bs-alert></div>
+            <div id="nestAlertsExample"><faz-bs-alert fazid="anAlertFather">
+    <faz-bs-alert fazid="anAlertNested">
+        Nested Alert 
+    </faz-bs-alert>   
+</faz-bs-alert></div>
         </div>
     </div>
     <br>
@@ -50,13 +49,11 @@
     <br>
 </main><!-- /.container -->
 
-<script src="/dist/vendor/codemirror.js"></script>
-<script src="/dist/vendor/codemirror_mode_xml.js"></script>
 <script src="/dist/global.bundle.js" ></script>
 <script>
     codemirrorit("oneAlertExample")
 
-    //codemirrorit("nestedAlertsExample")
+    codemirrorit("nestAlertsExample")
 </script>
 
 <!-- Bootstrap core JavaScript
