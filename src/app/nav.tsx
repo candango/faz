@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 Flavio Gonçalves Garcia
+ * Copyright 2018-2023 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-import { FazElementItem } from "../item";
-import FazNavElement from "../nav/nav";
-import FazNavItemElement from "../nav/nav-item";
-
-console.assert(FazElementItem, "FazElementItem undefined")
-console.assert(FazNavElement, "FazNavElement1 undefined")
-console.assert(FazNavItemElement, "FazNavItemElement1 undefined")
+import "../nav/nav";
+import "../nav/nav-item";
+import "../nav/nav-item-content";

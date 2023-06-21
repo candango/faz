@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 Flávio Gonçalves Garcia
+ * Copyright 2018-2023 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-import { Component, createSignal, createEffect, JSX, children } from "solid-js"
 import { render } from "solid-js/web"
 import { FazElementItem } from "../item"
 
-const SolidAlert: Component = (props: any) => {
-    const classList = ["alert", "alert-primary", "buga"].join(" ")
-    const role = "alert"
-    return <div class={classList} role={role}></div>
-}
 
 export default class FazBsAlert extends FazElementItem {
     constructor() {
@@ -30,8 +24,9 @@ export default class FazBsAlert extends FazElementItem {
     }
 
     show() {
-        const props = this.attributesToProps()
-        render(() => <SolidAlert {... props}/>, this) 
+        const classList = ["alert", "alert-primary", "buga"].join(" ")
+        const role = "alert"
+        render(() => <div class={classList} role={role}></div>, this) 
         this.classList.add("faz-bs-alert-rendered")
     }
 }

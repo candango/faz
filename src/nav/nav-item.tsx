@@ -14,66 +14,78 @@
  * limitations under the License.
  */
 
-import { Component, createSignal, createEffect } from "solid-js"
-import { render } from "solid-js/web"
-import { FazElementItem } from "../item"
-
-
-function getClasses(props: any){
-    const classes = [ "nav-link" ]
-    if (props.active) {
-        classes.push("active")
-    }
-    if (props.disabled) {
-        classes.push("disabled")
-    }
-    return classes
-}
-
-function getLink(props: any) {
-    // From: https://stackoverflow.com/a/66717705/2887989
-    let voidHref = "#!"
-        if (props.disabled || props.link === undefined) {
-            return voidHref
-        }
-    return props.link
-}
-
-function itemClick(element: FazNavItemElement) {
-    element.parent?.items.forEach(item => {
-        if (item.isEqualNode(element)) {
-            (item as FazNavItemElement).setActive(true)
-            return
-        }
-        (item as FazNavItemElement).setActive(false)
-    })
-}
-
-const FazSolidNavItem: Component = (props: any) => {
-    const [active, setActive] = createSignal(props.active)
-    const [classList, setClassList] = createSignal(getClasses(props).join(" "))
-    createEffect(() => {
-        props.active = active()
-        setClassList(getClasses(props).join(" "))
-    })
-    const link = getLink(props)
-    const element = props.element as FazNavItemElement
-    element.setActive = setActive
-    return <a class={classList()} onClick={() => itemClick(element)} 
-        href={link} ></a>
-}
+import { createSignal } from "solid-js";
+import { render } from "solid-js/web";
+import { FazElementItem } from "../item";
  
+
 export default class FazNavItemElement extends FazElementItem {
-    public setActive: any 
+    public setClassList: any;
+    public classes: any;
+
     constructor() {
-        super()
+        super();
+        const [classList, setClassList] = createSignal("");
+        this.classes = classList
+        this.setClassList = setClassList
+        this.classNames;
+    }
+
+    get contentChild() {
+        if (this.content === undefined) {
+            return this.firstChild;
+        }
+        return this.children[1];
+    }
+
+    get isRoot() {
+        if (this.parent !== undefined) {
+            if (this.parent.nodeName.toUpperCase() === "FAZ-NAV") {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    get isDropDown() {
+        return this.items.length > 0
+    }
+
+    get classNames() {
+        const classes = [ "nav-link" ];
+        if (this.active()) {
+            classes.push("active");
+        }
+        if (this.disabled) {
+            classes.push("disabled");
+        }
+        if (this.isRoot) {
+            console.log("is root", this);
+        }
+        this.setClassList(classes.join(" "));
+        // if (props.element.isDropDown){
+        //     classes.push("") 
+        // }
+        return this.classes();
+    }
+
+
+    itemClick() {
+        this.parent?.items().forEach(item => {
+            if (item.isEqualNode(this)) {
+                (item as FazNavItemElement).setActive(true);
+                return;
+            }
+            (item as FazNavItemElement).setActive(false);
+        });
     }
 
     show() {
-        const props = this.attributesToProps()
-        render(() => <FazSolidNavItem {... props}/>, this) 
-        console.log(this)
+        const navItem = <><a class={this.classNames} 
+            onClick={() => this.itemClick()} href={this.link} >{this.content}
+            </a><ul class="dropdown-menu"></ul></>;
+        render(() => navItem, this); 
     }
 }
 
-customElements.define("faz-nav-item", FazNavItemElement)
+customElements.define("faz-nav-item", FazNavItemElement);
