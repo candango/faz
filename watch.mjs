@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 Flávio Gonçalves Garcia
+ * Copyright 2018-2023 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 
 import * as esbuild from "esbuild"
+import { copy } from "esbuild-plugin-copy"
 import { solidPlugin } from "esbuild-plugin-solid"
+import { assets } from "./assets.mjs"
 import { entryPoints } from "./entryPoints.mjs"
 
 let ctx = await esbuild.context({
@@ -29,7 +31,10 @@ let ctx = await esbuild.context({
         outdir: "dist",
         legalComments: "none",
         allowOverwrite: true,
-        plugins:[solidPlugin()]
+        plugins:[
+            copy(assets),
+            solidPlugin()
+        ]
     })
 
 await ctx.watch()
