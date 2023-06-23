@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-import { createSignal } from "solid-js";
 import { render } from "solid-js/web";
 import { FazElementItem } from "../item";
  
 
 export default class FazNavItemElement extends FazElementItem {
-    public setClassList: any;
-    public classes: any;
 
     constructor() {
         super();
-        const [classList, setClassList] = createSignal("");
-        this.classes = classList
-        this.setClassList = setClassList
-        this.classNames;
     }
 
     get contentChild() {
@@ -62,7 +55,7 @@ export default class FazNavItemElement extends FazElementItem {
         if (this.isRoot) {
             console.log("is root", this);
         }
-        this.setClassList(classes.join(" "));
+        this.setClasses(classes.join(" "));
         // if (props.element.isDropDown){
         //     classes.push("") 
         // }

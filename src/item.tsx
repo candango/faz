@@ -23,6 +23,9 @@ export class FazElementItem extends HTMLElement {
     public active: Accessor<boolean>;
     public setActive: Setter<boolean>;
 
+    public classes: Accessor<string>;
+    public setClasses: Setter<string>;
+
     public items: Accessor<Array<FazElementItem>>;
     public setItems: Setter<Array<FazElementItem>>;
 
@@ -41,6 +44,7 @@ export class FazElementItem extends HTMLElement {
     constructor() {
         super();
         [this.active, this.setActive] = createSignal<boolean>(false);
+        [this.classes, this.setClasses] = createSignal("");
         [this.items, this.setItems] =
             createSignal<Array<FazElementItem>>(new Array());
         this.content = undefined;

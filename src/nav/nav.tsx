@@ -14,72 +14,81 @@
  * limitations under the License.
  */
 
-import { render } from "solid-js/web"
 import { FazElementItem } from "../item"
+import { Accessor, createSignal, Setter } from "solid-js";
+import { render } from "solid-js/web"
 
  
 export default class FazNavElement extends FazElementItem {
     
-    public fill: boolean = false;
-    public justify: string = "left";
-    public pills: boolean = false;
-    public vertical: boolean = false;
+    public fill: Accessor<boolean>;
+    public setFill: Setter<boolean>;
+    public justify: Accessor<string>;
+    public setJustify: Setter<string>;
+    public pills: Accessor<boolean>;
+    public setPills: Setter<boolean>;
+    public vertical: Accessor<boolean>;
+    public setVertical: Setter<boolean>;
 
     constructor() {
-        super()
+        super();
+        [this.fill, this.setFill] = createSignal<boolean>(false);
+        [this.pills, this.setPills] = createSignal<boolean>(false);
+        [this.vertical, this.setVertical] = createSignal<boolean>(false);
+        [this.justify, this.setJustify] = createSignal<string>("");
         for (let attribute of this.attributes) {
             switch (attribute.name) {
                 case "fill":
-                    this.fill = attribute.value.toLowerCase() === "true";
+                    this.setFill(attribute.value.toLowerCase() === "true");
+                    break;
                 case "justify":
-                    this.justify = attribute.value
-                    break
+                    this.setJustify(attribute.value);
+                    break;
                 case "pills":
-                    this.pills = attribute.value.toLowerCase() === "true";
+                    this.setPills(attribute.value.toLowerCase() === "true");
+                    break;
                 case "vertical":
-                    this.vertical = attribute.value.toLowerCase() === "true";
+                    this.setVertical(attribute.value.toLowerCase() === "true");
+                    break;
             }
         }
     }
 
     get classNames() {
-        const classes = [ "nav" ]
-            if (this.active()) {
-                classes.push("active")
-            }
+        const classes = [ "nav" ];
+        if (this.active()) {
+            classes.push("active");            
+        }
         if (this.disabled) {
-            classes.push("disabled")
+            classes.push("disabled");
         }
-        if (this.pills) {
-            classes.push("nav-pills")
+        if (this.pills()) {
+            classes.push("nav-pills");
         }
-
-        if (this.fill) {
-            classes.push("nav-fill")
+        if (this.fill()) {
+            classes.push("nav-fill");
         }
-
-        if (this.justify === "center") {
-            classes.push("justify-content-center")
+        if (this.justify() === "center") {
+            classes.push("justify-content-center");
         }
-
-        if (this.justify === "right") {
-            classes.push("justify-content-end")
+        if (this.justify() === "right") {
+            classes.push("justify-content-end");
         }
-
         // if (this.hasTabs) {
         //     classes.push("nav-tabs")
         // }
-
-        if (this.vertical) {
-            classes.push("flex-column")
-        }
-        return classes.join(" ")
+        if (this.vertical()) {
+            classes.push("flex-column");
+        }  
+        this.setClasses(classes.join(" "));
+        return this.classes();
     }
 
     show() {
-        render(() => <nav class={this.classNames} ></nav>, this) 
-        this.classList.add("faz-nav-rendered")
+        render(() => <nav id={`nav${this.id}`} class={this.classNames} >
+        </nav>, this);
+        this.classList.add("faz-nav-rendered");
     }
 }
 
-customElements.define("faz-nav", FazNavElement)
+customElements.define("faz-nav", FazNavElement);
