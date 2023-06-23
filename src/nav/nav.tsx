@@ -57,7 +57,7 @@ export default class FazNavElement extends FazElementItem {
     get classNames() {
         const classes = [ "nav" ];
         if (this.active()) {
-            classes.push("active");            
+            classes.push("active");
         }
         if (this.disabled) {
             classes.push("disabled");
@@ -84,9 +84,10 @@ export default class FazNavElement extends FazElementItem {
         return this.classes();
     }
 
+
     show() {
-        render(() => <nav id={`nav${this.id}`} class={this.classNames} >
-        </nav>, this);
+        render(() => <ul id={`nav${this.id}`} class={this.classNames} role="tablist" >
+        </ul>, this);
         this.classList.add("faz-nav-rendered");
     }
 }

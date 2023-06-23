@@ -37,7 +37,8 @@ export class FazElementItem extends HTMLElement {
     private href: string | undefined;
     public childItemDepthLimit;
     public childPrefix: string;
-    public parent: FazElementItem | undefined;
+    public parent: Accessor<FazElementItem | undefined>;
+    public setParent: any;
     public reactItem: any;
     public source: any;
 
@@ -47,6 +48,8 @@ export class FazElementItem extends HTMLElement {
         [this.classes, this.setClasses] = createSignal("");
         [this.items, this.setItems] =
             createSignal<Array<FazElementItem>>(new Array());
+        [this.parent, this.setParent] = 
+            createSignal<FazElementItem | undefined>();
         this.content = undefined;
         for (let attribute of this.attributes) {
             switch (attribute.name) {
@@ -97,6 +100,12 @@ export class FazElementItem extends HTMLElement {
         }
     }
 
+    get activeItems() {
+        return this.items().filter(item => {
+            return item.active()
+        })
+    }
+
     get link() {
         // From: https://stackoverflow.com/a/66717705/2887989
         let voidHref = "#!";
@@ -141,7 +150,7 @@ export class FazElementItem extends HTMLElement {
         return this.childPrefix.concat("-", this.id);
     }
 
-    get contentChild() {
+    get contentChild(): ChildNode | undefined | null {
         return this.firstChild;
     }
 
@@ -177,7 +186,7 @@ export class FazElementItem extends HTMLElement {
                     const items = this.items()
                     items.push(item);
                     this.setItems(items);
-                    item.parent = this;
+                    item.setParent(this);
                     item.dataset['parent'] = this.id;
                 }
             })

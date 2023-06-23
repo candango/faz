@@ -14,70 +14,138 @@
  * limitations under the License.
  */
 
-import { render } from "solid-js/web";
 import { FazElementItem } from "../item";
+import FazNavElement from "./nav";
+import { Accessor, createSignal, Setter } from "solid-js";
+import { render } from "solid-js/web";
  
 
 export default class FazNavItemElement extends FazElementItem {
 
+    public linkClasses: Accessor<string>;
+    public setLinkClasses: Setter<string>;
+
     constructor() {
         super();
+        [this.linkClasses, this.setLinkClasses] = createSignal("");
     }
 
     get contentChild() {
         if (this.content === undefined) {
-            return this.firstChild;
+            return this.children[0].firstChild;
         }
-        return this.children[1];
+        return this.children[0].children[1];
     }
 
     get isRoot() {
-        if (this.parent !== undefined) {
-            if (this.parent.nodeName.toUpperCase() === "FAZ-NAV") {
+        if (this.parent() !== undefined) {
+            if (this.parent() instanceof FazNavElement) {
                 return true;
             }
         }
         return false;
     }
 
-    get isDropDown() {
-        return this.items.length > 0
+    get isDropdown() {
+        return this.items().length > 0
     }
 
     get classNames() {
-        const classes = [ "nav-link" ];
+        const classes = [];
+        if(this.isRoot) {
+            classes.push("nav-item");
+            if (this.isDropdown) {
+                classes.push("dropdown")
+            }
+        } else {
+            if (this.isDropdown) {
+                classes.push("dropdown-submenu")
+            }
+        }
         if (this.active()) {
             classes.push("active");
         }
         if (this.disabled) {
             classes.push("disabled");
         }
-        if (this.isRoot) {
-            console.log("is root", this);
-        }
         this.setClasses(classes.join(" "));
-        // if (props.element.isDropDown){
-        //     classes.push("") 
-        // }
         return this.classes();
     }
 
+    get linkClassNames() {
+        let classes = ["nav-link"];
 
-    itemClick() {
-        this.parent?.items().forEach(item => {
-            if (item.isEqualNode(this)) {
-                (item as FazNavItemElement).setActive(true);
-                return;
+        if (!this.isRoot) {
+            classes.pop();
+            classes.push("dropdown-item");
+        }
+
+        if (this.active()) {
+            // this.root.current = this
+            classes.push("active");
+        }
+        if (this.disabled) {
+            classes.push("disabled");
+        }
+        if (this.isDropdown) {
+            classes.push("dropdown-toggle");
+        }
+        this.setLinkClasses(classes.join(" "));
+        return this.linkClasses();
+    }
+
+    get dropdownClassNames() {
+        let classes = ["dropdown-menu"]
+        if (this.active() && this.isDropdown) {
+            classes.push("show")
+        }
+        return classes.join(" ")
+    }
+
+    get roleType() {
+        if (this.isDropdown && this.isRoot) {
+            return "button"
+        }
+        if (!this.isDropdown && !this.isRoot) {
+            return "tab"
+        }
+    }
+
+    itemClick(_: Event) {
+        this.parent()?.activeItems.forEach(item => {
+            if (item instanceof FazNavItemElement) {
+                (item as FazNavItemElement).setActive(false);
             }
-            (item as FazNavItemElement).setActive(false);
         });
+        this.setActive(true);
+        if (this.isDropdown) {
+            console.log(this.items())
+        }
     }
 
     show() {
-        const navItem = <><a class={this.classNames} 
-            onClick={() => this.itemClick()} href={this.link} >{this.content}
-            </a><ul class="dropdown-menu"></ul></>;
+            // <li className={this.classNames} id={this.containerId}>
+            //     <a id={this.state.id} className={this.linkClassNames}
+            //        role={this.role} target={this.state.target} href={this.link}
+            //        onClick={(event) => {this.handleClick(event)}}
+            //        aria-expanded={this.ariaExpanded}
+            //        data-bs-toggle={this.dataBsToggle}
+            //     >{this.content}</a>
+            //     {this.isDropdown ? this.renderItems() : ""}
+            // </li>
+        let dropDown = <></>;
+        if (this.isDropdown) {
+            dropDown = <></>;
+        }
+        const navItem = <li id={`nav_item_container${this.id}`} 
+            class={this.classNames}>
+            <a id={`nav_item_link${this.id}`} class={this.linkClassNames} 
+            role={this.roleType} href={this.link}
+            onClick={(e) => this.itemClick(e)}>{this.content}
+            </a><ul class={this.dropdownClassNames}></ul></li>;
+            
         render(() => navItem, this); 
+        this.classList.add("nav-item");
     }
 }
 
