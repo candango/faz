@@ -23,10 +23,13 @@ export default class FazNavElement extends FazElementItem {
     
     public fill: Accessor<boolean>;
     public setFill: Setter<boolean>;
+
     public justify: Accessor<string>;
     public setJustify: Setter<string>;
+ 
     public pills: Accessor<boolean>;
     public setPills: Setter<boolean>;
+ 
     public vertical: Accessor<boolean>;
     public setVertical: Setter<boolean>;
 
@@ -84,9 +87,9 @@ export default class FazNavElement extends FazElementItem {
         return this.classes();
     }
 
-
     show() {
-        render(() => <ul id={`nav${this.id}`} class={this.classNames} role="tablist" >
+        render(() => <ul id={`nav${this.id}`} class={this.classNames} 
+            role="tablist" >
         </ul>, this);
         this.classList.add("faz-nav-rendered");
     }

@@ -18,7 +18,7 @@ import { FazElementItem } from "../item";
 import FazNavElement from "./nav";
 import { Accessor, createSignal, Setter } from "solid-js";
 import { render } from "solid-js/web";
- 
+
 
 export default class FazNavItemElement extends FazElementItem {
 
@@ -111,6 +111,14 @@ export default class FazNavItemElement extends FazElementItem {
         }
     }
 
+    addChild<T extends Node>(node: T): T {
+        if (node instanceof FazNavItemElement) {
+            return node;
+        }
+        this.contentChild?.appendChild(node)
+        return node; 
+    }
+
     itemClick(_: Event) {
         this.parent()?.activeItems.forEach(item => {
             if (item instanceof FazNavItemElement) {
@@ -121,6 +129,12 @@ export default class FazNavItemElement extends FazElementItem {
         if (this.isDropdown) {
             console.log(this.items())
         }
+    }
+
+    get navItemItems() {
+        return this.items().filter(item => {
+            return item instanceof FazNavItemElement;
+        })
     }
 
     show() {
@@ -144,8 +158,22 @@ export default class FazNavItemElement extends FazElementItem {
             onClick={(e) => this.itemClick(e)}>{this.content}
             </a><ul class={this.dropdownClassNames}></ul></li>;
             
-        render(() => navItem, this); 
+        render(() => navItem, this);
         this.classList.add("nav-item");
+    }
+
+    afterShow(children: Node[]): void {
+        super.afterShow(children);
+        // TODO: this element is bing cleaned because it is repeting the 
+        // dropdown on a dropdown-menu 
+        while(this.children[0].children[1].firstChild) {
+            this.children[0].children[1].removeChild(
+                this.children[0].children[1].firstChild
+            );
+        }
+        this.navItemItems.forEach(item => {
+            this.children[0].children[1].appendChild(item);
+        });
     }
 }
 

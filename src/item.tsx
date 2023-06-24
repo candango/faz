@@ -29,17 +29,16 @@ export class FazElementItem extends HTMLElement {
     public items: Accessor<Array<FazElementItem>>;
     public setItems: Setter<Array<FazElementItem>>;
 
+    public parent: Accessor<FazElementItem | undefined>;
+    public setParent: any;
+
     public content: any;
     public debug: boolean = false;
     public disabled: boolean = false;
     public isLoading: boolean;
     public detach: boolean;
     private href: string | undefined;
-    public childItemDepthLimit;
     public childPrefix: string;
-    public parent: Accessor<FazElementItem | undefined>;
-    public setParent: any;
-    public reactItem: any;
     public source: any;
 
     constructor() {
@@ -79,8 +78,6 @@ export class FazElementItem extends HTMLElement {
         this.isLoading = true;
         this.detach = false;
         this.dataset['faz_element_item'] = this.tagName;
-        this.childItemDepthLimit = 5;
-        this.reactItem = undefined;
         this.childPrefix = "__child-prefix__";
         if (this.source) {
             console.debug(
@@ -102,7 +99,7 @@ export class FazElementItem extends HTMLElement {
 
     get activeItems() {
         return this.items().filter(item => {
-            return item.active()
+            return item.active();
         })
     }
 
@@ -154,43 +151,23 @@ export class FazElementItem extends HTMLElement {
         return this.firstChild;
     }
 
-    connectedCallback() {
-        this.isLoading = false;
-        this.load();
-        const children = this.beforeShow();
-        this.show();
-        this.afterShow(children);
+    addChild<T extends Node>(node: T): T {
+        this.contentChild?.appendChild(node)
+        return node; 
     }
-
-    /**
-     * A faz item html node is a node that has a tag name and starts with our
-     * prefix.
-     */
-    isFazItem(node: HTMLElement) {
-        if (node === undefined) {
-            node = this;
-        }
-        return node instanceof FazElementItem;
-    }
-
-    load() {}
-
+ 
     afterShow(children:Node[]) {
         children.forEach(child => {
-            this.contentChild?.appendChild(child);
             const item = child as FazElementItem;
-            new Promise((resolve) => {
-                 setTimeout(()=>resolve(null), 0);
-            }).then(()=> {
-                if (item instanceof FazElementItem) {
-                    const items = this.items()
-                    items.push(item);
-                    this.setItems(items);
-                    item.setParent(this);
-                    item.dataset['parent'] = this.id;
-                }
-            })
-        })
+            this.addChild(child);
+            if (item instanceof FazElementItem) {
+            const items = this.items()
+            items.push(item);
+            this.setItems(items);
+            item.setParent(this);
+            item.dataset['parent'] = this.id;
+            }
+        });
     }
 
     beforeShow() { 
@@ -202,15 +179,20 @@ export class FazElementItem extends HTMLElement {
         return children;
     }
 
+    connectedCallback() {
+        this.isLoading = false;
+        this.load();
+        const children = this.beforeShow();
+        this.show();
+        new Promise((resolve) => {
+            setTimeout(()=>resolve(null), 0);
+        }).then(()=> {
+            this.afterShow(children);
+        });
+    }
+
+    load() {}
+
     show() {}
 
-    contentLoaded(event: Event) {}
-
-    cleanFazTag() {
-        let parentElement = this.parentElement;
-        this.childNodes.forEach((node) => {
-            parentElement?.append(node);
-        });
-        parentElement?.removeChild(this);
-    }
 }
