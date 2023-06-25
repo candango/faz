@@ -55,17 +55,17 @@ export default class FazNavItemElement extends FazElementItem {
         if(this.isRoot) {
             classes.push("nav-item");
             if (this.isDropdown) {
-                classes.push("dropdown")
+                classes.push("dropdown");
             }
         } else {
             if (this.isDropdown) {
-                classes.push("dropdown-submenu")
+                classes.push("dropdown-submenu");
             }
         }
         if (this.active()) {
             classes.push("active");
         }
-        if (this.disabled) {
+        if (this.disabled()) {
             classes.push("disabled");
         }
         this.setClasses(classes.join(" "));
@@ -80,11 +80,11 @@ export default class FazNavItemElement extends FazElementItem {
             classes.push("dropdown-item");
         }
 
-        if (this.active()) {
+        if (this.active() && !this.disabled()) {
             // this.root.current = this
             classes.push("active");
         }
-        if (this.disabled) {
+        if (this.disabled()) {
             classes.push("disabled");
         }
         if (this.isDropdown) {
@@ -95,19 +95,19 @@ export default class FazNavItemElement extends FazElementItem {
     }
 
     get dropdownClassNames() {
-        let classes = ["dropdown-menu"]
-        if (this.active() && this.isDropdown) {
-            classes.push("show")
+        let classes = ["dropdown-menu"];
+        if (this.active() && this.isDropdown && !this.disabled()) {
+            classes.push("show");
         }
-        return classes.join(" ")
+        return classes.join(" ");
     }
 
     get roleType() {
         if (this.isDropdown && this.isRoot) {
-            return "button"
+            return "button";
         }
         if (!this.isDropdown && !this.isRoot) {
-            return "tab"
+            return "tab";
         }
     }
 
@@ -115,20 +115,28 @@ export default class FazNavItemElement extends FazElementItem {
         if (node instanceof FazNavItemElement) {
             return node;
         }
-        this.contentChild?.appendChild(node)
+        this.contentChild?.appendChild(node);
         return node; 
+    }
+
+    deactivate() {
+        this.setActive(false);
+        if (this.isDropdown) {
+            this.activeItems.forEach(item => {
+                if (item instanceof FazNavItemElement) {
+                    (item as FazNavItemElement).deactivate();
+                }
+            });
+        }
     }
 
     itemClick(_: Event) {
         this.parent()?.activeItems.forEach(item => {
             if (item instanceof FazNavItemElement) {
-                (item as FazNavItemElement).setActive(false);
+                (item as FazNavItemElement).deactivate();
             }
         });
         this.setActive(true);
-        if (this.isDropdown) {
-            console.log(this.items())
-        }
     }
 
     get navItemItems() {
@@ -147,10 +155,6 @@ export default class FazNavItemElement extends FazElementItem {
             //     >{this.content}</a>
             //     {this.isDropdown ? this.renderItems() : ""}
             // </li>
-        let dropDown = <></>;
-        if (this.isDropdown) {
-            dropDown = <></>;
-        }
         const navItem = <li id={`nav_item_container${this.id}`} 
             class={this.classNames}>
             <a id={`nav_item_link${this.id}`} class={this.linkClassNames} 
@@ -174,6 +178,10 @@ export default class FazNavItemElement extends FazElementItem {
         this.navItemItems.forEach(item => {
             this.children[0].children[1].appendChild(item);
         });
+        // TODO: doing this to force this.classNames update
+        const active = this.active();
+        this.setActive(!active);
+        this.setActive(active);
     }
 }
 

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { render } from "solid-js/web"
-import { FazElementItem } from "../item"
+import { render } from "solid-js/web";
+import { FazElementItem } from "../item";
 
 
 export default class FazBsAlert extends FazElementItem {
     constructor() {
-        super()
+        super();
     }
 
     show() {
-        const classList = ["alert", "alert-primary", "buga"].join(" ")
-        const role = "alert"
-        render(() => <div class={classList} role={role}></div>, this) 
-        this.classList.add("faz-bs-alert-rendered")
+        const classList = ["alert", "alert-primary"].join(" ");
+        const role = "alert";
+        render(() => <div class={classList} role={role}></div>, this);
+        this.classList.add("faz-bs-alert-rendered");
     }
 }
 
-customElements.define("faz-bs-alert", FazBsAlert)
+customElements.define("faz-bs-alert", FazBsAlert);

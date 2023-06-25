@@ -26,6 +26,9 @@ export class FazElementItem extends HTMLElement {
     public classes: Accessor<string>;
     public setClasses: Setter<string>;
 
+    public disabled: Accessor<boolean>;
+    public setDisabled: Setter<boolean>;
+
     public items: Accessor<Array<FazElementItem>>;
     public setItems: Setter<Array<FazElementItem>>;
 
@@ -34,7 +37,6 @@ export class FazElementItem extends HTMLElement {
 
     public content: any;
     public debug: boolean = false;
-    public disabled: boolean = false;
     public isLoading: boolean;
     public detach: boolean;
     private href: string | undefined;
@@ -45,6 +47,7 @@ export class FazElementItem extends HTMLElement {
         super();
         [this.active, this.setActive] = createSignal<boolean>(false);
         [this.classes, this.setClasses] = createSignal("");
+        [this.disabled, this.setDisabled] = createSignal(false);
         [this.items, this.setItems] =
             createSignal<Array<FazElementItem>>(new Array());
         [this.parent, this.setParent] = 
@@ -59,7 +62,7 @@ export class FazElementItem extends HTMLElement {
                     this.content = attribute.value;
                     break;
                 case "disabled":
-                    this.disabled = attribute.value.toLowerCase() === "true";
+                    this.setDisabled(attribute.value.toLowerCase() === "true");
                     break;
                 case "id":
                 case "fazid":
@@ -106,7 +109,7 @@ export class FazElementItem extends HTMLElement {
     get link() {
         // From: https://stackoverflow.com/a/66717705/2887989
         let voidHref = "#!";
-        if (this.disabled || this.href === undefined) {
+        if (this.disabled() || this.href === undefined) {
             return voidHref;
         }
         return this.href;
@@ -121,7 +124,7 @@ export class FazElementItem extends HTMLElement {
         props['element'] = this;
         props['active'] = this.active();
         props['debug'] = false;
-        props['disabled'] = this.disabled;
+        props['disabled'] = this.disabled();
         props['content'] = this.content ? this.content : this.innerHTML;
         let boolProperties = ["debug"];
         for (const attribute of this.attributes) {
