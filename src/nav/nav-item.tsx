@@ -18,6 +18,7 @@ import { FazElementItem } from "../item";
 import FazNavElement from "./nav";
 import { Accessor, createSignal, Setter } from "solid-js";
 import { render } from "solid-js/web";
+import FazNavItemContentElement from "./nav-item-content";
 
 
 export default class FazNavItemElement extends FazElementItem {
@@ -31,7 +32,7 @@ export default class FazNavItemElement extends FazElementItem {
     }
 
     get contentChild() {
-        if (this.content === undefined) {
+        if (this.content() === undefined) {
             return this.children[0].firstChild;
         }
         return this.children[0].children[1];
@@ -47,7 +48,7 @@ export default class FazNavItemElement extends FazElementItem {
     }
 
     get isDropdown() {
-        return this.items().length > 0
+        return !this.loading() && this.items().length > 0;
     }
 
     get classNames() {
@@ -111,8 +112,51 @@ export default class FazNavItemElement extends FazElementItem {
         }
     }
 
+    get navItemItems() {
+        return this.items().filter(item => {
+            return item instanceof FazNavItemElement;
+        });
+    }
+
+    get ariaExpandedValue() {
+        if (this.isDropdown) {
+            return this.active();
+        }
+    }
+
+    get dataBsToggleValue() {
+        if (this.isDropdown && this.isRoot) {
+            return "dropdown";
+        }
+    }
+
     addChild<T extends Node>(node: T): T {
+        if (this.isDropdown) {
+            // console.log(this.isDropdown, this)
+            if (!this.isRoot) {                
+                // TODO: Figure out why this is happening and fix
+                if (node.nodeName === "LI") {
+                    const nodeId = ((node as Node) as HTMLElement).id;
+                    const firstChildId = ((this.firstChild as Node) as
+                        HTMLElement).id;
+                    if (nodeId === firstChildId) {
+                        return node;
+                    }
+                }
+            }
+            if (this.content() !== undefined || this.content() !== null) {
+                if (node instanceof FazNavItemContentElement) {
+                    this.children[0].firstChild?.appendChild(node);
+                    return node;
+                }
+                if (node instanceof FazNavItemElement) {
+                    this.children[0].children[1].appendChild(node);
+                    return node;
+                }
+            }
+        }
         if (node instanceof FazNavItemElement) {
+            this.children[0].children[1].appendChild(node);
             return node;
         }
         this.contentChild?.appendChild(node);
@@ -139,12 +183,6 @@ export default class FazNavItemElement extends FazElementItem {
         this.setActive(true);
     }
 
-    get navItemItems() {
-        return this.items().filter(item => {
-            return item instanceof FazNavItemElement;
-        })
-    }
-
     show() {
             // <li className={this.classNames} id={this.containerId}>
             //     <a id={this.state.id} className={this.linkClassNames}
@@ -159,29 +197,11 @@ export default class FazNavItemElement extends FazElementItem {
             class={this.classNames}>
             <a id={`nav_item_link${this.id}`} class={this.linkClassNames} 
             role={this.roleType} href={this.link}
-            onClick={(e) => this.itemClick(e)}>{this.content}
+            onClick={(e) => this.itemClick(e)}>{this.content()} 
             </a><ul class={this.dropdownClassNames}></ul></li>;
             
         render(() => navItem, this);
         this.classList.add("nav-item");
-    }
-
-    afterShow(children: Node[]): void {
-        super.afterShow(children);
-        // TODO: this element is bing cleaned because it is repeting the 
-        // dropdown on a dropdown-menu 
-        while(this.children[0].children[1].firstChild) {
-            this.children[0].children[1].removeChild(
-                this.children[0].children[1].firstChild
-            );
-        }
-        this.navItemItems.forEach(item => {
-            this.children[0].children[1].appendChild(item);
-        });
-        // TODO: doing this to force this.classNames update
-        const active = this.active();
-        this.setActive(!active);
-        this.setActive(active);
     }
 }
 

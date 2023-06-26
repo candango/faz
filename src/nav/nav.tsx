@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { FazElementItem } from "../item"
+import { FazElementItem } from "../item";
 import { Accessor, createSignal, Setter } from "solid-js";
-import { render } from "solid-js/web"
+import { render } from "solid-js/web";
 
  
 export default class FazNavElement extends FazElementItem {
@@ -62,7 +62,7 @@ export default class FazNavElement extends FazElementItem {
         if (this.active()) {
             classes.push("active");
         }
-        if (this.disabled) {
+        if (this.disabled()) {
             classes.push("disabled");
         }
         if (this.pills()) {

@@ -26,40 +26,49 @@ export class FazElementItem extends HTMLElement {
     public classes: Accessor<string>;
     public setClasses: Setter<string>;
 
+    public content: Accessor<string|undefined>;
+    public setContent: Setter<string|undefined>;
+
     public disabled: Accessor<boolean>;
     public setDisabled: Setter<boolean>;
 
     public items: Accessor<Array<FazElementItem>>;
     public setItems: Setter<Array<FazElementItem>>;
 
+    public loading: Accessor<boolean>;
+    public setLoading: Setter<boolean>;
+
     public parent: Accessor<FazElementItem | undefined>;
     public setParent: any;
 
-    public content: any;
     public debug: boolean = false;
-    public isLoading: boolean;
-    public detach: boolean;
+    public isLoading: boolean = true;
+    public detach: boolean = false;
     private href: string | undefined;
-    public childPrefix: string;
+    public childPrefix: string = "";
     public source: any;
 
     constructor() {
         super();
         [this.active, this.setActive] = createSignal<boolean>(false);
         [this.classes, this.setClasses] = createSignal("");
+        [this.content, this.setContent] = createSignal(undefined);
         [this.disabled, this.setDisabled] = createSignal(false);
         [this.items, this.setItems] =
             createSignal<Array<FazElementItem>>(new Array());
+        [this.loading, this.setLoading] = createSignal(true);
         [this.parent, this.setParent] = 
             createSignal<FazElementItem | undefined>();
-        this.content = undefined;
+        if (!this.id) {
+            this.id = randomId();
+        }
         for (let attribute of this.attributes) {
             switch (attribute.name) {
                 case "active":
                     this.setActive(attribute.value.toLowerCase() === "true");
                     break;
                 case "content":
-                    this.content = attribute.value;
+                    this.setContent(attribute.value);
                     break;
                 case "disabled":
                     this.setDisabled(attribute.value.toLowerCase() === "true");
@@ -75,9 +84,6 @@ export class FazElementItem extends HTMLElement {
             }
         }
 
-        if (!this.id) {
-            this.id = randomId();
-        }
         this.isLoading = true;
         this.detach = false;
         this.dataset['faz_element_item'] = this.tagName;
@@ -114,10 +120,6 @@ export class FazElementItem extends HTMLElement {
         }
         return this.href;
     }
-    // get parent() {
-    //     let fazParentId = this.dataset["fazParentId"]
-    //     return fazParentId ? document.getElementById(fazParentId) : undefined
-    // }
 
     attributesToProps(addProps: any = []) {
         let props: any = [];
@@ -125,7 +127,7 @@ export class FazElementItem extends HTMLElement {
         props['active'] = this.active();
         props['debug'] = false;
         props['disabled'] = this.disabled();
-        props['content'] = this.content ? this.content : this.innerHTML;
+        props['content'] = this.content() ? this.content() : this.innerHTML;
         let boolProperties = ["debug"];
         for (const attribute of this.attributes) {
             if (includes(boolProperties, attribute.name.toLowerCase())) {
@@ -150,7 +152,7 @@ export class FazElementItem extends HTMLElement {
         return this.childPrefix.concat("-", this.id);
     }
 
-    get contentChild(): ChildNode | undefined | null {
+    get contentChild(): ChildNode | null {
         return this.firstChild;
     }
 
@@ -161,16 +163,17 @@ export class FazElementItem extends HTMLElement {
  
     afterShow(children:Node[]) {
         children.forEach(child => {
-            const item = child as FazElementItem;
             this.addChild(child);
-            if (item instanceof FazElementItem) {
-            const items = this.items()
-            items.push(item);
-            this.setItems(items);
-            item.setParent(this);
-            item.dataset['parent'] = this.id;
+            if (child instanceof FazElementItem) {
+                const item = child as FazElementItem;
+                item.setParent(this);
+                const items = this.items()
+                items.push(item);
+                this.setItems(items);
+                item.dataset['parent'] = this.id;
             }
         });
+        this.setLoading(false);
     }
 
     beforeShow() { 
