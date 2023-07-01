@@ -26,6 +26,8 @@ export default class FazNavItemElement extends FazElementItem {
     public linkClasses: Accessor<string>;
     public setLinkClasses: Setter<string>;
 
+    public previousItem: FazNavItemElement | undefined;
+
     constructor() {
         super();
         [this.linkClasses, this.setLinkClasses] = createSignal("");
@@ -80,10 +82,11 @@ export default class FazNavItemElement extends FazElementItem {
             classes.pop();
             classes.push("dropdown-item");
         }
-
         if (this.active() && !this.disabled()) {
-            // this.root.current = this
             classes.push("active");
+            if (this.root) {
+                this.root.current = this;
+            }
         }
         if (this.disabled()) {
             classes.push("disabled");
@@ -110,6 +113,16 @@ export default class FazNavItemElement extends FazElementItem {
         if (!this.isDropdown && !this.isRoot) {
             return "tab";
         }
+    }
+
+    get root(): FazNavElement | undefined {
+        if (this.isRoot) {
+            return this.parent() as FazNavElement;
+        }
+        if (!this.parent()) {
+            return undefined;
+        }
+        return (this.parent() as FazNavItemElement).root;
     }
 
     get navItemItems() {
@@ -164,11 +177,13 @@ export default class FazNavItemElement extends FazElementItem {
     }
 
     deactivate() {
+        this.previousItem = undefined;
         this.setActive(false);
         if (this.isDropdown) {
-            this.activeItems.forEach(item => {
-                if (item instanceof FazNavItemElement) {
-                    (item as FazNavItemElement).deactivate();
+            this.activeItems.forEach(activeItem => {
+                if (activeItem instanceof FazNavItemElement) {
+                    const item = activeItem as FazNavItemElement;
+                    item.deactivate();
                 }
             });
         }
@@ -177,6 +192,7 @@ export default class FazNavItemElement extends FazElementItem {
     itemClick(_: Event) {
         this.parent()?.activeItems.forEach(item => {
             if (item instanceof FazNavItemElement) {
+                this.previousItem = item;
                 (item as FazNavItemElement).deactivate();
             }
         });
@@ -197,7 +213,9 @@ export default class FazNavItemElement extends FazElementItem {
             class={this.classNames}>
             <a id={`nav_item_link${this.id}`} class={this.linkClassNames} 
             role={this.roleType} href={this.link}
-            onClick={(e) => this.itemClick(e)}>{this.content()} 
+            onClick={(e) => this.itemClick(e)}
+            aria-expaded={this.ariaExpandedValue}
+            data-bs-toggle={this.dataBsToggleValue}>{this.content()} 
             </a><ul class={this.dropdownClassNames}></ul></li>;
             
         render(() => navItem, this);

@@ -17,10 +17,13 @@
 import { FazElementItem } from "../item";
 import { Accessor, createSignal, Setter } from "solid-js";
 import { render } from "solid-js/web";
+import FazNavItemElement from "./nav-item";
 
  
 export default class FazNavElement extends FazElementItem {
     
+    public current: FazNavItemElement | undefined;
+
     public fill: Accessor<boolean>;
     public setFill: Setter<boolean>;
 
@@ -32,6 +35,8 @@ export default class FazNavElement extends FazElementItem {
  
     public vertical: Accessor<boolean>;
     public setVertical: Setter<boolean>;
+
+    private timeout: NodeJS.Timeout | undefined;
 
     constructor() {
         super();
@@ -55,6 +60,10 @@ export default class FazNavElement extends FazElementItem {
                     break;
             }
         }
+    }
+
+    get contentChild() {
+        return this.children[0].firstChild;
     }
 
     get classNames() {
@@ -87,10 +96,38 @@ export default class FazNavElement extends FazElementItem {
         return this.classes();
     }
 
+    get onEdge() {
+        if(!this.isLoading && this.current) {
+            return !this.current?.isDropdown;
+        }
+        return false;
+    }
+
+    beOverMe(_: Event) {
+        clearTimeout(this.timeout);
+    }
+
+    leaveMe(_: Event) {
+        clearTimeout(this.timeout)
+        this.timeout = setTimeout(() => {
+            this.activeItems.forEach(item => {
+                const navItem = item as FazNavItemElement;
+                if (navItem.isDropdown && !this.onEdge) {
+                    navItem.deactivate();
+                }
+            })
+        }, 250);
+    }
+
     show() {
-        render(() => <ul id={`nav${this.id}`} class={this.classNames} 
-            role="tablist" >
-        </ul>, this);
+        render(() => <div onMouseOver={(e) => this.beOverMe(e)}
+            onMouseLeave={(e) => this.leaveMe(e)}
+            class="faz-nav-container" id={`nav-container${this.id}`}>
+            <ul 
+                id={`nav${this.id}`} class={this.classNames} 
+                role="tablist" >
+            </ul>
+        </div>, this);
         this.classList.add("faz-nav-rendered");
     }
 }
