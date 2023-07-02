@@ -23,7 +23,7 @@
         "lodash": "4.17.21",
         "prop-types": "15.8.1",
         "solid-bootstrap": "1.0.13",
-        "solid-js": "1.7.5"
+        "solid-js": "1.7.7"
     },
     "devDependencies": {
         "@codemirror/lang-html": "6.4.3",
