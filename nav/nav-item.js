@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2022 Flávio Gonçalves Garcia
+ * Copyright 2018-2023 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 import {FazReactItem} from "../item";
 import React from 'react'
+import FazNavElement from "./nav";
 
 
 export default class FazNavItemReact extends FazReactItem {
