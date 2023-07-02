@@ -25,19 +25,20 @@ declare global {
     }
 }
 
+// TODO: Apply this theme https://palettes.shecodes.io/palettes/1313
 window.codemirrorit = function (id:string) {
     let referenceNode = document.getElementById(id) || document.body;
 
     let theme = EditorView.theme({
         "&": {
-            color: "black",
-            backgroundColor: "#cfe2ff"
+            color: "#ececec",
+            backgroundColor: "#142d4c"
         },
         ".cm-content": {
-            caretColor: "#0e9"
+            caretColor: "#ececec"
         },
         "&.cm-focused .cm-cursor": {
-            borderLeftColor: "#0e9"
+            borderLeftColor: "#ececec"
         },
         "&.cm-focused .cm-selectionBackground, ::selection": {
             backgroundColor: "#074"
@@ -47,7 +48,7 @@ window.codemirrorit = function (id:string) {
             color: "#ddd",
             border: "none"
         }
-    }, { dark: true })
+    }, { dark: true });
 
     new EditorView({
         doc: referenceNode.innerHTML,
