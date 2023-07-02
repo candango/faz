@@ -16,25 +16,23 @@
 
 import * as esbuild from "esbuild";
 import { assets } from "./assets.mjs";
-import { entryPoints } from "./entryPoints.mjs";
+import {entryPoints} from "./entryPoints.mjs";
 import { copy } from "esbuild-plugin-copy";
 import { solidPlugin } from "esbuild-plugin-solid";
 
-let ctx = await esbuild.context({
+await esbuild.build({
     entryPoints: entryPoints,
     bundle: true,
     minify: true,
     write: true,
     treeShaking: true,
     sourcemap: true,
-    logLevel: "info",
     outdir: "dist",
+    logLevel: "info",
     legalComments: "none",
     allowOverwrite: true,
     plugins:[
         copy(assets),
         solidPlugin()
     ]
-});
-
-await ctx.watch();
+}).catch(() => process.exit(1));

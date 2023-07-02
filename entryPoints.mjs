@@ -17,23 +17,8 @@
 export const entryPoints =  [
     { out: "alert-solid.bundle", in: "src/app/alert.tsx" },
     { out: "nav-solid.bundle", in: "src/app/nav.tsx" },
-    { out: "global.bundle", in: "app/global.js" },
+    { out: "global.bundle", in: "src/app/global.ts" },
 
     { out: "css/faz", in: "stylesheets/faz.css"},
     { out: "css/showcase", in: "stylesheets/showcase.css"},
-
-    { out: "vendor/bootstrap.min", in:
-        "node_modules/bootstrap/dist/js/bootstrap.min.js"},
-    { out: "vendor/css/bootstrap.min", in:
-        "node_modules/bootstrap/dist/css/bootstrap.min.css"},
-    { out: "vendor/jquery.min", in:
-        "node_modules/jquery/dist/jquery.min.js"},
-    { out: "vendor/popper.min", in:
-        "node_modules/@popperjs/core/dist/umd/popper.min.js"},
-    { out: "vendor/codemirror", in:
-        "node_modules/codemirror/lib/codemirror.js"},
-    { out: "vendor/codemirror_mode_xml", in:
-        "node_modules/codemirror/mode/xml/xml.js"},
-    { out: "vendor/css/codemirror", in:
-        "node_modules/codemirror/lib/codemirror.css"},
 ]
