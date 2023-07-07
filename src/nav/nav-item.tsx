@@ -18,7 +18,6 @@ import { FazElementItem } from "../item";
 import FazNavElement from "./nav";
 import { Accessor, createSignal, Setter } from "solid-js";
 import { render } from "solid-js/web";
-import FazNavItemContentElement from "./nav-item-content";
 
 
 export default class FazNavItemElement extends FazElementItem {
@@ -56,6 +55,12 @@ export default class FazNavItemElement extends FazElementItem {
     get classNames() {
         const classes = [];
         if(this.isRoot) {
+            if (this.root?.hasTabs) {
+                if (this.root?.activeNavItem === null) {
+                    (this.root?.navItemItems[0] as 
+                        FazNavItemElement).activate();
+                }
+            }
             classes.push("nav-item");
             if (this.isDropdown) {
                 classes.push("dropdown");
@@ -73,6 +78,15 @@ export default class FazNavItemElement extends FazElementItem {
         }
         this.setClasses(classes.join(" "));
         return this.classes();
+    }
+
+    get link() {
+        if (!this.isDropdown) {
+            if (this.isRoot && this.root?.hasTabs) {
+                return `#${super.link}`
+            }
+        }
+        return super.link;
     }
 
     get linkClassNames() {
@@ -144,30 +158,6 @@ export default class FazNavItemElement extends FazElementItem {
     }
 
     addChild<T extends Node>(node: T): T {
-        if (this.isDropdown) {
-            // console.log(this.isDropdown, this)
-            if (!this.isRoot) {                
-                // TODO: Figure out why this is happening and fix
-                if (node.nodeName === "LI") {
-                    const nodeId = ((node as Node) as HTMLElement).id;
-                    const firstChildId = ((this.firstChild as Node) as
-                        HTMLElement).id;
-                    if (nodeId === firstChildId) {
-                        return node;
-                    }
-                }
-            }
-            if (this.content() !== undefined || this.content() !== null) {
-                if (node instanceof FazNavItemContentElement) {
-                    this.children[0].firstChild?.appendChild(node);
-                    return node;
-                }
-                if (node instanceof FazNavItemElement) {
-                    this.children[0].children[1].appendChild(node);
-                    return node;
-                }
-            }
-        }
         if (node instanceof FazNavItemElement) {
             this.children[0].children[1].appendChild(node);
             return node;
@@ -189,7 +179,7 @@ export default class FazNavItemElement extends FazElementItem {
         }
     }
 
-    itemClick(_: Event) {
+    activate() {
         this.parent()?.activeItems.forEach(item => {
             if (item instanceof FazNavItemElement) {
                 this.previousItem = item;
@@ -197,6 +187,10 @@ export default class FazNavItemElement extends FazElementItem {
             }
         });
         this.setActive(true);
+    }
+
+    itemClick(_: Event) {
+        this.activate();
     }
 
     show() {

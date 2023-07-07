@@ -15,6 +15,7 @@
  */
 
 import { FazElementItem } from "../item";
+import FazNavTabElement from "./nav-tab";
 import { Accessor, createSignal, Setter } from "solid-js";
 import { render } from "solid-js/web";
 import FazNavItemElement from "./nav-item";
@@ -36,6 +37,9 @@ export default class FazNavElement extends FazElementItem {
     public vertical: Accessor<boolean>;
     public setVertical: Setter<boolean>;
 
+    public tabClasses: Accessor<string>;
+    public setTabClasses: Setter<string>;
+
     private timeout: NodeJS.Timeout | undefined;
 
     constructor() {
@@ -44,6 +48,7 @@ export default class FazNavElement extends FazElementItem {
         [this.pills, this.setPills] = createSignal<boolean>(false);
         [this.vertical, this.setVertical] = createSignal<boolean>(false);
         [this.justify, this.setJustify] = createSignal<string>("");
+        [this.tabClasses, this.setTabClasses] = createSignal<string>("");
         for (let attribute of this.attributes) {
             switch (attribute.name) {
                 case "fill":
@@ -62,14 +67,27 @@ export default class FazNavElement extends FazElementItem {
         }
     }
 
+    get activeNavItem() {
+        let active: FazNavItemElement | null = null;
+        this.navItemItems.forEach(item => {
+            if (item.active()) {
+                active = item as FazNavItemElement;
+                return;
+            }
+        });
+        return active;
+    }
+
     get contentChild() {
         return this.children[0].firstChild;
     }
 
     get classNames() {
         const classes = [ "nav" ];
-        if (this.active()) {
-            classes.push("active");
+        if (this.hasTabs) {
+            if (this.activeNavItem === null) {
+                this.navItemItems[0].setActive(true);
+            }
         }
         if (this.disabled()) {
             classes.push("disabled");
@@ -86,9 +104,9 @@ export default class FazNavElement extends FazElementItem {
         if (this.justify() === "right") {
             classes.push("justify-content-end");
         }
-        // if (this.hasTabs) {
-        //     classes.push("nav-tabs")
-        // }
+        if (this.hasTabs) {
+            classes.push("nav-tabs");
+        }
         if (this.vertical()) {
             classes.push("flex-column");
         }  
@@ -96,11 +114,37 @@ export default class FazNavElement extends FazElementItem {
         return this.classes();
     }
 
+    get hasTabs() {
+        return !this.loading() && this.tabItems.length > 0;
+    }
+
+    get navItemItems() {
+        return this.items().filter(item => {
+            return item instanceof FazNavItemElement;
+        });
+    }
+
     get onEdge() {
-        if(!this.isLoading && this.current) {
+        if(!this.loading() && this.current) {
             return !this.current?.isDropdown;
         }
         return false;
+    }
+
+    get tabClassNames() {
+        const classes = [ "tab-content" ];
+        
+        if (this.hasTabs) {
+            classes.push("buga")
+        }
+        this.setTabClasses(classes.join(" "));
+        return this.tabClasses();
+    }
+
+    get tabItems() {
+        return this.items().filter(item => {
+            return item instanceof FazNavTabElement;
+        });
     }
 
     beOverMe(_: Event) {
@@ -119,6 +163,10 @@ export default class FazNavElement extends FazElementItem {
         }, 250);
     }
 
+    renderTabs() {
+        return <div class="tab-content"></div>;
+    }
+
     show() {
         render(() => <div onMouseOver={(e) => this.beOverMe(e)}
             onMouseLeave={(e) => this.leaveMe(e)}
@@ -127,6 +175,7 @@ export default class FazNavElement extends FazElementItem {
                 id={`nav${this.id}`} class={this.classNames} 
                 role="tablist" >
             </ul>
+            <div class={this.tabClassNames}></div>
         </div>, this);
         this.classList.add("faz-nav-rendered");
     }

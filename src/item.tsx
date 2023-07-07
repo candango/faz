@@ -26,8 +26,8 @@ export class FazElementItem extends HTMLElement {
     public classes: Accessor<string>;
     public setClasses: Setter<string>;
 
-    public content: Accessor<string|undefined>;
-    public setContent: Setter<string|undefined>;
+    public content: Accessor<string | undefined>;
+    public setContent: Setter<string | undefined>;
 
     public disabled: Accessor<boolean>;
     public setDisabled: Setter<boolean>;
@@ -41,9 +41,8 @@ export class FazElementItem extends HTMLElement {
     public parent: Accessor<FazElementItem | undefined>;
     public setParent: any;
 
+    public renderedChild: ChildNode | null = null;
     public debug: boolean = false;
-    public isLoading: boolean = true;
-    public detach: boolean = false;
     private href: string | undefined;
     public childPrefix: string = "";
     public source: any;
@@ -83,9 +82,6 @@ export class FazElementItem extends HTMLElement {
                     break;
             }
         }
-
-        this.isLoading = true;
-        this.detach = false;
         this.dataset['faz_element_item'] = this.tagName;
         this.childPrefix = "__child-prefix__";
         if (this.source) {
@@ -160,36 +156,42 @@ export class FazElementItem extends HTMLElement {
         this.contentChild?.appendChild(node)
         return node; 
     }
- 
+
     afterShow(children:Node[]) {
-        children.forEach(child => {
-            this.addChild(child);
-            if (child instanceof FazElementItem) {
-                const item = child as FazElementItem;
-                item.setParent(this);
-                const items = this.items()
-                items.push(item);
-                this.setItems(items);
-                item.dataset['parent'] = this.id;
-            }
-        });
+        if (this.loading()) {
+            children.forEach(child => {
+                this.addChild(child);
+                if (child instanceof FazElementItem) {
+                    const item = child as FazElementItem;
+                    item.setParent(this);
+                    const items = this.items()
+                    items.push(item);
+                    this.setItems(items);
+                    item.dataset['parent'] = this.id;
+                }
+            });
+        }
         this.setLoading(false);
     }
 
     beforeShow() { 
         const children:Node[] = [];
-        while(this.firstChild) {
-            children.push(this.firstChild);
-            this.removeChild(this.firstChild);
+        if (this.loading()) {
+            while(this.firstChild) {
+                children.push(this.firstChild);
+                this.removeChild(this.firstChild);
+            }
         }
         return children;
     }
 
     connectedCallback() {
-        this.isLoading = false;
         this.load();
         const children = this.beforeShow();
-        this.show();
+        if (this.loading()) {
+            this.show();
+        }
+        this.renderedChild = this.firstChild;
         new Promise((resolve) => {
             setTimeout(()=>resolve(null), 0);
         }).then(()=> {
