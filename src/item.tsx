@@ -152,6 +152,14 @@ export class FazElementItem extends HTMLElement {
         return this.firstChild;
     }
 
+    get linkIsVoid() {
+        if (this.disabled()) {
+            return true;
+        }
+        return this.link === undefined || this.link === "#" ||
+            this.link === "#!";
+    }
+
     addChild<T extends Node>(node: T): T {
         this.contentChild?.appendChild(node)
         return node; 

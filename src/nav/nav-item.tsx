@@ -189,7 +189,10 @@ export default class FazNavItemElement extends FazElementItem {
         this.setActive(true);
     }
 
-    itemClick(_: Event) {
+    itemClick(event: Event) {
+        if (this.linkIsVoid) {
+            event.preventDefault();
+        }
         this.activate();
     }
 
