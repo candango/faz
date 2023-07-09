@@ -69,11 +69,9 @@ export default class FazNavElement extends FazElementItem {
 
     get activeNavItem() {
         let active: FazNavItemElement | null = null;
-        this.navItemItems.forEach(item => {
-            if (item.active()) {
-                active = item as FazNavItemElement;
-                return;
-            }
+        this.navItemItemsActive.forEach(item => {
+            active = item as FazNavItemElement;
+            return active;
         });
         return active;
     }
@@ -84,11 +82,6 @@ export default class FazNavElement extends FazElementItem {
 
     get classNames() {
         const classes = [ "nav" ];
-        if (this.hasTabs) {
-            if (this.activeNavItem === null) {
-                this.navItemItems[0].setActive(true);
-            }
-        }
         if (this.disabled()) {
             classes.push("disabled");
         }
@@ -115,7 +108,8 @@ export default class FazNavElement extends FazElementItem {
     }
 
     get hasTabs() {
-        return !this.loading() && this.tabItems.length > 0;
+        this.loading();
+        return this.tabItems.length > 0;
     }
 
     get navItemItems() {
@@ -124,8 +118,16 @@ export default class FazNavElement extends FazElementItem {
         });
     }
 
+    get navItemItemsActive() {
+        const items = this.items();
+        return items.filter(item => {
+            return item instanceof FazNavItemElement && item.active();
+        });
+    }
+
     get onEdge() {
-        if(!this.loading() && this.current) {
+        this.loading();
+        if(this.current) {
             return !this.current?.isDropdown;
         }
         return false;
@@ -133,9 +135,8 @@ export default class FazNavElement extends FazElementItem {
 
     get tabClassNames() {
         const classes = [ "tab-content" ];
-        
-        if (this.hasTabs) {
-            classes.push("buga")
+        if (!this.hasTabs) {
+            classes.push("invisible");
         }
         this.setTabClasses(classes.join(" "));
         return this.tabClasses();
@@ -178,6 +179,17 @@ export default class FazNavElement extends FazElementItem {
             <div class={this.tabClassNames}></div>
         </div>, this);
         this.classList.add("faz-nav-rendered");
+    }
+
+    afterShow(children:Node[]) {
+        super.afterShow(children);
+        if (this.loading()) {
+            if (this.hasTabs) {
+                if (this.activeNavItem === null) {
+                    this.navItemItems[0].setActive(true);
+                }
+            }
+        }
     }
 }
 

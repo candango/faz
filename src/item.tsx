@@ -179,7 +179,6 @@ export class FazElementItem extends HTMLElement {
                 }
             });
         }
-        this.setLoading(false);
     }
 
     beforeShow() { 
@@ -204,6 +203,7 @@ export class FazElementItem extends HTMLElement {
             setTimeout(()=>resolve(null), 0);
         }).then(()=> {
             this.afterShow(children);
+            this.setLoading(false);
         });
     }
 
