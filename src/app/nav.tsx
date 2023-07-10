@@ -17,3 +17,4 @@
 import "../nav/nav";
 import "../nav/nav-item";
 import "../nav/nav-item-content";
+import "../nav/nav-tab";

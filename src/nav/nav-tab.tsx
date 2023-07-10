@@ -16,6 +16,7 @@
 
 import { FazElementItem } from "../item";
 import { Accessor, createSignal, Setter } from "solid-js";
+import { render } from "solid-js/web";
 
 
 export default class FazNavTabElement extends FazElementItem {
@@ -63,9 +64,11 @@ export default class FazNavTabElement extends FazElementItem {
     }
 
     show() {
-        return <div class={this.classNames} id={`nav_tab_container${this.id}`}
-                    role="tabpanel" aria-labelledby={this.ariaLabelledby}>
-        </div>;
+        console.log(this.parentElement?.parentElement);
+        render(() => <div class={this.classNames}
+            id={`nav_tab_container${this.id}`} role="tabpanel"
+            aria-labelledby={this.ariaLabelledby}>
+        </div>, this);
     }
 }
 

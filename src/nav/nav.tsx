@@ -148,6 +148,15 @@ export default class FazNavElement extends FazElementItem {
         });
     }
 
+    addChild<T extends Node>(node: T): T {
+        if (node instanceof FazNavTabElement) {
+            this.children[0].children[1].appendChild(node);
+            return node;
+        }
+        this.contentChild?.appendChild(node);
+        return node; 
+    }
+
     beOverMe(_: Event) {
         clearTimeout(this.timeout);
     }
@@ -186,7 +195,7 @@ export default class FazNavElement extends FazElementItem {
         if (this.loading()) {
             if (this.hasTabs) {
                 if (this.activeNavItem === null) {
-                    this.navItemItems[0].setActive(true);
+                    (this.navItemItems[0] as FazNavItemElement).activate();
                 }
             }
         }

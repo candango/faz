@@ -130,7 +130,7 @@ export default class FazNavTabReact extends FazReactItem {
         return <div className={this.classNames} id={this.state.id}
                     role="tabpanel" aria-labelledby={this.ariaLabelledby}>
             {this.content}
-        </div>
+        </div>;
     }
 
     handleClick(event) {
