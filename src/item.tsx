@@ -18,6 +18,9 @@ import { randomId } from "./id";
 import { includes, merge } from "lodash";
 import { Accessor, createSignal, Setter } from "solid-js";
 
+class FazNode extends Node {
+    public fazElement: FazElementItem | null = null;
+}
 
 export class FazElementItem extends HTMLElement {
     public active: Accessor<boolean>;
@@ -204,6 +207,7 @@ export class FazElementItem extends HTMLElement {
         }).then(()=> {
             this.afterShow(children);
             this.setLoading(false);
+            this.cleanFazTag();
         });
     }
 
@@ -211,4 +215,12 @@ export class FazElementItem extends HTMLElement {
 
     show() {}
 
+    cleanFazTag() {
+        let parentElement = this.parentElement
+        this.childNodes.forEach((node) => {
+            ((node as unknown) as FazNode).fazElement = this;
+            this.before(node);
+        });
+        parentElement?.removeChild(this);
+    }
 }
