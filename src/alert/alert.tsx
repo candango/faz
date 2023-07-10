@@ -26,7 +26,8 @@ export default class FazBsAlert extends FazElementItem {
     show() {
         const classList = ["alert", "alert-primary"].join(" ");
         const role = "alert";
-        render(() => <div class={classList} role={role}></div>, this);
+        render(() => <div id={`bs-alert-${this.id}`} class={classList}
+            role={role}></div>, this);
         this.classList.add("faz-bs-alert-rendered");
     }
 }
