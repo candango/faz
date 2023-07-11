@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import "../alert/alert";
 import "../nav/nav";
 import "../nav/nav-item";
 import "../nav/nav-item-content";

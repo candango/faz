@@ -49,7 +49,8 @@ export default class FazNavItemElement extends FazElementItem {
     }
 
     get isDropdown() {
-        return !this.loading() && this.items().length > 0;
+        this.loading();
+        return this.items().length > 0;
     }
 
     get classNames() {
@@ -199,6 +200,10 @@ export default class FazNavItemElement extends FazElementItem {
         this.activate();
     }
 
+    renderDropdown() {
+        return <ul class={this.dropdownClassNames}></ul>;
+    }
+
     show() {
             // <li className={this.classNames} id={this.containerId}>
             //     <a id={this.state.id} className={this.linkClassNames}
@@ -211,12 +216,14 @@ export default class FazNavItemElement extends FazElementItem {
             // </li>
         const navItem = <li id={`nav_item_container${this.id}`} 
             class={this.classNames}>
-            <a id={`nav_item_link${this.id}`} class={this.linkClassNames} 
-            role={this.roleType} href={this.link}
-            onClick={(e) => this.itemClick(e)}
-            aria-expaded={this.ariaExpandedValue}
-            data-bs-toggle={this.dataBsToggleValue}>{this.content()} 
-            </a><ul class={this.dropdownClassNames}></ul></li>;
+                <a id={`nav_item_link${this.id}`} class={this.linkClassNames} 
+                    role={this.roleType} href={this.link}
+                    onClick={(e) => this.itemClick(e)}
+                    aria-expaded={this.ariaExpandedValue}
+                    data-bs-toggle={this.dataBsToggleValue}>{this.content()} 
+                </a>
+                {this.isDropdown ? this.renderDropdown() : ""}
+            </li>;
             
         render(() => navItem, this);
     }

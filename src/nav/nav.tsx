@@ -149,6 +149,14 @@ export default class FazNavElement extends FazElementItem {
     }
 
     addChild<T extends Node>(node: T): T {
+        if (this.hasTabs && this.vertical()) {
+            if (node instanceof FazNavTabElement) {
+                this.children[0].children[1].firstChild?.appendChild(node);
+                return node;
+            }
+            this.children[0].children[0].firstChild?.appendChild(node);
+            return node;
+        }
         if (node instanceof FazNavTabElement) {
             this.children[0].children[1].appendChild(node);
             return node;
@@ -173,21 +181,37 @@ export default class FazNavElement extends FazElementItem {
         }, 250);
     }
 
+    renderNav() {
+        return <ul id={`nav${this.id}`} class={this.classNames} 
+            role="tablist"></ul>;
+    }
+
     renderTabs() {
-        return <div class="tab-content"></div>;
+        return <div class={this.tabClassNames}></div>;
     }
 
     show() {
+        if (this.hasTabs && this.vertical()) {
+            render(() => <div onMouseOver={(e) => this.beOverMe(e)}
+                onMouseLeave={(e) => this.leaveMe(e)}
+                class="faz-nav-container row" id={`nav-container${this.id}`}>
+                    <div class="col-3">
+                        {this.renderNav()}
+                    </div>
+                    <div class="col-9">
+                        <div class="tab-content">
+                            {this.renderTabs()}
+                        </div>
+                    </div>
+                </div> , this);
+            return;
+        }
         render(() => <div onMouseOver={(e) => this.beOverMe(e)}
             onMouseLeave={(e) => this.leaveMe(e)}
             class="faz-nav-container" id={`nav-container${this.id}`}>
-            <ul 
-                id={`nav${this.id}`} class={this.classNames} 
-                role="tablist" >
-            </ul>
-            <div class={this.tabClassNames}></div>
+            {this.renderNav()}
+            {this.hasTabs ? this.renderTabs() : ""}
         </div>, this);
-        this.classList.add("faz-nav-rendered");
     }
 
     afterShow(children:Node[]) {
@@ -195,8 +219,10 @@ export default class FazNavElement extends FazElementItem {
         if (this.loading()) {
             if (this.hasTabs) {
                 if (this.activeNavItem === null) {
-                    (this.navItemItems[0] as FazNavItemElement).activate();
+                    (this.navItemItems[0] as FazNavItemElement).setActive(
+                        true);
                 }
+                (this.navItemItemsActive[0] as FazNavItemElement).activate();
             }
         }
     }
