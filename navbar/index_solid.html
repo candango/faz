@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Candango Faz Toolkit - Navbar</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/dist/vendor/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/dist/css/faz.css" rel="stylesheet"/>
+    <link href="/dist/css/showcase.css" rel="stylesheet"/>
+    <!-- Custom styles for this template -->
+</head>
+
+<body>
+<main-navbar id="buga"></main-navbar>
+
+<main role="main" class="container">
+    <h1>Navbars</h1>
+
+    <h2>Brand</h2>
+
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Heading. Type light(default).</h5>
+            <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+            <div id="navBasicBrandingExample"><faz-navbar id="navbarHeading">
+    <faz-navbar-brand>test</faz-navbar-brand>
+</faz-navbar></div>
+        </div>
+    </div>
+    <br><br>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Heading. Type light(default). Extra class bg-light</h5>
+            <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+            <div id="navBasicBrandingBgLightExample"><faz-navbar id="navbarHeading" class="bg-light">
+    <faz-navbar-brand href="#"><b>test</b></faz-navbar-brand>
+</faz-navbar></div>
+        </div>
+    </div>
+    <br><br>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Link. Type dark. Extra class bg-dark. Square image size 30.</h5>
+            <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+            <div id="navBasicBrandingBgDarkImageExample"><faz-navbar faz-id="navbarImage" kind="dark" faz-class="bg-dark">
+    <faz-navbar-brand href="#"><img src="/img/faz_square.png" width="30" height="30" alt=""></faz-navbar-brand>
+</faz-navbar></div>
+        </div>
+    </div>
+    <br><br>
+
+    <div>
+        <h1>Something to be bellow the last navbar</h1>
+        <p>This is a content that last navbar should be over without
+            problems.<br> We don't have any issues with repeating this a
+            million times. Like:<br>
+            This is a content that last navbar should be over without
+            problems.<br>
+            This is a content that last navbar should be over without
+            problems.<br>
+            This is a content that last navbar should be over without
+            problems.<br>
+            This is a content that last navbar should be over without
+            problems.<br>
+            This is a content that last navbar should be over without
+            problems.<br>
+            This is a content that last navbar should be over without
+            problems.<br>
+            This is a content that last navbar should be over without
+            problems.<br>
+            This is a content that last navbar should be over without
+            problems.<br>
+            This is a content that last navbar should be over without
+            problems.<br>
+            This is a content that last navbar should be over without
+            problems.
+        </p>
+    </div>
+
+</main><!-- /.container -->
+
+<script src="/dist/global.bundle.js" ></script>
+<script>
+    codemirrorit("navBasicBrandingExample");
+    codemirrorit("navBasicBrandingBgLightExample");
+    codemirrorit("navBasicBrandingBgDarkImageExample");
+</script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/dist/vendor/jquery.min.js"></script>
+<script src="/dist/vendor/popper.min.js"></script>
+<script src="/dist/vendor/bootstrap.min.js"></script>
+<script src="/dist/navbar-solid.bundle.js"></script>
+
+</body>
+</html>
