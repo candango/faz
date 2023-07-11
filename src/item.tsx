@@ -16,7 +16,7 @@
 
 import { randomId } from "./id";
 import { includes, merge } from "lodash";
-import { Accessor, createSignal, Setter } from "solid-js";
+import { Accessor, createSignal, Setter} from "solid-js";
 
 class FazNode extends Node {
     public fazElement: FazElementItem | null = null;
@@ -28,6 +28,9 @@ export class FazElementItem extends HTMLElement {
 
     public classes: Accessor<string>;
     public setClasses: Setter<string>;
+
+    public extraClasses: Accessor<string>;
+    public setExtraClasses: Setter<string>;
 
     public content: Accessor<string | undefined>;
     public setContent: Setter<string | undefined>;
@@ -54,6 +57,7 @@ export class FazElementItem extends HTMLElement {
         super();
         [this.active, this.setActive] = createSignal<boolean>(false);
         [this.classes, this.setClasses] = createSignal("");
+        [this.extraClasses, this.setExtraClasses] = createSignal("");
         [this.content, this.setContent] = createSignal(undefined);
         [this.disabled, this.setDisabled] = createSignal(false);
         [this.items, this.setItems] =
@@ -65,9 +69,13 @@ export class FazElementItem extends HTMLElement {
             this.id = randomId();
         }
         for (let attribute of this.attributes) {
-            switch (attribute.name) {
+            switch (attribute.name.toLowerCase()) {
                 case "active":
                     this.setActive(attribute.value.toLowerCase() === "true");
+                    break;
+                case "class":
+                case "faz-class":
+                    this.setExtraClasses(attribute.value);
                     break;
                 case "content":
                     this.setContent(attribute.value);
@@ -77,6 +85,7 @@ export class FazElementItem extends HTMLElement {
                     break;
                 case "id":
                 case "fazid":
+                case "faz-id":
                     this.id = attribute.value;
                     break;
                 case "href":

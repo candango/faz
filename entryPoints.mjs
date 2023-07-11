@@ -22,4 +22,4 @@ export const entryPoints =  [
 
     { out: "css/faz", in: "stylesheets/faz.css"},
     { out: "css/showcase", in: "stylesheets/showcase.css"},
-]
+];

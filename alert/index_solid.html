@@ -26,8 +26,40 @@
         <div class="card-body">
             <h2 class="card-title">An alert</h2>
             <p class="card-text">This is just an alert example.</p>
-            <div id="oneAlertExample"><faz-bs-alert fazid="anAlert">
+            <div id="oneAlertExample"><faz-bs-alert faz-id="anAlert">
     An Alert
+</faz-bs-alert></div>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Kind of Alerts</h2>
+            <p class="card-text">This is a list with kind of alerts.</p>
+            <div id="alertKindsExample"><faz-bs-alert faz-id="anAlertPrimary" kind="primary">
+    A simple primary alert—check it out! Primary is the default kind,
+    you don't need to especify. 
+</faz-bs-alert>
+<faz-bs-alert faz-id="anAlertSecondary" kind="secondary">
+    A simple secondary alert—check it out!
+</faz-bs-alert>
+<faz-bs-alert faz-id="anAlertSuccess" kind="success">
+    A simple success alert—check it out!
+</faz-bs-alert>
+<faz-bs-alert faz-id="anAlertDanger" kind="danger">
+    A simple danger alert—check it out!
+</faz-bs-alert>
+<faz-bs-alert faz-id="anAlertWarning" kind="warning">
+    A simple warning alert—check it out!
+</faz-bs-alert>
+<faz-bs-alert faz-id="anAlertInfo" kind="info">
+    A simple info alert—check it out!
+</faz-bs-alert>
+<faz-bs-alert faz-id="anAlertLight" kind="light">
+    A simple light alert—check it out!
+</faz-bs-alert>
+<faz-bs-alert faz-id="anAlertDark" kind="dark">
+    A simple dark alert—check it out!
 </faz-bs-alert></div>
         </div>
     </div>
@@ -36,8 +68,8 @@
         <div class="card-body">
             <h2 class="card-title">Nested Alerts</h2>
             <p class="card-text">This is just an example with nested alerts.</p>
-            <div id="nestAlertsExample"><faz-bs-alert fazid="anAlertFather">
-    <faz-bs-alert fazid="anAlertNested">
+            <div id="nestAlertsExample"><faz-bs-alert faz-id="anAlertFather" kind="success">
+    <faz-bs-aleht faz-id="anAlertNested" kind="danger">
         Nested Alert 
     </faz-bs-alert>   
 </faz-bs-alert></div>
@@ -51,9 +83,9 @@
 
 <script src="/dist/global.bundle.js" ></script>
 <script>
-    codemirrorit("oneAlertExample")
-
-    codemirrorit("nestAlertsExample")
+    codemirrorit("oneAlertExample");
+    codemirrorit("alertKindsExample");
+    codemirrorit("nestAlertsExample");
 </script>
 
 <!-- Bootstrap core JavaScript
