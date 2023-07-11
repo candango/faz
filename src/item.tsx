@@ -97,11 +97,6 @@ export class FazElementItem extends HTMLElement {
             this.childNodes.forEach((node) => {
                 node.remove();
             });
-        } else {
-            // this.childNodes.forEach(node =>{
-            //     this.findItems(node)
-            //     this.originalNodes.push(node)
-            // })
         }
     }
 
@@ -172,42 +167,48 @@ export class FazElementItem extends HTMLElement {
         if (this.loading()) {
             children.forEach(child => {
                 this.addChild(child);
-                if (child instanceof FazElementItem) {
-                    const item = child as FazElementItem;
-                    item.setParent(this);
-                    const items = this.items()
-                    items.push(item);
-                    this.setItems(items);
-                    item.dataset['parent'] = this.id;
-                }
             });
         }
     }
 
     beforeShow() { 
         const children:Node[] = [];
+        const items: FazElementItem[] = [];
         if (this.loading()) {
             while(this.firstChild) {
+                if (this.firstChild instanceof FazElementItem) {
+                    const item = this.firstChild as FazElementItem;
+                    item.setParent(this);
+                    items.push(item);
+                    item.dataset['parent'] = this.id;
+                }
                 children.push(this.firstChild);
                 this.removeChild(this.firstChild);
+            }
+            if (items.length > 0) {
+                this.setItems(items);
             }
         }
         return children;
     }
 
     connectedCallback() {
-        this.load();
-        const children = this.beforeShow();
-        if (this.loading()) {
-            this.show();
-        }
-        this.renderedChild = this.firstChild;
         new Promise((resolve) => {
             setTimeout(()=>resolve(null), 0);
         }).then(()=> {
+            this.load();
+            const children = this.beforeShow();
+            if (this.loading()) {
+                this.show();
+            }
+            this.renderedChild = this.firstChild;
             this.afterShow(children);
             this.setLoading(false);
-            this.cleanFazTag();
+            new Promise((resolve) => {
+                setTimeout(()=>resolve(null), 0);
+            }).then(()=> {
+                this.cleanFazTag();
+            });
         });
     }
 
