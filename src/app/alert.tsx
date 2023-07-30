@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-import "../alert/alert";
+import "../bs/alert/alert";

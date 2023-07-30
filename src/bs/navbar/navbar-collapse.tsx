@@ -14,30 +14,24 @@
  * limitations under the License.
  */
 
-import { FazBsElementItem } from "../bs-item";
+import { FazElementItem } from "../../item";
 import { render } from "solid-js/web";
 
+ // TODO: This should extend the bs collapse
+export class FazBsNavbarCollapse extends FazElementItem {
 
-export class FazBsAlert extends FazBsElementItem {
+    constructor() {
+        super();
+    }
 
     get classNames() {
-        let classes = ["alert"];
-        if (this.kind()) {
-            classes.push(`alert-${this.kind()}`);
-        }
-        if (this.extraClasses) {
-            classes.push(this.extraClasses());
-        }
+        let classes = ["collapse navbar-collapse"];
         this.setClasses(classes.join(" "));
         return this.classes();
     }
 
     show() {
-        const role = "alert";
-        render(() => <div id={`faz-bs-alert-${this.id}`}
-            class={this.classNames} role={role}></div>, this);
-        this.classList.add("faz-bs-alert-rendered");
+        render(() => <div class="collapse navbar-collapse" id="navbarNav">    
+        </div> , this);
     }
 }
-
-customElements.define("faz-bs-alert", FazBsAlert);

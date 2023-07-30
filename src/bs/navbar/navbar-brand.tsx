@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { FazElementItem } from "../item";
+import { FazElementItem } from "../../item";
 import { render } from "solid-js/web";
 
  
-export class FazNavbarBrand extends FazElementItem {
+export class FazBsNavbarBrand extends FazElementItem {
 
     constructor() {
         super();

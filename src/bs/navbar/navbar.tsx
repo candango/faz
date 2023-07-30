@@ -14,28 +14,13 @@
  * limitations under the License.
  */
 
-import { FazElementItem } from "../item";
-import { FazNavbarBrand } from "./navbar-brand";
-import { Accessor, createSignal, Setter } from "solid-js";
+import { FazBsElementItem } from "../../bs-item";
+import { FazBsNavbarBrand } from "./navbar-brand";
+import { FazBsNavbarCollapse } from "./navbar-collapse";
 import { render } from "solid-js/web";
 
  
-export default class FazNavbarElement extends FazElementItem {
-
-    public kind: Accessor<string>;
-    public setKind: Setter<string>;
-
-    constructor() {
-        super();
-        [this.kind, this.setKind] = createSignal<string>("light");
-        for (let attribute of this.attributes) {
-            switch (attribute.name) {
-                case "kind":
-                    this.setKind(attribute.value.toLowerCase());
-                    break;
-            }
-        }
-    }
+export default class FazBsNavbarElement extends FazBsElementItem {
 
     get classNames() {
         let classes = ["navbar"];
@@ -59,5 +44,6 @@ export default class FazNavbarElement extends FazElementItem {
     }
 }
 
-customElements.define("faz-navbar", FazNavbarElement);
-customElements.define("faz-navbar-brand", FazNavbarBrand);
+customElements.define("faz-bs-navbar", FazBsNavbarElement);
+customElements.define("faz-bs-navbar-brand", FazBsNavbarBrand);
+customElements.define("faz-bs-navbar-collapse", FazBsNavbarCollapse);

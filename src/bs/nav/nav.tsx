@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-import { FazElementItem } from "../item";
-import FazNavTabElement from "./nav-tab";
+import { FazElementItem } from "../../item";
+import FazBsNavItemElement from "./nav-item";
+import FazBsNavItemContentElement from "./nav-item-content";
+import FazBsNavTabElement from "./nav-tab";
 import { Accessor, createSignal, Setter } from "solid-js";
 import { render } from "solid-js/web";
-import FazNavItemElement from "./nav-item";
 
  
-export default class FazNavElement extends FazElementItem {
+export default class FazBsNavElement extends FazElementItem {
     
-    public current: FazNavItemElement | undefined;
+    public current: FazBsNavItemElement | undefined;
 
     public fill: Accessor<boolean>;
     public setFill: Setter<boolean>;
@@ -68,9 +69,9 @@ export default class FazNavElement extends FazElementItem {
     }
 
     get activeNavItem() {
-        let active: FazNavItemElement | null = null;
+        let active: FazBsNavItemElement | null = null;
         this.navItemItemsActive.forEach(item => {
-            active = item as FazNavItemElement;
+            active = item as FazBsNavItemElement;
             return active;
         });
         return active;
@@ -114,14 +115,14 @@ export default class FazNavElement extends FazElementItem {
 
     get navItemItems() {
         return this.items().filter(item => {
-            return item instanceof FazNavItemElement;
+            return item instanceof FazBsNavItemElement;
         });
     }
 
     get navItemItemsActive() {
         const items = this.items();
         return items.filter(item => {
-            return item instanceof FazNavItemElement && item.active();
+            return item instanceof FazBsNavItemElement && item.active();
         });
     }
 
@@ -144,20 +145,20 @@ export default class FazNavElement extends FazElementItem {
 
     get tabItems() {
         return this.items().filter(item => {
-            return item instanceof FazNavTabElement;
+            return item instanceof FazBsNavTabElement;
         });
     }
 
     addChild<T extends Node>(node: T): T {
         if (this.hasTabs && this.vertical()) {
-            if (node instanceof FazNavTabElement) {
+            if (node instanceof FazBsNavTabElement) {
                 this.children[0].children[1].firstChild?.appendChild(node);
                 return node;
             }
             this.children[0].children[0].firstChild?.appendChild(node);
             return node;
         }
-        if (node instanceof FazNavTabElement) {
+        if (node instanceof FazBsNavTabElement) {
             this.children[0].children[1].appendChild(node);
             return node;
         }
@@ -173,7 +174,7 @@ export default class FazNavElement extends FazElementItem {
         clearTimeout(this.timeout)
         this.timeout = setTimeout(() => {
             this.activeItems.forEach(item => {
-                const navItem = item as FazNavItemElement;
+                const navItem = item as FazBsNavItemElement;
                 if (navItem.isDropdown && !this.onEdge) {
                     navItem.deactivate();
                 }
@@ -203,7 +204,7 @@ export default class FazNavElement extends FazElementItem {
                             {this.renderTabs()}
                         </div>
                     </div>
-                </div> , this);
+                </div>, this);
             return;
         }
         render(() => <div onMouseOver={(e) => this.beOverMe(e)}
@@ -219,13 +220,16 @@ export default class FazNavElement extends FazElementItem {
         if (this.loading()) {
             if (this.hasTabs) {
                 if (this.activeNavItem === null) {
-                    (this.navItemItems[0] as FazNavItemElement).setActive(
+                    (this.navItemItems[0] as FazBsNavItemElement).setActive(
                         true);
                 }
-                (this.navItemItemsActive[0] as FazNavItemElement).activate();
+                (this.navItemItemsActive[0] as FazBsNavItemElement).activate();
             }
         }
     }
 }
 
-customElements.define("faz-nav", FazNavElement);
+customElements.define("faz-bs-nav", FazBsNavElement);
+customElements.define("faz-bs-nav-item", FazBsNavItemElement);
+customElements.define("faz-bs-nav-tab", FazBsNavTabElement);
+customElements.define("faz-bs-nav-item-content", FazBsNavItemContentElement)

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { FazElementItem } from "../item";
+import { FazElementItem } from "../../item";
 import { Accessor, createSignal, Setter } from "solid-js";
 import { render } from "solid-js/web";
 
 
-export default class FazNavTabElement extends FazElementItem {
+export default class FazBsNavTabElement extends FazElementItem {
 
     public fade: Accessor<boolean>;
     public setFade: Setter<boolean>;
@@ -71,5 +71,3 @@ export default class FazNavTabElement extends FazElementItem {
         </div>, this);
     }
 }
-
-customElements.define("faz-nav-tab", FazNavTabElement);

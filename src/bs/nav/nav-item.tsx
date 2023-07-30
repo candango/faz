@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { FazElementItem } from "../item";
-import FazNavElement from "./nav";
+import { FazElementItem } from "../../item";
+import FazBsNavElement from "./nav";
 import { Accessor, createSignal, Setter } from "solid-js";
 import { render } from "solid-js/web";
 
 
-export default class FazNavItemElement extends FazElementItem {
+export default class FazBsNavItemElement extends FazElementItem {
 
     public linkClasses: Accessor<string>;
     public setLinkClasses: Setter<string>;
 
-    public previousItem: FazNavItemElement | undefined;
+    public previousItem: FazBsNavItemElement | undefined;
 
     constructor() {
         super();
@@ -41,7 +41,7 @@ export default class FazNavItemElement extends FazElementItem {
 
     get isRoot() {
         if (this.parent() !== undefined) {
-            if (this.parent() instanceof FazNavElement) {
+            if (this.parent() instanceof FazBsNavElement) {
                 return true;
             }
         }
@@ -124,19 +124,19 @@ export default class FazNavItemElement extends FazElementItem {
         }
     }
 
-    get root(): FazNavElement | undefined {
+    get root(): FazBsNavElement | undefined {
         if (this.isRoot) {
-            return this.parent() as FazNavElement;
+            return this.parent() as FazBsNavElement;
         }
         if (!this.parent()) {
             return undefined;
         }
-        return (this.parent() as FazNavItemElement).root;
+        return (this.parent() as FazBsNavItemElement).root;
     }
 
     get navItemItems() {
         return this.items().filter(item => {
-            return item instanceof FazNavItemElement;
+            return item instanceof FazBsNavItemElement;
         });
     }
 
@@ -153,7 +153,7 @@ export default class FazNavItemElement extends FazElementItem {
     }
 
     addChild<T extends Node>(node: T): T {
-        if (node instanceof FazNavItemElement) {
+        if (node instanceof FazBsNavItemElement) {
             this.children[0].children[1].appendChild(node);
             return node;
         }
@@ -166,8 +166,8 @@ export default class FazNavItemElement extends FazElementItem {
         this.setActive(false);
         if (this.isDropdown) {
             this.activeItems.forEach(activeItem => {
-                if (activeItem instanceof FazNavItemElement) {
-                    const item = activeItem as FazNavItemElement;
+                if (activeItem instanceof FazBsNavItemElement) {
+                    const item = activeItem as FazBsNavItemElement;
                     item.deactivate();
                 }
             });
@@ -176,9 +176,9 @@ export default class FazNavItemElement extends FazElementItem {
 
     activate() {
         this.parent()?.activeItems.forEach(item => {
-            if (item instanceof FazNavItemElement) {
+            if (item instanceof FazBsNavItemElement) {
                 this.previousItem = item;
-                (item as FazNavItemElement).deactivate();
+                (item as FazBsNavItemElement).deactivate();
             }
         });
         this.setActive(true);
@@ -228,5 +228,3 @@ export default class FazNavItemElement extends FazElementItem {
         render(() => navItem, this);
     }
 }
-
-customElements.define("faz-nav-item", FazNavItemElement);
