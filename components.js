@@ -15,7 +15,6 @@
  */
 
 export {default as FazFormElement, FazFormReact} from "./form/form"
-export { default as FazAlertElement, FazAlertReact } from "./alert/alert"
 export { default as FazBreadcrumb} from "./breadcrumb/breadcrumb"
 export { default as FazDatepicker} from "./datepicker/datepicker"
 export { default as FazInputDatepicker} from "./input/datepicker"
