@@ -30,7 +30,7 @@
         "babel-loader": "8.2.5",
         "can-stache-loader": "3.0.0",
         "electron": "20.2.0",
-        "esbuild": "0.18.11",
+        "esbuild": "0.19.1",
         "esbuild-plugin-copy": "2.1.1",
         "esbuild-plugin-solid": "0.5.0",
         "http-server": "14.1.1",
