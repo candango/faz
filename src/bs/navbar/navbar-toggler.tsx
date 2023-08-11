@@ -17,8 +17,7 @@
 import { FazBsElementItem } from "../../bs-item";
 import { render } from "solid-js/web";
 
- // TODO: This should extend the bs collapse
-export class FazBsNavbarCollapse extends FazBsElementItem {
+export class FazBsNavbarToggler extends FazBsElementItem {
 
     constructor() {
         super();
@@ -31,8 +30,10 @@ export class FazBsNavbarCollapse extends FazBsElementItem {
     }
 
     show() {
-        render(() => <div class="collapse navbar-collapse"
-            id={`navbar-collapse-${this.id}`}>    
-        </div> , this);
+        render(() => <button class="navbar-toggler"
+            id={`faz-bs-navbar-toggler-${this.id}`}
+            data-bs-toggle="collapse"
+            data-bs-target={`#navbar-collapse-${this.target()}`}>    
+        </button> , this);
     }
 }

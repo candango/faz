@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -84,6 +84,30 @@
         <faz-bs-nav-item faz-id="test1" link="#test1">Test 1</faz-bs-nav-item>
     </faz-bs-nav>
 </faz-bs-navbar></div>
+        </div>
+    </div>
+    <br><br>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Brand outside the collapse</h5>
+            <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+            <div id="navBrandOutisideCollapse">
+                <faz-bs-navbar id="navbarImageText1" type="dark" class="navbar-expand-md bg-success">
+
+                    <faz-bs-navbar-brand href="#"><img src="/img/faz_square.png" width="30" height="30" class="d-inline-block align-top" alt="">
+                        Faz Toolkit
+                    </faz-bs-navbar-brand>
+
+                    <faz-bs-navbar-toggler target="fazNavbarNavBrandInsideNav1"><span class="navbar-toggler-icon"></span></faz-bs-navbar-toggler>
+
+                    <faz-bs-navbar-collapse id="fazNavbarNavBrandInsideNav1">
+                        <faz-bs-nav>
+                            <faz-bs-nav-item id="test" href="#test">Test</faz-bs-nav-item>
+                            <faz-bs-nav-item id="test1" href="#test">Test 1</faz-bs-nav-item>
+                        </faz-bs-nav>
+                    </faz-bs-navbar-collapse>
+                </faz-bs-navbar></div>
         </div>
     </div>
     <br><br>

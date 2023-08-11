@@ -17,6 +17,7 @@
 import { FazBsElementItem } from "../../bs-item";
 import { FazBsNavbarBrand } from "./navbar-brand";
 import { FazBsNavbarCollapse } from "./navbar-collapse";
+import { FazBsNavbarToggler } from "./navbar-toggler";
 import { render } from "solid-js/web";
 
  
@@ -47,3 +48,4 @@ export default class FazBsNavbarElement extends FazBsElementItem {
 customElements.define("faz-bs-navbar", FazBsNavbarElement);
 customElements.define("faz-bs-navbar-brand", FazBsNavbarBrand);
 customElements.define("faz-bs-navbar-collapse", FazBsNavbarCollapse);
+customElements.define("faz-bs-navbar-toggler", FazBsNavbarToggler);
