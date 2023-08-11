@@ -26,7 +26,7 @@
         "@codemirror/lang-html": "6.4.3",
         "@codemirror/language": "6.7.0",
         "@codemirror/view": "6.12.0",
-        "@types/lodash": "4.14.191",
+        "@types/lodash": "4.14.197",
         "babel-loader": "8.2.5",
         "can-stache-loader": "3.0.0",
         "electron": "20.2.0",
