@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="auto">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -58,6 +58,35 @@
     </div>
     <br><br>
 
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Link. Type dark. Extra class bg-dark. Square image size 30 and text.</h5>
+            <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+            <div id="navBasicBrandingBgDarkImageTextExample"><faz-bs-navbar faz-id="navbarImageColapse" kind="dark" faz-class="bg-dark">
+    <faz-bs-navbar-brand href="#">
+        <img src="/img/faz_square.png" width="30" height="30" class="d-inline-block align-top" alt=""> Faz Toolkit
+    </faz-bs-navbar-brand>
+</faz-bs-navbar></div>
+        </div>
+    </div>
+    <br><br>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Brand outside the collapse</h5>
+            <!--h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6-->
+            <div id="navBrandOutisideCollapse"><faz-bs-navbar id="navbarImageText1" type="light" class="navbar-expand-md bg-warning">
+    <faz-bs-navbar-brand href="#"><img src="/img/faz_square.png" width="30" height="30" class="d-inline-block align-top" alt="">
+        Faz Toolkit
+    </faz-bs-navbar-brand>
+    <faz-bs-nav>
+        <faz-bs-nav-item faz-id="test" link="#test">Test</faz-bs-nav-item>
+        <faz-bs-nav-item faz-id="test1" link="#test1">Test 1</faz-bs-nav-item>
+    </faz-bs-nav>
+</faz-bs-navbar></div>
+        </div>
+    </div>
+    <br><br>
     <div>
         <h1>Something to be bellow the last navbar</h1>
         <p>This is a content that last navbar should be over without
@@ -93,6 +122,7 @@
     codemirrorit("navBasicBrandingExample");
     codemirrorit("navBasicBrandingBgLightExample");
     codemirrorit("navBasicBrandingBgDarkImageExample");
+    codemirrorit("navBasicBrandingBgDarkImageTextExample");
 </script>
 
 <!-- Bootstrap core JavaScript
