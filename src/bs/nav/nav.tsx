@@ -83,6 +83,16 @@ export default class FazBsNavElement extends FazElementItem {
 
     get classNames() {
         const classes = [ "nav" ];
+        if (this.parent()?.tagName.toLowerCase().startsWith("faz-bs-navbar")) {
+            classes[0] = "navbar-nav";
+        }
+        if (this.parent()?.tagName.toLowerCase().startsWith(
+            "faz-bs-collapse")) {
+            if (this.parent()?.parent()?.tagName.toLowerCase().startsWith(
+                "faz-bs-navbar")) {
+                classes[0] = "navbar-nav";
+            }
+        }
         if (this.disabled()) {
             classes.push("disabled");
         }
