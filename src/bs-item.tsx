@@ -22,13 +22,27 @@ export class FazBsElementItem extends FazElementItem {
     public kind: Accessor<string>;
     public setKind: Setter<string>;
 
+    public target: Accessor<string|null>;
+    public setTarget: Setter<string|null>;
+
+    public theme: Accessor<string|null>;
+    public setTheme: Setter<string|null>;
+
     constructor() {
         super();
         [this.kind, this.setKind] = createSignal<string>("primary");
+        [this.target, this.setTarget] = createSignal<string|null>(null);
+        [this.theme, this.setTheme] = createSignal<string|null>(null);
         for (let attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
                 case "kind":
                     this.setKind(attribute.value.toLowerCase());
+                    break;
+                case "target":
+                    this.setTarget(attribute.value);
+                    break;
+                case "theme":
+                    this.setTheme(attribute.value);
                     break;
             }
         }
