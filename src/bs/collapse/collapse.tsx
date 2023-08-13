@@ -15,36 +15,27 @@
  */
 
 import { FazBsElementItem } from "../../bs-item";
-import "../collapse/collapse";
-import { FazBsNavbarBrand } from "./navbar-brand";
-import { FazBsNavbarToggler } from "./navbar-toggler";
 import { render } from "solid-js/web";
 
- 
-export default class FazBsNavbarElement extends FazBsElementItem {
+export class FazBsCollapse extends FazBsElementItem {
+
+    constructor() {
+        super();
+    }
 
     get classNames() {
-        let classes = ["navbar"];
-        if (this.extraClasses) {
-            classes.push(this.extraClasses());
+        let classes = ["collapse"];
+        if (this.parent()?.tagName.toLowerCase().startsWith("faz-bs-navbar")) {
+            classes.push("navbar-collapse");
         }
         this.setClasses(classes.join(" "));
         return this.classes();
     }
 
-    get contentChild() {
-        return this.children[0].firstChild;
-    }
-
     show() {
-        render(() => <nav id={`navbar-${this.id}`} class={this.classNames}
-            data-bs-theme={this.theme()}>
-            <div class="container-fluid">
-            </div>
-        </nav>, this);
+        render(() => <div  class={this.classNames} id={this.id}>    
+        </div> , this);
     }
 }
 
-customElements.define("faz-bs-navbar", FazBsNavbarElement);
-customElements.define("faz-bs-navbar-brand", FazBsNavbarBrand);
-customElements.define("faz-bs-navbar-toggler", FazBsNavbarToggler);
+customElements.define("faz-bs-collapse", FazBsCollapse);
