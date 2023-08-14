@@ -15,9 +15,11 @@
  */
 
 import { FazElementItem } from "../../item";
+import { FazBsCollapse } from "../collapse/collapse";
 import FazBsNavItemElement from "./nav-item";
 import FazBsNavItemContentElement from "./nav-item-content";
 import FazBsNavTabElement from "./nav-tab";
+import FazBsNavBar from "../navbar/navbar";
 import { Accessor, createSignal, Setter } from "solid-js";
 import { render } from "solid-js/web";
 
@@ -83,15 +85,12 @@ export default class FazBsNavElement extends FazElementItem {
 
     get classNames() {
         const classes = [ "nav" ];
-        if (this.parent()?.tagName.toLowerCase().startsWith("faz-bs-navbar")) {
+        if (this.parent() instanceof FazBsNavBar) {
             classes[0] = "navbar-nav";
         }
-        if (this.parent()?.tagName.toLowerCase().startsWith(
-            "faz-bs-collapse")) {
-            if (this.parent()?.parent()?.tagName.toLowerCase().startsWith(
-                "faz-bs-navbar")) {
-                classes[0] = "navbar-nav";
-            }
+        if (this.parent() instanceof FazBsCollapse &&
+            this.parent()?.parent() instanceof FazBsNavBar) {
+            classes[0] = "navbar-nav";
         }
         if (this.disabled()) {
             classes.push("disabled");

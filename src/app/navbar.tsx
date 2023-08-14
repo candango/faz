@@ -14,4 +14,5 @@
  * limitations under the License.
  */
 
+import "../bs/nav/nav";
 import "../bs/navbar/navbar";
