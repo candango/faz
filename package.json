@@ -1,14 +1,22 @@
 {
     "name": "faz",
     "version": "0.0.26",
-    "description": "Candango Faz Javascript toolkit.",
+    "description": "HTML Web Components with Solid-JS.",
     "main": "faz.js",
-    "repository": "https://github.com/candango/faz.git",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/candango/faz.git"
+    },
+    "bugs": {
+        "url": "https://github.com/candango/faz/issues"
+    },
+    "homepage": "https://github.com/candango/faz#readme",
     "author": "Flavio Garcia <piraz@candango.org>",
     "license": "Apache-2.0",
     "keywords": [
-        "canjs",
-        "bootstrap",
+        "webcomponent",
+        "solidjs",
+        "faz",
         "toolkit"
     ],
     "dependencies": {
