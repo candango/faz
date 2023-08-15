@@ -15,9 +15,7 @@
  */
 
 import * as esbuild from "esbuild";
-import { assets } from "./assets.mjs";
 import {entryPoints} from "./entryPoints.mjs";
-import { copy } from "esbuild-plugin-copy";
 import { solidPlugin } from "esbuild-plugin-solid";
 
 await esbuild.build({
@@ -32,7 +30,6 @@ await esbuild.build({
     legalComments: "none",
     allowOverwrite: true,
     plugins:[
-        copy(assets),
         solidPlugin()
     ]
 }).catch(() => process.exit(1));

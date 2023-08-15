@@ -15,11 +15,8 @@
  */
 
 export const entryPoints =  [
-    { out: "alert-solid.bundle", in: "src/app/alert.tsx" },
-    { out: "nav-solid.bundle", in: "src/app/nav.tsx" },
-    { out: "navbar-solid.bundle", in: "src/app/navbar.tsx" },
     { out: "global.bundle", in: "src/app/global.ts" },
-
-    { out: "css/faz", in: "stylesheets/faz.css"},
-    { out: "css/showcase", in: "stylesheets/showcase.css"},
+    { out: "form", in: "src/form.tsx" },
+    { out: "id", in: "src/id.ts" },
+    { out: "item", in: "src/item.tsx" },
 ];
