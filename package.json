@@ -1,6 +1,6 @@
 {
     "name": "faz",
-    "version": "0.0.26",
+    "version": "0.1.0",
     "description": "HTML Web Components with Solid-JS.",
     "main": "faz.js",
     "repository": {
