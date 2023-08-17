@@ -18,7 +18,7 @@ import { FazElementItem } from "./item";
 import { Accessor, createSignal, Setter} from "solid-js";
 
  
-export default class FazFormElement extends FazElementItem {
+export class FazFormElement extends FazElementItem {
 
     public action: Accessor<string|null>;
     public setAction: Setter<string|null>;

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 Flávio Gonçalves Garcia
+ * Copyright 2018-2023 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-export const entryPoints =  [
-    { out: "global.bundle", in: "src/app/global.ts" },
-    { out: "index", in: "src/index.ts" },
-];
+export { randomId } from "./id";
+export { FazFormElement } from "./form";
+export { FazElementItem } from "./item";

@@ -2,7 +2,7 @@
     "name": "faz",
     "version": "0.1.2",
     "description": "HTML Web Components with Solid-JS.",
-    "main": "faz.js",
+    "main": "./dist/index.js",
     "files": [
         "dist",
         "src"
