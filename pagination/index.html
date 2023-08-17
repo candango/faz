@@ -13,45 +13,129 @@
     <link href="/dist/vendor/css/bootstrap.min.css" rel="stylesheet">
     <link href="/dist/css/faz.css" rel="stylesheet"/>
     <link href="/dist/css/showcase.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/dist/vendor/css/codemirror.css">
     <!-- Custom styles for this template -->
+
 </head>
 
 <body>
 <main-navbar></main-navbar>
 
 <main role="main" class="container">
-
     <h1>Pagination</h1>
-
     <div class="card">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-                <faz-pagination pageCallback="showPage" debug="true" records="9"></faz-pagination>
-                <faz-pagination initCallback="initPagination" href="#mypagination-{page}" debug="true" currentPage="4" records="91"></faz-pagination>
-                <faz-pagination debug="true" currentPage="11" records="110"></faz-pagination>
-                <faz-pagination debug="true" currentPage="11" records="117"></faz-pagination>
-                <faz-pagination debug="true" currentPage="48" records="1267"></faz-pagination>
-                <faz-pagination debug="true" currentPage="125" records="1267"></faz-pagination>
-                <faz-pagination debug="true" disabled="true" currentPage="125" records="1267"></faz-pagination>
-            </li>
-            <li class="list-group-item"><pre class="prettyprint lang-html linenums">&lt;faz-alert&gt;An alert&lt;/faz-alert&gt;</pre>
-            </li>
-        </ul>
+        <div class="card-body">
+            <h2 class="card-title">One page</h2>
+            <p class="card-text">Pagination has count equals 9 (9 records counted).</p>
+            <p class="card-text">Records per page(perPage property) by default is 10 resulting in a pagination with only one page.</p>
+            <p class="card-text">All navigation buttons won't be displayed.</p>
+            <div id="onePageExample"><faz-pagination fazid="bugahuga" debug="true" count="9"></faz-pagination></div>
+        </div>
     </div>
-
-    <script language="JavaScript">
-        function showPage(page, pagination){
-            console.log(page);
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Multiple pages and one block</h2>
+            <p class="card-text">A pagination with count equals 91 resulting in multiple pages.</p>
+            <p class="card-text">Pages per page(perBlock property) by default is 10 resulting in a pagination with only one block.</p>
+            <p class="card-text">All block navigation buttons won't be displayed.</p>
+            <div id="multiplePagesOneBlockExample"><faz-pagination debug="true" count="91"></faz-pagination></div>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Multiple pages and multiple blocks</h2>
+            <p class="card-text">A pagination with count equals 340 resulting in multiple pages and multiple blocks.</p>
+            <div id="multiplePagesMultipleBlocksExample"><faz-pagination debug="true" count="340"></faz-pagination></div>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Start on a defined page</h2>
+            <p class="card-text">Set current page as 173.</p>
+            <p class="card-text">The pagination will be rendered with the page 173 selected at the block of pages 18, displaying pages from 171 to 180.</p>
+            <p class="card-text">Block navigation buttons will be displayed.</p>
+            <div id="definedPageExample"><faz-pagination debug="true" page="173" count="1840"></faz-pagination></div>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Disabled pagination</h2>
+            <p class="card-text">Pagination is disabled but we still show the
+                current page.</p>
+            <div id="disabledExample"><faz-pagination disabled="true" debug="true" page="38" count="8000"></faz-pagination></div>
+        </div>
+        <textarea id="disabledExampleCode"></textarea>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Initial callback to be called after pagination is rendered</h2>
+            <div id="innitCallbackExample"><faz-pagination init-callback="initPagination" debug="true" page="38" count="8000"></faz-pagination></div>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Page callback to be called after page is changed</h2>
+            <div id="pageCallbackExample"><faz-pagination page-callback="showPage" debug="true" page="2" count="120"></faz-pagination></div>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Negative page value</h2>
+            <p class="card-text">A negative page value will be informed
+                defaulting the current page value to 1 and sending a warning at
+                the console.</p>
+            <div id="limitDownExample"><faz-pagination debug="true" page="-1" count="21"></faz-pagination></div>
+        </div>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Page value bigger than the page count</h2>
+            <p class="card-text">A page valu bigger than the page count will be
+                informed defaulting the current page value as the page count
+                and sending a warning at the console.</p>
+            <div id="limitUpExample"><faz-pagination debug="true" page="18" count="57"></faz-pagination></div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <script type="application/javascript">
+        function showPage(page, pagination) {
+            console.log("Page callback called after clicking in the page " +
+                "{page} from pagination {id}.".replace(
+                    "{page}", page).replace("{id}", pagination.state.id))
             console.log(pagination);
         }
         function initPagination(pagination) {
+            console.log("Initial callback called from pagination ".concat(
+                pagination.state.id))
             console.log(pagination);
         }
     </script>
 
 </main><!-- /.container -->
 
-
+<script src="/dist/vendor/codemirror.js"></script>
+<script src="/dist/vendor/codemirror_mode_xml.js"></script>
+<script src="/dist/global.bundle.js" ></script>
+<script>
+    codemirrorit("onePageExample");
+    codemirrorit("multiplePagesOneBlockExample");
+    codemirrorit("multiplePagesMultipleBlocksExample");
+    codemirrorit("definedPageExample");
+    codemirrorit("disabledExample");
+    codemirrorit("innitCallbackExample");
+    codemirrorit("pageCallbackExample");
+    codemirrorit("limitDownExample");
+    codemirrorit("limitUpExample");
+</script>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -59,7 +143,6 @@
 <script src="/dist/vendor/popper.min.js"></script>
 <script src="/dist/vendor/bootstrap.min.js"></script>
 <script src="/dist/pagination.bundle.js"></script>
-<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
 
 </body>
 </html>

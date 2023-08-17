@@ -1,13 +1,14 @@
 {
   "items": [
     {
+      "active": true,
       "type": "faz-nav-item",
       "id": "activeData",
-      "value": "Active"
+      "value": "Active Data"
     },
     {
       "type": "faz-nav-item",
-      "id": "item1Data",
+      "id": "item1Data1",
       "value": "Item 1 Data"
     },
     {
@@ -19,7 +20,7 @@
       "type": "faz-nav-item",
       "id": "disabledData",
       "value": "Disabled Data",
-      "disabled": "true"
+      "disabled": true
     }
   ]
 }

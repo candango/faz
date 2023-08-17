@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 Flavio Garcia
+ * Copyright 2018-2022 Flavio Gonçalves Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-window.codemirrorit = function(name) {
-    document.getElementById(name + "Code").value =
-        document.getElementById(name).innerHTML;
+window.codemirrorit = function(id) {
+    let referenceNode = document.getElementById(id)
+    let newTextareaNode = document.createElement("textarea")
+    newTextareaNode.id = id.concat("Code")
+    newTextareaNode.value = referenceNode.innerHTML
+    referenceNode.parentNode.insertBefore(newTextareaNode,
+        referenceNode.nextSibling)
     CodeMirror.fromTextArea(
-        document.getElementById(name + "Code"), {
+        newTextareaNode, {
             mode:  "xml",
             fixedGutters: false,
             lineNumbers: true,
             readOnly: true,
             viewportMargin: Infinity
-        });
+        })
 }

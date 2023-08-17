@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 Flavio Garcia
+ * Copyright 2018-2023 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,6 @@
  * limitations under the License.
  */
 
-import { route } from "can";
-
-
-export default class Url {
-    static urlAndData(sourceUrl) {
-        let data = {}
-        let url = sourceUrl;
-        if(url.split("?").length > 1) {
-            data = route.deparam(url.split("?")[1]);
-            url = url.split("?")[0];
-        }
-        return {url: url, data: data};
-    }
-}
+export { randomId } from "./id";
+export { FazFormElement } from "./form";
+export { FazElementItem } from "./item";

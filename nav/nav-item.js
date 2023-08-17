@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2021 Flavio Garcia
+ * Copyright 2018-2023 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,292 +14,233 @@
  * limitations under the License.
  */
 
-import { assign, ObservableArray, type } from "can";
-import {FazStacheItem, FazStacheItemList} from "../item";
-import itemTemplate from "./stache/nav-item.stache";
-import {default as FazNavItemTitle} from "./nav-item-title";
+import {FazReactItem} from "../item";
+import React from 'react'
+import FazNavElement from "./nav";
 
-/**
- *
- *
- * TODO: Check https://www.codeply.com/go/ji5ijk6yJ4 for submenu on hover
- * @constructor
- * @param {Object} event. An object representing a nav item.
- * @param {string} event.value
- */
-export class FazNavItem extends FazStacheItem {
 
-    static view = ``;
+export default class FazNavItemReact extends FazReactItem {
 
-    static get props() {
-        return $.extend(super.props, {
-            items: {
-                type: FazStacheItemList,
-                get default() {
-                    return new FazStacheItemList([]);
-                }
-            },
-            faztitle: {
-                type: FazNavItemTitle
-            },
-            disabled: {type: type.convert(Boolean), default: false},
-            root: "*",
-            isRoot: {type: type.convert(Boolean), default: false},
-            target: {type: type.convert(String), default: ""},
-            value: String
-        });
-    }
-
-    get dropdown() {
-        return this.items.length > 0;
-    }
-
-    get html() {
-        return itemTemplate(this);
-    }
-
-    /**
-     * Returns the nav item class.
-     *
-     * @param {FazNavItem} item
-     * @returns {string}
-     */
-    get class() {
-        let classes = ["nav-link"];
-        if(this.active) {
-            classes.push("active");
+    processProps(props) {
+        super.processProps(props)
+        this.previousItem = undefined
+        for(let key in props) {
+            switch (key) {
+                case "children":
+                    this.state['items'] = props[key]
+                    break
+                case "parent":
+                    this.parent = props[key]
+                    let filterMe = this.parent.renderedItems.filter(
+                        item => item.hash === this.hash)
+                    if (!filterMe.length) {
+                        this.parent.renderedItems.push(this)
+                    }
+                    break
+                case "root":
+                    this.root = props[key]
+                    break
+            }
         }
-        if(this.disabled) {
+        this.handleClick = this.handleClick.bind(this)
+    }
+
+    get isDropdown() {
+        return this.state.items.length > 0
+    }
+
+    get isRoot() {
+        return this.parent === this.root
+    }
+
+    defineStates(props) {
+        super.defineStates(props)
+        if (this.element) {
+            let elementProps = []
+            for (let attribute of this.element.attributes) {
+                if (attribute.name.toLowerCase() !== "id") {
+                    elementProps[attribute.name.toLowerCase()] =
+                        attribute.value.toLowerCase()
+                }
+            }
+        }
+    }
+
+    get hasTabs() {
+        return !!this.state.tabs.length;
+    }
+
+    get orientation() {
+        return this.state.vertical ? "vertical" : undefined
+    }
+
+    get prefix() {
+        return "faz-nav-react"
+    }
+
+    get classNames() {
+        let classes = []
+        if(this.isRoot) {
+            classes.push("nav-item")
+            if (this.isDropdown) {
+                classes.push("dropdown")
+            }
+        } else {
+            if (this.isDropdown) {
+                classes.push("dropdown-submenu")
+            }
+        }
+        return classes.join(" ")
+    }
+
+    get linkClassNames() {
+        let classes = ["nav-link"]
+
+        if (!this.isRoot) {
+            classes.pop()
+            classes.push("dropdown-item")
+        }
+
+        if (this.state.active && !this.state.disabled) {
+            this.root.current = this
+            classes.push("active")
+        }
+        if (this.state.disabled) {
             classes.push("disabled")
         }
-        return classes.join(" ");
+        if (this.isDropdown) {
+            classes.push("dropdown-toggle")
+        }
+        return classes.join(" ")
     }
 
-    /**
-     * Returns the nav item href. If item is disabled a javascript void
-     * function will be placed to avoid any action.
-     *
-     * @param {FazNavItem} item
-     * @returns {string}
-     */
-    getHref() {
-        let voidHref = "javascript:void(0)";
-        let validHef = this.href === undefined ? voidHref : this.href;
-        if (this.disabled) {
-            return voidHref;
+    get dropdownClassNames() {
+        let classes = ["dropdown-menu"]
+        if (this.state.active && !this.state.disabled) {
+            classes.push("show")
         }
-        if (this.parent !== undefined) {
-            if (this.parent.hasTabs) {
-                if (!validHef.startsWith("#") && this.href) {
-                    return "#" + validHef;
+        return classes.join(" ")
+    }
+
+    get containerId() {
+        return "faz-nav-item-container-".concat(this.state.id)
+    }
+
+    get link() {
+        if (!this.isDropdown) {
+            if (this.isRoot && this.root.hasTabs) {
+                return `#${super.link}`
+            }
+            return super.link;
+        }
+    }
+
+    renderItems() {
+        return <ul className={this.dropdownClassNames}>
+            {this.state.items.map((item) => {
+                let content = item.content ? item.content : item.value
+                return <FazNavItemReact key={item.id}
+                                        active={item.active}
+                                        disabled={item.disabled}
+                                        id={item.id}
+                                        parent={this}
+                                        content={content}
+                                        root={this.root}
+                                        items={item.items}
+                                        link={item.link}
+                                        target={item.target}
+                />
+            })}
+        </ul>
+    }
+
+    get role() {
+        if (this.isDropdown && this.isRoot) {
+            return "button"
+        }
+        if (!this.isDropdown && !this.isRoot) {
+            return "tab"
+        }
+    }
+
+    get dataBsToggle() {
+        if (this.isDropdown && this.isRoot) {
+            return "dropdown"
+        }
+    }
+
+    get ariaExpanded() {
+        if (this.isDropdown) {
+            return this.state.active
+        }
+    }
+
+    get content() {
+        if (this.isDropdown && this.isRoot) {
+            return this.state.content
+        }
+        return super.content
+    }
+
+    render() {
+        return (
+            <li className={this.classNames} id={this.containerId}>
+                <a id={this.state.id} className={this.linkClassNames}
+                   role={this.role} target={this.state.target} href={this.link}
+                   onClick={(event) => {this.handleClick(event)}}
+                   aria-expanded={this.ariaExpanded}
+                   data-bs-toggle={this.dataBsToggle}
+                >{this.content}</a>
+                {this.isDropdown ? this.renderItems() : ""}
+            </li>
+        )
+    }
+
+    handleClick(event) {
+        if (this.linkIsVoid && !this.isDropdown) {
+            event.preventDefault()
+        }
+        this.activate()
+    }
+
+    get activeItems() {
+        return this.renderedItems.filter(item => {
+            return item.state.active
+        })
+    }
+
+    setDisabled(value) {
+        let items = this.parent.state.items
+        items.filter((item) => item.id === this.state.id).forEach((item)=> {
+            item.disabled = value
+        })
+        this.parent.updateState({items: items})
+    }
+
+    activate() {
+        this.parent.activeItems.forEach((item) => {
+            if (item instanceof FazNavItemReact) {
+                this.previousItem = item
+                item.deactivate()
+            }
+        })
+        if (this.root.hasTabs) {
+            this.root.renderedTabItems.forEach((item) => {
+                if(item.state.id === this.link.replace("#", "")){
+                    item.updateState({active: true})
+                    return
                 }
-            }
+                item.deactivate()
+            })
         }
-        return validHef;
+        this.updateState({active: true})
     }
 
-    beforeConnectedCallback() {
-        this.process();
+    deactivate() {
+        this.previousItem = undefined
+        this.updateState({active: false})
+        this.renderedItems.forEach((item)=> {
+            item.deactivate()
+        })
     }
-
-    activate(element, event) {
-        if(element !== undefined) {
-            // Responsive Dropdown Submenu fix
-            // Based on https://codepen.io/surjithctly/pen/PJqKzQ
-            if(this.dropdown) {
-                if (this.isRoot) {
-                    $('.dropdown-submenu .show').removeClass("show");
-                } else {
-                    if (!$(element).next().hasClass("show")) {
-                        $(element).parents(".dropdown-menu").first().find(
-                            ".show").removeClass("show");
-                    }
-                    let subMenu = $(element).next(".dropdown-menu");
-                    subMenu.toggleClass('show');
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-            }
-        }
-
-        if (!this.disabled) {
-            if (this.parent != null) {
-                this.parent.items.active.forEach(function(child) {
-                    child.active = false;
-                });
-                if (this.isRoot) {
-                    if (this.parent.hasTabs) {
-                        this.parent.tabs.forEach(
-                            tab => {
-                                tab.active = false;
-                                if(tab.fazid == this.ariaControls) {
-                                    tab.active = true;
-                                }
-                            }
-                        );
-                    }
-                }
-            }
-            this.active = true;
-        }
-    }
-
-    process() {
-        for(let attribute of this.attributes) {
-            switch (attribute.name.toLowerCase()) {
-                case "disabled":
-                    this.disabled = attribute.value;
-                    break;
-                case "fazid":
-                case "id":
-                    this.fazid = attribute.value;
-                    break;
-                case "active":
-                case "current":
-                    this.active = true;
-                    break;
-                case "href":
-                    this.href = attribute.value;
-                    break;
-                case "target":
-                    this.target = attribute.value;
-                    break;
-            }
-        }
-        if (this.children.length > 0) {
-            this.processChildren();
-        }
-        if(this.active) {
-            document.addEventListener("DOMContentLoaded", event => {
-                this.activate(this, event);
-            });
-        }
-    }
-
-    processChildren(sub=false) {
-        let childrenToDelete = new Array();
-        for (let i = 0; i < this.children.length; i++) {
-            let child = this.children[i];
-            if(child.tagName.toLowerCase().includes("nav-item")) {
-                if(child.tagName.toLowerCase().includes(
-                    "nav-item-title")) {
-                    this.faztitle = child;
-                } else {
-                    this.items.push(this.processChild(child));
-                }
-                childrenToDelete.push(child);
-            }
-        }
-        childrenToDelete.forEach((child) => {
-            this.removeChild(child);
-        });
-        if(this.faztitle!==undefined) {
-            this.content = this.faztitle.content;
-
-        }
-    }
-
-    processChild(child) {
-        let element = new FazNavItem();
-        for(let attribute of child.attributes) {
-            let newAttribute = attribute.cloneNode()
-            element.attributes.setNamedItem(newAttribute);
-        }
-        element.parent = this;
-        element.innerHTML = child.innerHTML;
-        element.content = element.innerHTML;
-        element.process();
-        element.processChildren(true);
-        return element;
-    }
-
-    setRoot(root) {
-        this.root = root;
-        this.items.forEach((child) => {
-            child.setRoot(root);
-        });
-    }
-
-    get ariaControls() {
-        let voidAriaControls = "";
-        let validAriaControls = this.href === undefined ? voidAriaControls :
-            this.href;
-        if (this.disabled) {
-            return voidAriaControls;
-        }
-        if (this.parent !== undefined) {
-            if (this.parent.hasTabs) {
-                if (validAriaControls.startsWith("#") && this.href) {
-                    return validAriaControls.substring(1);
-                }
-            }
-        }
-        return validAriaControls;
-    }
-
-    get ariaSelected() {
-        return this.active ? "true" : "false";
-    }
-
-    get navId() {
-        return "fazNavItem" + this.fazid;
-    }
-
-    setParent(parent) {
-        this.parent = parent;
-    }
-
-    processData(parent, data, isRoot=false) {
-        this.parent = parent;
-
-        if (isRoot) {
-            this.root = parent;
-            this.isRoot = true;
-        } else {
-            this.root = parent.root;
-        }
-
-        let children = undefined;
-
-        if(data.items !== undefined) {
-            children = data.items;
-            delete data.items;
-        }
-
-        assign(this, data);
-
-        if(children !== undefined) {
-            children.forEach(function (child) {
-                let navItem = new FazNavItem();
-                navItem.processData(this, child);
-                this.items.push(navItem);
-            }.bind(this));
-        }
-
-        this.content = data.value;
-    }
-
 }
-
-export class FazNavItemList extends ObservableArray {
-    static get props() {
-        return {
-            get enabled() {
-                return this.filter({disabled: false});
-            },
-
-            get active() {
-                let actives = this.filter({active: true});
-                if(actives.length===0) {
-                    actives.push(this[0]);
-                    actives[0].active = true;
-                }
-                return actives;
-            }
-        };
-    }
-
-    static items = type.convert(FazNavItem);
-}
-
-customElements.define("faz-nav-item", FazNavItem);

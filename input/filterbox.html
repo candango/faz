@@ -23,7 +23,8 @@
 
     <h2>Basic Filterbox</h2>
     <div>
-        <faz-filterbox id="basicfilterbox" innitcallback="initBasicInitialItems">
+        <faz-filterbox id="basicfilterbox"
+                          innitcallback="initBasicInitialItems">
         </faz-filterbox>
         <div>
             <h1>Something to be bellow the filter</h1>
@@ -64,9 +65,11 @@
 <script src="/dist/vendor/bootstrap.min.js"></script>
 <script src="/dist/filterbox.bundle.js"></script>
 
-<script language="JavaScript">
-    function initBasicInitialItems() {
-        this.items = [
+<script type="application/javascript">
+    function initBasicInitialItems(filterbox) {
+        console.log("Innit callback called")
+        console.log(filterbox)
+        filterbox.updateState({items: [
             {
                 name: "Item 1",
                 value: 1
@@ -87,10 +90,9 @@
                 value: 5,
                 category: "Cat 2"
             }
-        ];
+        ]})
     }
 </script>
-
 
 </body>
 </html>

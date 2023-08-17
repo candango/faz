@@ -29,11 +29,6 @@
               "value": "Alert"
             },
             {
-              "id": "navBreadcrumb",
-              "href": "/breadcrumb",
-              "value": "Breadcrumb"
-            },
-            {
               "id": "navInput",
               "value": "Input",
               "items": [
@@ -55,19 +50,35 @@
               "value": "Form"
             },
             {
-              "id": "navNav",
-              "href": "/nav",
-              "value": "Nav"
-            },
-            {
-              "id": "navNavbar",
-              "href": "/navbar",
-              "value": "Navbar"
-            },
-            {
-              "id": "navPagination",
-              "href": "/pagination",
-              "value": "Pagination"
+              "id": "navNavigation",
+              "value": "Navigation",
+              "items": [
+                {
+                  "id": "navBreadcrumb",
+                  "href": "/breadcrumb",
+                  "value": "Breadcrumb"
+                },
+                {
+                  "id": "navNavigationNav",
+                  "href": "/nav",
+                  "value": "Nav"
+                },
+                {
+                  "id": "navNavigationNavbar",
+                  "href": "/navbar",
+                  "value": "Navbar"
+                },
+                {
+                  "id": "navNavigationPagination",
+                  "href": "/pagination",
+                  "value": "Pagination"
+                },
+                {
+                  "id": "navNavigationSidebar",
+                  "href": "/sidebar",
+                  "value": "Sidebar"
+                }
+              ]
             }
           ]
         }
