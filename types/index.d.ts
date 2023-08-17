@@ -1,5 +1,9 @@
 // See: https://cutt.ly/RwyeQ7ZT
 
+export { randomId } from "../src/id.tsx";
+export { FazFormElement } from "../src/form.tsx";
+export { FazElementItem } from "../src/item.tsx";
+
 interface FazElementItem extends HTMLElement {
     fazid: string;
 }
