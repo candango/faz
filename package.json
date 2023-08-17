@@ -3,6 +3,10 @@
     "version": "0.1.0",
     "description": "HTML Web Components with Solid-JS.",
     "main": "faz.js",
+    "files": [
+        "dist",
+        "src"
+    ],
     "repository": {
         "type": "git",
         "url": "git+https://github.com/candango/faz.git"
