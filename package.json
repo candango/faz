@@ -3,6 +3,10 @@
     "version": "0.1.6",
     "description": "HTML Web Components with Solid-JS.",
     "main": "./dist/index.js",
+    "mainFields": [
+        "module",
+        "main"
+    ],
     "types": "./src/types/index.d.ts",
     "files": [
         "dist",
