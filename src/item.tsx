@@ -32,8 +32,8 @@ export class FazElementItem extends HTMLElement {
     public extraClasses: Accessor<string>;
     public setExtraClasses: Setter<string>;
 
-    public content: Accessor<string | undefined>;
-    public setContent: Setter<string | undefined>;
+    public content: Accessor<string | null>;
+    public setContent: Setter<string | null>;
 
     public disabled: Accessor<boolean>;
     public setDisabled: Setter<boolean>;
@@ -44,12 +44,12 @@ export class FazElementItem extends HTMLElement {
     public loading: Accessor<boolean>;
     public setLoading: Setter<boolean>;
 
-    public parent: Accessor<FazElementItem | undefined>;
+    public parent: Accessor<FazElementItem | null>;
     public setParent: any;
 
     public renderedChild: ChildNode | null = null;
     public debug: boolean = false;
-    private href: string | undefined;
+    private href: string | null = null;
     public childPrefix: string = "";
     public source: any;
 
@@ -58,13 +58,13 @@ export class FazElementItem extends HTMLElement {
         [this.active, this.setActive] = createSignal<boolean>(false);
         [this.classes, this.setClasses] = createSignal("");
         [this.extraClasses, this.setExtraClasses] = createSignal("");
-        [this.content, this.setContent] = createSignal(undefined);
+        [this.content, this.setContent] = createSignal<string | null>(null);
         [this.disabled, this.setDisabled] = createSignal(false);
         [this.items, this.setItems] =
             createSignal<Array<FazElementItem>>(new Array());
         [this.loading, this.setLoading] = createSignal(true);
-        [this.parent, this.setParent] = 
-            createSignal<FazElementItem | undefined>();
+        [this.parent, this.setParent] =
+            createSignal<FazElementItem | null>(null);
         if (!this.id) {
             this.id = randomId();
         }
@@ -118,7 +118,7 @@ export class FazElementItem extends HTMLElement {
     get link() {
         // From: https://stackoverflow.com/a/66717705/2887989
         let voidHref = "#!";
-        if (this.disabled() || this.href === undefined) {
+        if (this.disabled() || this.href === null) {
             return voidHref;
         }
         return this.href;
@@ -163,7 +163,7 @@ export class FazElementItem extends HTMLElement {
         if (this.disabled()) {
             return true;
         }
-        return this.link === undefined || this.link === "#" ||
+        return this.link === null || this.link === "#" ||
             this.link === "#!";
     }
 
