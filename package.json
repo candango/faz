@@ -1,6 +1,6 @@
 {
     "name": "faz",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "HTML Web Components with Solid-JS.",
     "main": "./dist/index.js",
     "types": "./src/types/index.d.ts",
