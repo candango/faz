@@ -21,7 +21,7 @@ import { solidPlugin } from "esbuild-plugin-solid";
 await esbuild.build({
     entryPoints: entryPoints,
     bundle: true,
-    minify: false,
+    minify: true,
     write: true,
     treeShaking: true,
     sourcemap: true,
@@ -29,7 +29,7 @@ await esbuild.build({
     logLevel: "info",
     legalComments: "none",
     allowOverwrite: true,
-    outExtension: { '.js': '.cjs' },
+    outExtension: { '.js': '.js' },
     plugins:[
         solidPlugin()
     ]
