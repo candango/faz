@@ -48,7 +48,7 @@
         "http-server": "14.1.1",
         "prettier": "2.8.1",
         "qunit": "2.17.2",
-        "ts-loader": "9.4.4",
+        "ts-loader": "9.5.0",
         "typescript": "5.2.2"
     },
     "scripts": {
