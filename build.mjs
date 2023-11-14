@@ -29,7 +29,7 @@ await esbuild.build({
     logLevel: "info",
     legalComments: "none",
     allowOverwrite: true,
-    outExtension: { '.js': '.js' },
+    outExtension: { '.js': '.cjs' },
     plugins:[
         solidPlugin()
     ]
