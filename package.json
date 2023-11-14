@@ -41,7 +41,7 @@
         "@codemirror/view": "6.16.0",
         "@types/lodash": "4.14.197",
         "can-stache-loader": "3.0.0",
-        "electron": "20.2.0",
+        "electron": "27.0.4",
         "esbuild": "0.19.5",
         "esbuild-plugin-copy": "2.1.1",
         "esbuild-plugin-solid": "0.5.0",
