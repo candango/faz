@@ -2,7 +2,8 @@
     "name": "faz",
     "version": "0.1.8",
     "description": "HTML Web Components with Solid-JS.",
-    "main": "./dist/index.cjs",
+    "main": "./dist/index.js",
+    "module": "./dist/esm/index.js",
     "mainFields": [
         "module",
         "main"

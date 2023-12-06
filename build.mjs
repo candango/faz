@@ -18,18 +18,24 @@ import * as esbuild from "esbuild";
 import {entryPoints} from "./entryPoints.mjs";
 import { solidPlugin } from "esbuild-plugin-solid";
 
+// The fix was posted here:
+// https://medium.com/geekculture/build-a-library-with-esbuild-23235712f3c
 await esbuild.build({
     entryPoints: entryPoints,
     bundle: true,
     minify: true,
+    // splitting: true,
     write: true,
     treeShaking: true,
     sourcemap: true,
-    outdir: "dist",
+    format: "esm",
+    define: { gobal: "window" },
+    target: ["esnext"],
+    outdir: "dist/esm",
     logLevel: "info",
     legalComments: "none",
-    allowOverwrite: true,
-    outExtension: { '.js': '.cjs' },
+    // outExtension: { '.js': '.cjs' },
+    // target: ['chrome58', 'firefox57', 'safari11', 'edge16'],
     plugins:[
         solidPlugin()
     ]
