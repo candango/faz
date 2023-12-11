@@ -25,4 +25,4 @@ jobs:
           yarn install
       - name: Run jest unit tests
         run: |
-          nmp test
+          npm test
