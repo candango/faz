@@ -1,0 +1,25 @@
+name: Run faz tests
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["18", "20", "21"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          python-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: |
+          npm run yarn
+          yarn install
+      - name: Run jest unit tests
+        run: |
+          nmp test
