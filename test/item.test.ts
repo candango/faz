@@ -44,10 +44,12 @@ describe("Test Element", () => {
             "outer_element") as TestElement;
         const innerElement = screen.queryByTestId(
             "inner_element") as TestElement;
-        outerElement.active = false;
+        outerElement.active = true;
         outerElement.disabled = true;
         expect(outerElement.doActiveChanged).toBeTruthy();
         expect(outerElement.doDisabledChanged).toBeTruthy();
+        outerElement.active = false;
+        outerElement.disabled = false;
         expect(innerElement.doActiveChanged).toBeFalsy();
         expect(innerElement.doDisabledChanged).toBeFalsy();
     });

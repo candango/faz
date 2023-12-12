@@ -29,7 +29,7 @@ class FazNode extends Node {
 }
 
 export class FazElementItem extends HTMLElement {
-    private _active: boolean = true;
+    private _active: boolean = false;
     private _content: string | null = null;
     private _disabled: boolean = false;
     private _extraClasses: string = "";
