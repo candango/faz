@@ -15,14 +15,8 @@
  */
 
 import { randomId } from "./id";
+import { toBoolean } from "./values";
 
-
-function toBoolean(value: string | null): boolean {
-    if (value === null) {
-        return false;
-    }
-    return value.toLowerCase() === "true";
-}
 
 class FazNode extends Node {
     public fazElement: FazElementItem | null = null;

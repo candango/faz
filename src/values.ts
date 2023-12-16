@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-export { randomId } from "./id";
-export { FazFormElement } from "./form";
-export { FazElementItem } from "./item";
-export { toBoolean } from "./values";
+export function toBoolean(value: string | null): boolean {
+    if (value === null) {
+        return false;
+    }
+    return value.toLowerCase() === "true";
+}
