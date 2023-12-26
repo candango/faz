@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2020 Flavio Garcia
+ * Copyright 2018-2024 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import FazAlert from "../alert/alert";
 
-QUnit.module("faz/alert/alert");
-
-let alert = new FazAlert();
-
-QUnit.test("Alert view model defaults.", function(assert) {
-    assert.equal(
-        alert.isLoading,
-        true,
-        "Alert view model isLoading default is: true."
-    );
-});
+export function toBoolean(value: string | null): boolean {
+    if (value === null) {
+        return false;
+    }
+    return value.toLowerCase() === "true";
+}

@@ -15,6 +15,8 @@
  */
 
 export const entryPoints =  [
-    { out: "global.bundle", in: "src/app/global.ts" },
+    { out: "form", in: "src/form.tsx" },
+    { out: "id", in: "src/id.ts" },
     { out: "index", in: "src/index.ts" },
+    { out: "item", in: "src/item.ts" },
 ];

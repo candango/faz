@@ -1,9 +1,8 @@
 // See: https://cutt.ly/RwyeQ7ZT
 
-export { randomId } from "../id";
-export { FazFormElement } from "../form";
-export { FazElementItem } from "../item";
-export { toBoolean } from "../values";
+export { randomId } from "../src/id";
+export { FazFormElement } from "../src/form";
+export { FazElementItem } from "../src/item";
 
 interface FazElementItem extends HTMLElement {
     fazid: string;
