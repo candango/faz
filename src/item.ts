@@ -110,15 +110,15 @@ export class FazElementItem extends HTMLElement {
             const oldValue = this._active;
             this._active = value;
             if (!this.loading) {
-                const event = this.createEvent("activechanged", value,
+                const event = this.createEvent("activechange", value,
                                                oldValue);
                 this.dispatchEvent(event);
-                this.onActiveChanged(event);
+                this.onActiveChange(event);
             }
         }
     }
 
-    onActiveChanged(event: CustomEvent) {}
+    onActiveChange(event: CustomEvent) {}
 
     get content(): string | null {
         return this._content;
@@ -129,15 +129,15 @@ export class FazElementItem extends HTMLElement {
             const oldValue = this._content;
             this._content = value;
             if (!this.loading) {
-                const event = this.createEvent("contentchanged", value,
+                const event = this.createEvent("contentchange", value,
                                                oldValue);
                 this.dispatchEvent(event);
-                this.onContentChanged(event);
+                this.onContentChange(event);
             }
         }
     }
 
-    onContentChanged(event: CustomEvent) {}
+    onContentChange(event: CustomEvent) {}
 
     get disabled(): boolean {
         return this._disabled;
@@ -148,15 +148,15 @@ export class FazElementItem extends HTMLElement {
             const oldValue = this._disabled;
             this._disabled = value;
             if (!this.loading) {
-                const event = this.createEvent("disabledchanged", value,
+                const event = this.createEvent("disabledchange", value,
                                                oldValue);
                 this.dispatchEvent(event);
-                this.onDisabledChanged(event);
+                this.onDisabledChange(event);
             }
         }
     }
 
-    onDisabledChanged(event: CustomEvent) {}
+    onDisabledChange(event: CustomEvent) {}
 
     get extraClasses(): string {
         return this._extraClasses;
@@ -167,15 +167,15 @@ export class FazElementItem extends HTMLElement {
             const oldValue = this._extraClasses;
             this._extraClasses = value;
             if (!this.loading) {
-                const event = this.createEvent("extraclasseschanged", value,
+                const event = this.createEvent("extraclasseschange", value,
                                                oldValue);
                 this.dispatchEvent(event);
-                this.onExtraClassesChanged(event);
+                this.onExtraClassesChange(event);
             }
         }
     }
 
-    onExtraClassesChanged(event: CustomEvent) {}
+    onExtraClassesChange(event: CustomEvent) {}
 
     get link() {
         // From: https://stackoverflow.com/a/66717705/2887989
@@ -191,14 +191,14 @@ export class FazElementItem extends HTMLElement {
             const oldValue = this._link;
             this._link = value;
             if (!this.loading) {
-                const event = this.createEvent("linkchanged", value, oldValue);
+                const event = this.createEvent("linkchange", value, oldValue);
                 this.dispatchEvent(event);
-                this.onLinkChanged(event);
+                this.onLinkChange(event);
             }
         }
     }
 
-    onLinkChanged(event: CustomEvent) {}
+    onLinkChange(event: CustomEvent) {}
 
     get parent(): FazElementItem | null {
         return this._parent;
@@ -209,15 +209,15 @@ export class FazElementItem extends HTMLElement {
             const oldValue = {...this._parent} as FazElementItem | null;
             this._parent = value;
             if (!this.loading) {
-                const event = this.createEvent("parentchanged", value,
+                const event = this.createEvent("parentchange", value,
                                                oldValue);
                 this.dispatchEvent(event);
-                this.onParentChanged(event);
+                this.onParentChange(event);
             }
         }
     }
 
-    onParentChanged(event: CustomEvent) {}
+    onParentChange(event: CustomEvent) {}
 
     get items(): Array<FazElementItem> {
         return this._items;
@@ -228,10 +228,10 @@ export class FazElementItem extends HTMLElement {
             const oldItems = {...this._items} as Array<FazElementItem>;
             this._items.push(item);
             if (!this.loading) {
-                const event = this.createEvent("itemschanged", this._items,
+                const event = this.createEvent("itemschange", this._items,
                                                oldItems);
                 this.dispatchEvent(event);
-                this.onItemsChanged(event);
+                this.onItemsChange(event);
             }
         }
     }
@@ -241,10 +241,10 @@ export class FazElementItem extends HTMLElement {
             const oldItems = {...this._items} as Array<FazElementItem>;
             this._items = this._items.filter(_item => _item !== item);
             if (!this.loading) {
-                const event = this.createEvent("itemschanged", this._items,
+                const event = this.createEvent("itemschange", this._items,
                                                oldItems);
                 this.dispatchEvent(event);
-                this.onItemsChanged(event);
+                this.onItemsChange(event);
             }
         }
     }
@@ -253,14 +253,14 @@ export class FazElementItem extends HTMLElement {
         const oldItems = {...this._items} as Array<FazElementItem>;
         this._items = items;
         if (!this.loading) {
-            const event = this.createEvent("itemschanged", this._items,
+            const event = this.createEvent("itemschange", this._items,
                                            oldItems);
             this.dispatchEvent(event);
-            this.onItemsChanged(event);
+            this.onItemsChange(event);
         }
     }
 
-    onItemsChanged(event: CustomEvent) {}
+    onItemsChange(event: CustomEvent) {}
 
     get loading(): boolean {
         return this._loading;
@@ -270,13 +270,13 @@ export class FazElementItem extends HTMLElement {
         if (this._loading !== value) {
             const oldValue = this._loading;
             this._loading = value;
-            const event = this.createEvent("loadingchanged", value, oldValue);
+            const event = this.createEvent("loadingchange", value, oldValue);
             this.dispatchEvent(event);
-            this.onLoadingChanged(event);
+            this.onLoadingChange(event);
         }
     }
 
-    onLoadingChanged(event: CustomEvent) {}
+    onLoadingChange(event: CustomEvent) {}
 
     get reload(): boolean {
         return this._reload;
@@ -286,13 +286,13 @@ export class FazElementItem extends HTMLElement {
         if (this._reload !== value) {
             const oldValue = this._reload;
             this._reload = value;
-            const event = this.createEvent("reloadchanged", value, oldValue);
+            const event = this.createEvent("reloadchange", value, oldValue);
             this.dispatchEvent(event);
-            this.onReloadChanged(event);
+            this.onReloadChange(event);
         }
     }
 
-    onReloadChanged(event: CustomEvent) {}
+    onReloadChange(event: CustomEvent) {}
 
     get activeItems() {
         return this.items.filter(item => {
