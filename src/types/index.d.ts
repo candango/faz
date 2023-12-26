@@ -3,6 +3,7 @@
 export { randomId } from "../id";
 export { FazFormElement } from "../form";
 export { FazElementItem } from "../item";
+export { toBoolean } from "../values";
 
 interface FazElementItem extends HTMLElement {
     fazid: string;
