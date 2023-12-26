@@ -10,14 +10,14 @@ class TestElement extends FazElementItem {
     constructor() {
         super();
         // Add an event listener to catch a faz element property change.
-        this.addEventListener("activechanged", (_) =>
+        this.addEventListener("activechange", (_) =>
                               this.doActiveChanged = true);
     }
 
     // Or override the event method to catch a faz element property change.
     // This is preferred for the end user(developer), if you are creating a
     // component it is preferred to use the addEventListener method.
-    onDisabledChanged(_: Event) {
+    onDisabledChange(_: Event) {
         this.doDisabledChanged = true;
     }
 
@@ -38,7 +38,7 @@ describe("Test Element", () => {
     afterEach(() => {
         jest.useRealTimers();
     });
-    test("Changed properties", async() => {
+    test("Properties changed", async() => {
         document.body.innerHTML = `
             <faz-test-element data-testid="outer_element" id="outer">
                 <faz-test-element data-testid="inner_element" id="inner">
@@ -63,7 +63,7 @@ describe("Test Element", () => {
         });
     });
 
-    test("Renderend tag", async () => {
+    test("Tag rendered", async () => {
         document.body.innerHTML = `
             <faz-test-element data-testid="outer_element" id="outer">
                 <faz-test-element data-testid="inner_element" id="inner">
