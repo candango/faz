@@ -44,7 +44,7 @@
         "@codemirror/lang-html": "6.4.5",
         "@codemirror/language": "6.8.0",
         "@codemirror/view": "6.16.0",
-        "@testing-library/dom": "9.3.3",
+        "@testing-library/dom": "10.1.0",
         "@testing-library/jest-dom": "6.4.5",
         "@types/jest": "29.5.12",
         "@types/lodash": "4.14.197",
