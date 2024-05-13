@@ -31,9 +31,9 @@
     ],
     "dependencies": {
         "axios": "1.6.8",
-        "bootstrap": "5.3.2",
-        "bootstrap-icons": "1.11.2",
-        "bootswatch": "5.3.2",
+        "bootstrap": "5.3.3",
+        "bootstrap-icons": "1.11.3",
+        "bootswatch": "5.3.3",
         "can": "6.6.2",
         "jquery": "3.7.0",
         "less": "4.2.0",
