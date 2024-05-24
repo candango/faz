@@ -19,37 +19,37 @@ import { FazElementItem } from "./item"
  
 export class FazFormElement extends FazElementItem {
 
-    private _action: string|null = null;
-    private _errors: Array<string> = new Array();
-    private _method: string|null = null;
+    private _action: string|null = null
+    private _errors: Array<string> = new Array()
+    private _method: string|null = null
 
     constructor() {
-        super();
+        super()
         for (const attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
                 case "action":
-                    this._action = attribute.value;
-                    break;
+                    this._action = attribute.value
+                    break
                 case "method":
-                    this._method = attribute.value;
-                    break;
+                    this._method = attribute.value
+                    break
             }
         }
     }
 
     get action(): string | null {
-        return this._action;
+        return this._action
     }
 
     set action(value: string | null) {
         if (this._action !== value) {
-            const oldValue = this._action;
-            this._action = value;
+            const oldValue = this._action
+            this._action = value
             if (!this.loading) {
                 const event = this.createEvent("actionchanged", value,
-                                               oldValue);
-                this.dispatchEvent(event);
-                this.onActionChange(event);
+                                               oldValue)
+                this.dispatchEvent(event)
+                this.onActionChange(event)
             }
         }
     }
@@ -57,57 +57,57 @@ export class FazFormElement extends FazElementItem {
     onActionChange(event: CustomEvent) {}
 
     get errors(): Array<string> {
-        return this._errors;
+        return this._errors
     }
 
     set errors(value: Array<string>) {
         if (this._action !== value) {
-            const oldValue = this._action;
-            this._action = value;
+            const oldValue = this._action
+            this._action = value
             if (!this.loading) {
                 const event = this.createEvent("actionchanged", value,
-                                               oldValue);
-                this.dispatchEvent(event);
-                this.onActionChange(event);
+                                               oldValue)
+                this.dispatchEvent(event)
+                this.onActionChange(event)
             }
         }
     }
 
     hasError(value: string): boolean {
-        return this.errors.find(item => item == value) !== undefined;
+        return this.errors.find(item => item == value) !== undefined
     }
 
     hasErrors(): boolean {
-        return this.errors.length > 0;
+        return this.errors.length > 0
     }
 
 
     pushError(value: string) {
         if (!this.hasError(value)) {
-            const oldValue = this.errors;
-            this.errors.push(value);
+            const oldValue = this.errors
+            this.errors.push(value)
             if (!this.loading) {
                 const event = this.createEvent("errorschanged", this.errors,
-                                               oldValue);
-                this.dispatchEvent(event);
-                this.onActionChange(event);
+                                               oldValue)
+                this.dispatchEvent(event)
+                this.onActionChange(event)
             }
         }
     }
 
     get method(): string | null {
-        return this._method;
+        return this._method
     }
 
     set method(value: string | null) {
         if (this._method !== value) {
-            const oldValue = this._method;
-            this._method = value;
+            const oldValue = this._method
+            this._method = value
             if (!this.loading) {
                 const event = this.createEvent("methodchanged", value,
-                                               oldValue);
-                this.dispatchEvent(event);
-                this.onActionChange(event);
+                                               oldValue)
+                this.dispatchEvent(event)
+                this.onActionChange(event)
             }
         }
     }
