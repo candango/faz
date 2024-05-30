@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 Flavio Garcia
+ * Copyright 2018-2024 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EditorView } from "@codemirror/view";
+import { EditorView } from "@codemirror/view"
 import {
     syntaxHighlighting, defaultHighlightStyle
-} from "@codemirror/language";
-import { html } from "@codemirror/lang-html";
+} from "@codemirror/language"
+import { html } from "@codemirror/lang-html"
 
 declare global {
     interface Window {
-        codemirrorit: (id:string) => void;
+        codemirrorit: (id:string) => void
     }
 }
 
 // TODO: Apply this theme https://palettes.shecodes.io/palettes/1313
 window.codemirrorit = function (id:string) {
-    let referenceNode = document.getElementById(id) || document.body;
+    let referenceNode = document.getElementById(id) || document.body
 
     let theme = EditorView.theme({
         "&": {
@@ -48,7 +48,7 @@ window.codemirrorit = function (id:string) {
             color: "#ddd",
             border: "none"
         }
-    }, { dark: true });
+    }, { dark: true })
 
     new EditorView({
         doc: referenceNode.innerHTML,
@@ -56,5 +56,5 @@ window.codemirrorit = function (id:string) {
              html(),theme, syntaxHighlighting(defaultHighlightStyle)
         ],
         parent: referenceNode,
-    });
+    })
 }

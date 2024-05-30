@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2023 Flavio Garcia
+ * Copyright 2018-2024 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ import * as esbuild from "esbuild";
 import { assets } from "./assets.mjs";
 import { entryPoints } from "./entryPoints.mjs";
 import { copy } from "esbuild-plugin-copy";
-import { solidPlugin } from "esbuild-plugin-solid";
 
 let ctx = await esbuild.context({
     entryPoints: entryPoints,
@@ -28,13 +27,24 @@ let ctx = await esbuild.context({
     treeShaking: true,
     sourcemap: true,
     logLevel: "info",
-    outdir: "dist",
+    outdir: "showcase/dist",
     legalComments: "none",
-    allowOverwrite: true,
+    allowOverwrite: false,
     plugins:[
-        copy(assets),
-        solidPlugin()
+        copy(assets)
     ]
 });
 
 await ctx.watch();
+
+await ctx.serve({
+    port: 8080,
+    servedir: "showcase",
+    onRequest: (args) => {
+        let logMessage = "";
+        for (let key in args) {
+            logMessage += key + ": " + args[key] + " ";
+        }
+        console.log(logMessage);
+    }
+})
