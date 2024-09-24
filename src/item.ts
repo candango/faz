@@ -16,6 +16,7 @@
 
 import { randomId } from "./id"
 import { toBoolean } from "./values"
+import { Accessor, createSignal, Setter, Signal } from "solid-js"
 
 
 class FazNode extends Node {
@@ -23,10 +24,12 @@ class FazNode extends Node {
 }
 
 export class FazElementItem extends HTMLElement {
-    private _active: boolean = false
-    private _content: string | null = null
-    private _disabled: boolean = false
-    private _extraClasses: Array<string> = new Array()
+
+    private activeSignal: Signal<boolean>
+    private contentSignal: Signal<string|null>
+    private disabledSignal: Signal<boolean>
+    private extraClassesSignal: Signal<string>
+
     private _items: Array<FazElementItem> = new Array()
     private _loading: boolean = true
     private _parent: FazElementItem | null = null
@@ -43,6 +46,12 @@ export class FazElementItem extends HTMLElement {
 
     constructor() {
         super()
+
+        this.activeSignal = createSignal<boolean>(false)
+        this.contentSignal = createSignal<string|null>(null)
+        this.disabledSignal = createSignal<boolean>(false)
+        this.extraClassesSignal = createSignal<string>("")
+
         this.initialOuterHTML = this.outerHTML
         if (!this.id) {
             this.id = randomId()
@@ -51,18 +60,18 @@ export class FazElementItem extends HTMLElement {
         for (const attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
                 case "active":
-                    this._active = toBoolean(attribute.value)
+                    this.setActive(toBoolean(attribute.value))
                     break
                 case "class":
                 case "fazclass":
                 case "faz-class":
-                    this.extraClasses = attribute.value
+                    this.setExtraClasses(attribute.value)
                     break
                 case "content":
-                    this._content = attribute.value
+                    this.setContent(attribute.value)
                     break
                 case "disabled":
-                    this._disabled = toBoolean(attribute.value) 
+                    this.setDisabled(toBoolean(attribute.value))
                     break
                 case "id":
                 case "fazid":
@@ -92,6 +101,38 @@ export class FazElementItem extends HTMLElement {
         this.before(this.comment)
     }
 
+    get active(): Accessor<boolean> {
+        return this.activeSignal[0]
+    }
+
+    get setActive(): Setter<boolean> {
+        return this.activeSignal[1]
+    }
+
+    get content(): Accessor<string|null> {
+        return this.contentSignal[0]
+    }
+
+    get setContent(): Setter<string|null> {
+        return this.contentSignal[1]
+    }
+
+    get disabled(): Accessor<boolean> {
+        return this.disabledSignal[0]
+    }
+
+    get setDisabled(): Setter<boolean> {
+        return this.disabledSignal[1]
+    }
+
+    get extraClasses(): Accessor<string> {
+        return this.extraClassesSignal[0]
+    }
+
+    get setExtraClasses(): Setter<string> {
+        return this.extraClassesSignal[1]
+    }
+
     protected createEvent(eventName: string, value: any,
                         oldValue: any): CustomEvent {
         return new CustomEvent(eventName, {
@@ -103,120 +144,29 @@ export class FazElementItem extends HTMLElement {
         })
     }
 
-    get active(): boolean {
-        return this._active
-    }
-
-    set active(value: boolean) {
-        if (this._active !== value) {
-            const oldValue = this._active
-            this._active = value
-            if (!this.loading) {
-                const event = this.createEvent("activechanged", value,
-                                               oldValue)
-                this.dispatchEvent(event)
-                this.onActiveChange(event)
-            }
-        }
-    }
-
-    onActiveChange(event: CustomEvent) {}
-
-    get content(): string | null {
-        return this._content
-    }
-
-    set content(value: string | null) {
-        if (this._content !== value) {
-            const oldValue = this._content
-            this._content = value
-            if (!this.loading) {
-                const event = this.createEvent("contentchanged", value,
-                                               oldValue)
-                this.dispatchEvent(event)
-                this.onContentChange(event)
-            }
-        }
-    }
-
-    onContentChange(event: CustomEvent) {}
-
-    get disabled(): boolean {
-        return this._disabled
-    }
-
-    set disabled(value: boolean) {
-        if (this._disabled !== value) {
-            const oldValue = this._disabled
-            this._disabled = value
-            if (!this.loading) {
-                const event = this.createEvent("disabledchanged", value,
-                                               oldValue)
-                this.dispatchEvent(event)
-                this.onDisabledChange(event)
-            }
-        }
-    }
-
-    onDisabledChange(event: CustomEvent) {}
-
-    get extraClasses(): string {
-        return this._extraClasses.join(" ")
-    }
-
-    set extraClasses(value: string) {
-        const extraClasses = value.trim().split(" ")
-        let changed:boolean = false
-        const oldValue = this._extraClasses
-        extraClasses.forEach(item => {
-            if (!this.hasExtraClass(item)) {
-                changed = true
-            }
-        })
-        if (changed) {
-            this._extraClasses = new Array()
-            extraClasses.forEach(item => {
-                this._extraClasses.push(item.toLowerCase())
-            })
-            if (!this.loading) {
-                const event = this.createEvent("extraclasseschanged",
-                                               this._extraClasses, oldValue)
-                this.dispatchEvent(event)
-                this.onExtraClassesChange(event)
-            }
-        }
-    }
-
     hasExtraClass(value: string): boolean {
-        return this._extraClasses.find(
+        const extraClasses = this.extraClasses().trim().split(" ")
+        return extraClasses.find(
             item => item == value.toLowerCase()) !== undefined
     }
 
     hasExtraClasses(): boolean {
-        return this.extraClasses.length > 0
+        return this.extraClasses().trim().split(" ").length > 0
     }
 
     pushExtraClass(value: string) {
         value = value.trim()
         if (!this.hasExtraClass(value)) {
-            const oldValue = this._extraClasses
-            this._extraClasses.push(value.toLowerCase())
-            if (!this.loading) {
-                const event = this.createEvent("extraclasseschanged",
-                                               this.extraClasses, oldValue)
-                this.dispatchEvent(event)
-                this.onExtraClassesChange(event)
-            }
+            const extraClasses = this.extraClasses().trim().split(" ")
+            extraClasses.push(value)
+            this.setExtraClasses(extraClasses.join(" "))
         }
-        this._extraClasses.push(value)
     }
-
-    onExtraClassesChange(event: CustomEvent) {}
 
     get link() {
         // From: https://stackoverflow.com/a/66717705/2887989
         let voidHref = "#!"
-        if (this.disabled || this._link === null || this._link === "") {
+        if (this.disabled() || this._link === null || this._link === "") {
             return voidHref
         }
         return this._link
@@ -346,7 +296,7 @@ export class FazElementItem extends HTMLElement {
     }
 
     get linkIsVoid() {
-        if (this.disabled) {
+        if (this.disabled()) {
             return true
         }
         return this._link === null || this._link === "" ||
@@ -358,13 +308,7 @@ export class FazElementItem extends HTMLElement {
         return node 
     }
 
-    afterShow(children:Node[]) {
-        if (this.loading) {
-            children.forEach(child => {
-                this.addChild(child)
-            })
-        }
-    }
+    afterShow():void {}
 
     beforeShow():void {}
 
@@ -389,6 +333,14 @@ export class FazElementItem extends HTMLElement {
         return children
     }
 
+    placeBackChildren(children: Node[]) {
+        if (this.loading) {
+            children.forEach(child => {
+                this.addChild(child)
+            })
+        }
+    }
+
     connectedCallback() {
         this.render()
         this.connected = true
@@ -399,18 +351,19 @@ export class FazElementItem extends HTMLElement {
     show() {}
 
     render() {
-        new Promise((resolve) => {
-            setTimeout(()=>resolve(null), 0)
-        }).then(()=> {
+        // new Promise((resolve) => {
+        //     setTimeout(()=>resolve(null), 0)
+        // }).then(()=> {
             this.load()
             this.beforeShow()
             const children = this.collectChildren()
             if (this.loading) {
                 this.show()
             }
-            this.afterShow(children)
+            this.placeBackChildren(children)
+            this.afterShow()
             this.loading = false
-        })
+        // })
     }
 
     cleanFazTag() {
