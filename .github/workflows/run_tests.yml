@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ["18", "20", "21"]
+        node-version: ["18", "20", "21", "22"]
 
     steps:
       - uses: actions/checkout@v4
@@ -23,6 +23,6 @@ jobs:
           npm install -g yarn
           npm run yarn
           yarn install
-      - name: Run jest unit tests
+      - name: Run vitest unit tests
         run: |
           npm test
