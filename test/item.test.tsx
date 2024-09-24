@@ -1,0 +1,121 @@
+/**
+ * Copyright 2018-2024 Flavio Garcia
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { FazElementItem } from "../src/item"
+import { describe, expect, test } from "vitest"
+import { screen } from "@testing-library/dom"
+import { createEffect, getOwner, runWithOwner } from "solid-js"
+import { render } from "solid-js/web"
+
+class TestElement extends FazElementItem {
+
+    public doActiveChanged: boolean = false
+    public doDisabledChanged: boolean = false
+    public doExtraClassesChanged: boolean = false
+
+    constructor() {
+        super()
+        createEffect((prevActive) => {
+            if (this.active() != prevActive) {
+                this.doActiveChanged = true
+            }
+        }, false)
+
+        createEffect((prevDisabled) => {
+            if (this.disabled() != prevDisabled) {
+                this.doDisabledChanged = true
+            }
+        }, false)
+
+        createEffect((prevExtraClasses) => {
+            if (this.extraClasses() != prevExtraClasses) {
+                this.doExtraClassesChanged = true
+            }
+        }, "aclass")
+    }
+
+    show() {
+        render(() => <div data-testid={"rendered_div_" + this.id}></div>, this)
+    }
+}
+
+customElements.define("faz-test-element", TestElement)
+
+describe("Test Element", () => {
+    const theText = "A text"
+    test("Properties changed", () => {
+        document.body.innerHTML = `
+            <faz-test-element data-testid="outer_element" id="outer" fazclass="aclass">
+                <faz-test-element data-testid="inner_element" id="inner">
+                    ${theText}
+                </faz-test-element>
+            </faz-test-element>
+        `
+        const outerElement = screen.queryByTestId(
+            "outer_element") as TestElement
+        const innerElement = screen.queryByTestId(
+            "inner_element") as TestElement
+        outerElement.setActive(true)
+        outerElement.setDisabled(true)
+        expect(outerElement.doActiveChanged).toBeTruthy()
+        expect(outerElement.doDisabledChanged).toBeTruthy()
+        expect(outerElement.doExtraClassesChanged).toBeFalsy()
+        outerElement.setExtraClasses("aclass")
+        expect(outerElement.doExtraClassesChanged).toBeFalsy()
+        outerElement.setExtraClasses("aclass bclass")
+        expect(outerElement.doExtraClassesChanged).toBeTruthy()
+        outerElement.doExtraClassesChanged = false
+        outerElement.setExtraClasses("bclass aclass")
+        expect(outerElement.doExtraClassesChanged).toBeTruthy()
+        outerElement.doExtraClassesChanged = false
+        outerElement.setExtraClasses("bclass aclass ")
+        expect(outerElement.doExtraClassesChanged).toBeTruthy()
+        outerElement.doExtraClassesChanged = false
+        outerElement.setExtraClasses(" bclass aclass")
+        expect(outerElement.doExtraClassesChanged).toBeTruthy()
+        outerElement.doExtraClassesChanged = false
+        outerElement.setExtraClasses(" bclass aclass ")
+        expect(outerElement.doExtraClassesChanged).toBeTruthy()
+        outerElement.doExtraClassesChanged = false
+        outerElement.setExtraClasses("bclass aclass cclass")
+        expect(outerElement.doExtraClassesChanged).toBeTruthy()
+        outerElement.doExtraClassesChanged = false
+        outerElement.pushExtraClass("aclass")
+        outerElement.pushExtraClass("bclass ")
+        outerElement.pushExtraClass(" cclass")
+        outerElement.pushExtraClass(" aclass ")
+        expect(outerElement.doExtraClassesChanged).toBeFalsy()
+        outerElement.pushExtraClass("eclass")
+        expect(outerElement.doExtraClassesChanged).toBeTruthy()
+        outerElement.setActive(false)
+        outerElement.setDisabled(false)
+        expect(innerElement.doActiveChanged).toBeFalsy()
+        expect(innerElement.doDisabledChanged).toBeFalsy()
+    })
+
+    test("Tag rendered", () => {
+        document.body.innerHTML = `
+            <faz-test-element data-testid="outer_element" id="outer">
+                <faz-test-element data-testid="inner_element" id="inner">
+                    ${theText}
+                </faz-test-element>
+            </faz-test-element>
+        `
+        expect(
+            screen.queryByTestId("rendered_div_outer")?.tagName
+        ).toBe("DIV")
+    })
+})

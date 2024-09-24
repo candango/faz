@@ -23,6 +23,7 @@
     "homepage": "https://github.com/candango/faz#readme",
     "author": "Flavio Garcia <piraz@candango.org>",
     "license": "Apache-2.0",
+    "type": "module",
     "keywords": [
         "webcomponent",
         "solidjs",
@@ -55,13 +56,13 @@
         "esbuild-plugin-copy": "2.1.1",
         "esbuild-plugin-solid": "0.6.0",
         "http-server": "14.1.1",
-        "jest": "29.7.0",
-        "jest-environment-jsdom": "29.7.0",
+        "jsdom": "25.0.1",
         "prettier": "3.3.3",
-        "ts-jest": "29.2.5",
         "ts-loader": "9.5.1",
         "ts-node": "10.9.2",
-        "typescript": "5.6.2"
+        "typescript": "5.6.2",
+        "vite-plugin-solid": "2.10.2",
+        "vitest": "2.1.1"
     },
     "scripts": {
         "watch": "node watch.mjs",
@@ -76,7 +77,7 @@
         "lessc:dev": "npm run lessc:dev:faz && npm run lessc:dev:showcase",
         "lessc:dev:faz": "lessc stylesheets/faz.less stylesheets/faz.css --source-map",
         "lessc:dev:showcase": "lessc stylesheets/showcase.less stylesheets/showcase.css --source-map",
-        "test": "jest",
+        "test": "vitest run",
         "yarn": "npm run yarn:clean && npm run yarn:v2 && npm run yarn:install",
         "yarn:install": "yarn install",
         "yarn:clean": "rm -rf yarn.lock .yarn .yarnrc.yml .next node_modules",
