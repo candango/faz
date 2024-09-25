@@ -16,7 +16,7 @@
 
 import { randomId } from "./id"
 import { toBoolean } from "./values"
-import { Accessor, createSignal, Setter, Signal } from "solid-js"
+import { Accessor, createSignal, Setter } from "solid-js"
 
 
 class FazNode extends Node {
@@ -25,10 +25,14 @@ class FazNode extends Node {
 
 export class FazElementItem extends HTMLElement {
 
-    private activeSignal: Signal<boolean>
-    private contentSignal: Signal<string|null>
-    private disabledSignal: Signal<boolean>
-    private extraClassesSignal: Signal<string>
+    public active: Accessor<boolean>
+    public setActive: Setter<boolean>
+    public content: Accessor<string|null> 
+    public setContent: Setter<string|null>
+    public disabled: Accessor<boolean>
+    public setDisabled: Setter<boolean>
+    public extraClasses: Accessor<string>
+    public setExtraClasses: Setter<string> 
 
     private _items: Array<FazElementItem> = new Array()
     private _loading: boolean = true
@@ -46,11 +50,18 @@ export class FazElementItem extends HTMLElement {
 
     constructor() {
         super()
-
-        this.activeSignal = createSignal<boolean>(false)
-        this.contentSignal = createSignal<string|null>(null)
-        this.disabledSignal = createSignal<boolean>(false)
-        this.extraClassesSignal = createSignal<string>("")
+        const [active, setActive] = createSignal<boolean>(false)
+        this.active = active
+        this.setActive = setActive
+        const [content, setContent] = createSignal<string|null>(null)
+        this.content = content
+        this.setContent = setContent
+        const [disabled, setDisabled] = createSignal<boolean>(false)
+        this.disabled = disabled
+        this.setDisabled = setDisabled
+        const [extraClasses, setExtraClasses] = createSignal<string>("")
+        this.extraClasses = extraClasses
+        this.setExtraClasses = setExtraClasses
 
         this.initialOuterHTML = this.outerHTML
         if (!this.id) {
@@ -99,38 +110,6 @@ export class FazElementItem extends HTMLElement {
         }
         this.comment = document.createComment(this.nodeName + " " + this.id)
         this.before(this.comment)
-    }
-
-    get active(): Accessor<boolean> {
-        return this.activeSignal[0]
-    }
-
-    get setActive(): Setter<boolean> {
-        return this.activeSignal[1]
-    }
-
-    get content(): Accessor<string|null> {
-        return this.contentSignal[0]
-    }
-
-    get setContent(): Setter<string|null> {
-        return this.contentSignal[1]
-    }
-
-    get disabled(): Accessor<boolean> {
-        return this.disabledSignal[0]
-    }
-
-    get setDisabled(): Setter<boolean> {
-        return this.disabledSignal[1]
-    }
-
-    get extraClasses(): Accessor<string> {
-        return this.extraClassesSignal[0]
-    }
-
-    get setExtraClasses(): Setter<string> {
-        return this.extraClassesSignal[1]
     }
 
     protected createEvent(eventName: string, value: any,
