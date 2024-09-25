@@ -27,18 +27,22 @@ export class FazElementItem extends HTMLElement {
 
     public active: Accessor<boolean>
     public setActive: Setter<boolean>
-    public content: Accessor<string|null> 
-    public setContent: Setter<string|null>
+    public content: Accessor<string|undefined> 
+    public setContent: Setter<string|undefined>
     public disabled: Accessor<boolean>
     public setDisabled: Setter<boolean>
     public extraClasses: Accessor<string>
     public setExtraClasses: Setter<string> 
-
-    private _items: Array<FazElementItem> = new Array()
-    private _loading: boolean = true
-    private _parent: FazElementItem | null = null
-    private _reload: boolean = false
-    private _link: string | null = null
+    public items: Accessor<FazElementItem[]>
+    public setItems: Setter<FazElementItem[]>
+    public loading: Accessor<boolean>
+    public setLoading: Setter<boolean>
+    public parent: Accessor<FazElementItem|undefined>
+    public setParent: Setter<FazElementItem|undefined>
+    public reload: Accessor<boolean>
+    public setReload: Setter<boolean>
+    public link: Accessor<string|undefined> 
+    public setLink: Setter<string|undefined>
 
     public childPrefix: string = ""
     private connected: boolean = false
@@ -53,7 +57,7 @@ export class FazElementItem extends HTMLElement {
         const [active, setActive] = createSignal<boolean>(false)
         this.active = active
         this.setActive = setActive
-        const [content, setContent] = createSignal<string|null>(null)
+        const [content, setContent] = createSignal<string|undefined>(undefined)
         this.content = content
         this.setContent = setContent
         const [disabled, setDisabled] = createSignal<boolean>(false)
@@ -62,6 +66,21 @@ export class FazElementItem extends HTMLElement {
         const [extraClasses, setExtraClasses] = createSignal<string>("")
         this.extraClasses = extraClasses
         this.setExtraClasses = setExtraClasses
+        const [items, setItems] = createSignal<FazElementItem[]>([])
+        this.items = items
+        this.setItems = setItems
+        const [loading, setLoading] = createSignal<boolean>(true)
+        this.loading = loading
+        this.setLoading = setLoading
+        const [parent, setParent] = createSignal<FazElementItem|undefined>(undefined)
+        this.parent = parent
+        this.setParent = setParent
+        const [reload, setReload] = createSignal<boolean>(false)
+        this.reload = reload
+        this.setReload = setReload
+        const [link, setLink] = createSignal<string|undefined>(undefined)
+        this.link = link
+        this.setLink = setLink
 
         this.initialOuterHTML = this.outerHTML
         if (!this.id) {
@@ -91,7 +110,7 @@ export class FazElementItem extends HTMLElement {
                     break
                 case "href":
                 case "link":
-                    this._link = attribute.value
+                    this.setLink(attribute.value)
                     break
             }
         }
@@ -142,125 +161,33 @@ export class FazElementItem extends HTMLElement {
         }
     }
 
-    get link() {
+    resolveLink(): string|undefined  {
         // From: https://stackoverflow.com/a/66717705/2887989
         let voidHref = "#!"
-        if (this.disabled() || this._link === null || this._link === "") {
+        const link = this.link()
+        if (this.disabled() || link === undefined || link === "") {
             return voidHref
         }
-        return this._link
-    }
-
-    set link(value: string) {
-        if (this._link !== value) {
-            const oldValue = this._link
-            this._link = value
-            if (!this.loading) {
-                const event = this.createEvent("linkchanged", value, oldValue)
-                this.dispatchEvent(event)
-                this.onLinkChange(event)
-            }
-        }
-    }
-
-    onLinkChange(event: CustomEvent) {}
-
-    get parent(): FazElementItem | null {
-        return this._parent
-    }
-
-    set parent(value: FazElementItem | null) {
-        if (this._parent !== value) {
-            const oldValue = {...this._parent} as FazElementItem | null
-            this._parent = value
-            if (!this.loading) {
-                const event = this.createEvent("parentchanged", value,
-                                               oldValue)
-                this.dispatchEvent(event)
-                this.onParentChange(event)
-            }
-        }
-    }
-
-    onParentChange(event: CustomEvent) {}
-
-    get items(): Array<FazElementItem> {
-        return this._items
+        return this.link()
     }
 
     addItem(item: FazElementItem) {
-        if (this._items.indexOf(item) === -1) {
-            const oldItems = {...this._items} as Array<FazElementItem>
-            this._items.push(item)
-            if (!this.loading) {
-                const event = this.createEvent("itemschanged", this._items,
-                                               oldItems)
-                this.dispatchEvent(event)
-                this.onItemsChange(event)
-            }
+        if (this.items().indexOf(item) === -1) {
+            const items = {...this.items()} as FazElementItem[]
+            items.push(item) 
+            this.setItems(items)
         }
     }
 
     removeItem(item: FazElementItem) {
-        if (this._items.indexOf(item) !== -1) {
-            const oldItems = {...this._items} as Array<FazElementItem>
-            this._items = this._items.filter(_item => _item !== item)
-            if (!this.loading) {
-                const event = this.createEvent("itemschanged", this._items,
-                                               oldItems)
-                this.dispatchEvent(event)
-                this.onItemsChange(event)
-            }
+        if (this.items().indexOf(item) !== -1) {
+            const items = {...this.items()} as FazElementItem[]
+            this.setItems(items.filter(i => i !== item))
         }
     }
 
-    setItems(items: Array<FazElementItem>) {
-        const oldItems = {...this._items} as Array<FazElementItem>
-        this._items = items
-        if (!this.loading) {
-            const event = this.createEvent("itemschanged", this._items,
-                                           oldItems)
-            this.dispatchEvent(event)
-            this.onItemsChange(event)
-        }
-    }
-
-    onItemsChange(event: CustomEvent) {}
-
-    get loading(): boolean {
-        return this._loading
-    }
-
-    set loading(value: boolean) {
-        if (this._loading !== value) {
-            const oldValue = this._loading
-            this._loading = value
-            const event = this.createEvent("loadingchanged", value, oldValue)
-            this.dispatchEvent(event)
-            this.onLoadingChange(event)
-        }
-    }
-
-    onLoadingChange(event: CustomEvent) {}
-
-    get reload(): boolean {
-        return this._reload
-    }
-
-    set reload(value: boolean) {
-        if (this._reload !== value) {
-            const oldValue = this._reload
-            this._reload = value
-            const event = this.createEvent("reloadchanged", value, oldValue)
-            this.dispatchEvent(event)
-            this.onReloadChange(event)
-        }
-    }
-
-    onReloadChange(event: CustomEvent) {}
-
-    get activeItems() {
-        return this.items.filter(item => {
+    get activeItems(): FazElementItem[] {
+        return this.items().filter(item => {
             return item.active
         })
     }
@@ -278,8 +205,9 @@ export class FazElementItem extends HTMLElement {
         if (this.disabled()) {
             return true
         }
-        return this._link === null || this._link === "" ||
-            this._link === "#" || this._link === "#!"
+        const linkResolved = this.resolveLink()
+        return linkResolved === undefined || linkResolved === "" ||
+            linkResolved === "#" || linkResolved === "#!"
     }
 
     addChild<T extends Node>(node: T): T {
@@ -294,11 +222,11 @@ export class FazElementItem extends HTMLElement {
     collectChildren() { 
         const children:Node[] = []
         const items: FazElementItem[] = []
-        if (this.loading) {
+        if (this.loading()) {
             while(this.firstChild) {
                 if (this.firstChild instanceof FazElementItem) {
                     const item = this.firstChild as FazElementItem
-                    item.parent = this
+                    item.setParent(this as FazElementItem)
                     items.push(item)
                     item.dataset['parent'] = this.id
                 }
@@ -313,7 +241,7 @@ export class FazElementItem extends HTMLElement {
     }
 
     placeBackChildren(children: Node[]) {
-        if (this.loading) {
+        if (this.loading()) {
             children.forEach(child => {
                 this.addChild(child)
             })
@@ -330,19 +258,15 @@ export class FazElementItem extends HTMLElement {
     show() {}
 
     render() {
-        // new Promise((resolve) => {
-        //     setTimeout(()=>resolve(null), 0)
-        // }).then(()=> {
-            this.load()
-            this.beforeShow()
-            const children = this.collectChildren()
-            if (this.loading) {
-                this.show()
-            }
-            this.placeBackChildren(children)
-            this.afterShow()
-            this.loading = false
-        // })
+        this.load()
+        this.beforeShow()
+        const children = this.collectChildren()
+        if (this.loading()) {
+            this.show()
+        }
+        this.placeBackChildren(children)
+        this.afterShow()
+        this.setLoading(false)
     }
 
     cleanFazTag() {
