@@ -69,7 +69,10 @@
         "watch": "node watch.mjs",
         "showcase": "http-server & npm run watch",
         "esbuild": "node build.mjs",
-        "build": "npm run build:clean && npm run lessc && npm run esbuild",
+        "ts:build": "npm run ts:clean && npm run ts:declaration",
+        "ts:declaration": "tsc -d --declarationDir types --emitDeclarationOnly && rm -rf tsconfig.tsbuildinfo",
+        "ts:clean": "rm -rf tsconfig.tsbuildinfo types/*",
+        "build": "npm run build:clean && npm run lessc && npm run esbuild && npm run ts:build",
         "build:clean": "rm -rf dist",
         "build:vendors": "rm -rf dist",
         "lessc": "npm run lessc:faz && npm run lessc:showcase",
@@ -84,5 +87,5 @@
         "yarn:clean": "rm -rf yarn.lock .yarn .yarnrc.yml .next node_modules",
         "yarn:v2": "yarn set version berry && yarn config set nodeLinker node-modules"
     },
-    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+    "packageManager": "yarn@4.5.0"
 }

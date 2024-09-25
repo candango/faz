@@ -60,7 +60,7 @@ export class FazFormElement extends FazElementItem {
         return this._errors
     }
 
-    set errors(value: Array<string>) {
+    set errors(value: string) {
         if (this._action !== value) {
             const oldValue = this._action
             this._action = value
