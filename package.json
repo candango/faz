@@ -11,7 +11,8 @@
     "types": "./types/index.d.ts",
     "files": [
         "dist",
-        "src"
+        "src",
+        "types"
     ],
     "repository": {
         "type": "git",
