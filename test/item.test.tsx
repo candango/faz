@@ -15,8 +15,8 @@
  */
 
 import { FazElementItem } from "../src/item"
-import { describe, expect, test } from "vitest"
-import { screen } from "@testing-library/dom"
+import { afterEach, beforeEach, describe, expect, test, vitest } from "vitest"
+import { screen, waitFor } from "@testing-library/dom"
 import { createEffect, getOwner, runWithOwner } from "solid-js"
 import { render } from "solid-js/web"
 
@@ -48,7 +48,9 @@ class TestElement extends FazElementItem {
     }
 
     show() {
-        render(() => <div data-testid={"rendered_div_" + this.id}></div>, this)
+        render(() => {
+            return <div data-testid={"rendered_div_" + this.id}></div>
+        }, this)
     }
 }
 
@@ -56,6 +58,12 @@ customElements.define("faz-test-element", TestElement)
 
 describe("Test Element", () => {
     const theText = "A text"
+    beforeEach(() => {
+        vitest.useFakeTimers();
+    });
+    afterEach(() => {
+        vitest.useRealTimers();
+    });
     test("Properties changed", () => {
         document.body.innerHTML = `
             <faz-test-element data-testid="outer_element" id="outer" fazclass="aclass">
@@ -106,7 +114,7 @@ describe("Test Element", () => {
         expect(innerElement.doDisabledChanged).toBeFalsy()
     })
 
-    test("Tag rendered", () => {
+    test("Tag rendered", async () => {
         document.body.innerHTML = `
             <faz-test-element data-testid="outer_element" id="outer">
                 <faz-test-element data-testid="inner_element" id="inner">
@@ -114,8 +122,13 @@ describe("Test Element", () => {
                 </faz-test-element>
             </faz-test-element>
         `
-        expect(
-            screen.queryByTestId("rendered_div_outer")?.tagName
-        ).toBe("DIV")
+        vitest.runAllTimers()
+        await waitFor(() => {
+            const outerElement = screen.getByTestId("outer_element") as FazElementItem
+            const innerElement = screen.getByTestId("inner_element") as FazElementItem
+            expect(outerElement.items().length).toBe(1);
+            expect(innerElement.parent()).toBe(outerElement);
+            expect(screen.queryByTestId("rendered_div_outer")?.tagName).toBe("DIV");
+        });
     })
 })

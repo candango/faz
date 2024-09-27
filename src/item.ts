@@ -249,8 +249,12 @@ export class FazElementItem extends HTMLElement {
     }
 
     connectedCallback() {
-        this.render()
-        this.connected = true
+        new Promise((resolve) => {
+            setTimeout(()=>resolve(null), 0);
+        }).then(()=> {
+            this.render()
+            this.connected = true
+        })
     }
 
     load() {}
