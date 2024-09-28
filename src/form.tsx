@@ -15,102 +15,67 @@
  */
 
 import { FazElementItem } from "./item"
+import { Accessor, createSignal, Setter, Signal } from "solid-js"
 
  
 export class FazFormElement extends FazElementItem {
 
-    private _action: string|null = null
-    private _errors: Array<string> = new Array()
-    private _method: string|null = null
+    private actionSignal: Signal<string|undefined> = createSignal<string|undefined>(undefined)
+    private errorsSignal: Signal<string[]> = createSignal<string[]>([])
+    private methodSignal: Signal<string> = createSignal<string>("get")
 
     constructor() {
         super()
         for (const attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
                 case "action":
-                    this._action = attribute.value
+                    this.setAction(attribute.value)
                     break
                 case "method":
-                    this._method = attribute.value
+                    this.setMethod(attribute.value)
                     break
             }
         }
     }
 
-    get action(): string | null {
-        return this._action
+    get action(): Accessor<string|undefined> {
+        return this.actionSignal[0]
     }
 
-    set action(value: string | null) {
-        if (this._action !== value) {
-            const oldValue = this._action
-            this._action = value
-            if (!this.loading) {
-                const event = this.createEvent("actionchanged", value,
-                                               oldValue)
-                this.dispatchEvent(event)
-                this.onActionChange(event)
-            }
-        }
+    get setAction(): Setter<string|undefined> {
+        return this.actionSignal[1]
     }
 
-    onActionChange(event: CustomEvent) {}
-
-    get errors(): Array<string> {
-        return this._errors
+    get errors(): Accessor<string[]> {
+        return this.errorsSignal[0]
     }
 
-    set errors(value: string) {
-        if (this._action !== value) {
-            const oldValue = this._action
-            this._action = value
-            if (!this.loading) {
-                const event = this.createEvent("actionchanged", value,
-                                               oldValue)
-                this.dispatchEvent(event)
-                this.onActionChange(event)
-            }
-        }
+    get setErrors(): Setter<string[]> {
+        return this.errorsSignal[1]
     }
 
     hasError(value: string): boolean {
-        return this.errors.find(item => item == value) !== undefined
+        return this.errors().find(item => item == value) !== undefined
     }
 
     hasErrors(): boolean {
-        return this.errors.length > 0
+        return this.errors().length > 0
     }
-
 
     pushError(value: string) {
+        value = value.trim()
         if (!this.hasError(value)) {
-            const oldValue = this.errors
-            this.errors.push(value)
-            if (!this.loading) {
-                const event = this.createEvent("errorschanged", this.errors,
-                                               oldValue)
-                this.dispatchEvent(event)
-                this.onActionChange(event)
-            }
+            const errors = this.errors()
+            errors.push(value)
+            this.setErrors(errors)
         }
     }
 
-    get method(): string | null {
-        return this._method
+    get method(): Accessor<string> {
+        return this.methodSignal[0]
     }
 
-    set method(value: string | null) {
-        if (this._method !== value) {
-            const oldValue = this._method
-            this._method = value
-            if (!this.loading) {
-                const event = this.createEvent("methodchanged", value,
-                                               oldValue)
-                this.dispatchEvent(event)
-                this.onActionChange(event)
-            }
-        }
+    get setMethod(): Setter<string> {
+        return this.methodSignal[1]
     }
-
-    onMethodChange(event: CustomEvent) {}
 }

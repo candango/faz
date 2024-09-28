@@ -16,7 +16,7 @@
 
 import { randomId } from "./id"
 import { toBoolean } from "./values"
-import { Accessor, createSignal, Setter } from "solid-js"
+import { Accessor, createSignal, Setter, Signal } from "solid-js"
 
 
 class FazNode extends Node {
@@ -25,24 +25,15 @@ class FazNode extends Node {
 
 export class FazElementItem extends HTMLElement {
 
-    public active: Accessor<boolean>
-    public setActive: Setter<boolean>
-    public content: Accessor<string|undefined> 
-    public setContent: Setter<string|undefined>
-    public disabled: Accessor<boolean>
-    public setDisabled: Setter<boolean>
-    public extraClasses: Accessor<string>
-    public setExtraClasses: Setter<string> 
-    public items: Accessor<FazElementItem[]>
-    public setItems: Setter<FazElementItem[]>
-    public loading: Accessor<boolean>
-    public setLoading: Setter<boolean>
-    public parent: Accessor<FazElementItem|undefined>
-    public setParent: Setter<FazElementItem|undefined>
-    public reload: Accessor<boolean>
-    public setReload: Setter<boolean>
-    public link: Accessor<string|undefined> 
-    public setLink: Setter<string|undefined>
+    private activeSignal: Signal<boolean> = createSignal<boolean>(false)
+    private contentSignal: Signal<string|undefined> = createSignal<string|undefined>(undefined)
+    private disabledSignal: Signal<boolean> = createSignal<boolean>(false)
+    private extraClassesSignal: Signal<string> = createSignal<string>("")
+    private itemsSignal: Signal<FazElementItem[]> = createSignal<FazElementItem[]>([])
+    private loadingSignal: Signal<boolean> = createSignal<boolean>(true)
+    private parentSignal: Signal<FazElementItem|undefined> = createSignal<FazElementItem|undefined>(undefined)
+    private reloadSignal: Signal<boolean> = createSignal<boolean>(false)
+    private linkSignal: Signal<string|undefined> = createSignal<string|undefined>(undefined)
 
     public childPrefix: string = ""
     private connected: boolean = false
@@ -54,33 +45,6 @@ export class FazElementItem extends HTMLElement {
 
     constructor() {
         super()
-        const [active, setActive] = createSignal<boolean>(false)
-        this.active = active
-        this.setActive = setActive
-        const [content, setContent] = createSignal<string|undefined>(undefined)
-        this.content = content
-        this.setContent = setContent
-        const [disabled, setDisabled] = createSignal<boolean>(false)
-        this.disabled = disabled
-        this.setDisabled = setDisabled
-        const [extraClasses, setExtraClasses] = createSignal<string>("")
-        this.extraClasses = extraClasses
-        this.setExtraClasses = setExtraClasses
-        const [items, setItems] = createSignal<FazElementItem[]>([])
-        this.items = items
-        this.setItems = setItems
-        const [loading, setLoading] = createSignal<boolean>(true)
-        this.loading = loading
-        this.setLoading = setLoading
-        const [parent, setParent] = createSignal<FazElementItem|undefined>(undefined)
-        this.parent = parent
-        this.setParent = setParent
-        const [reload, setReload] = createSignal<boolean>(false)
-        this.reload = reload
-        this.setReload = setReload
-        const [link, setLink] = createSignal<string|undefined>(undefined)
-        this.link = link
-        this.setLink = setLink
 
         this.initialOuterHTML = this.outerHTML
         if (!this.id) {
@@ -131,15 +95,76 @@ export class FazElementItem extends HTMLElement {
         this.before(this.comment)
     }
 
-    protected createEvent(eventName: string, value: any,
-                        oldValue: any): CustomEvent {
-        return new CustomEvent(eventName, {
-            bubbles: true,
-            detail: {
-                value: value,
-                oldValue: oldValue,
-            },
-        })
+    get active(): Accessor<boolean> {
+        return this.activeSignal[0]
+    }
+
+    get setActive(): Setter<boolean> {
+        return this.activeSignal[1]
+    }
+
+    get content(): Accessor<string|undefined> {
+        return this.contentSignal[0]
+    }
+
+    get setContent(): Setter<string|undefined> {
+        return this.contentSignal[1]
+    }
+
+    get disabled(): Accessor<boolean> {
+        return this.disabledSignal[0]
+    }
+
+    get setDisabled(): Setter<boolean> {
+        return this.disabledSignal[1]
+    }
+
+    get extraClasses(): Accessor<string> {
+        return this.extraClassesSignal[0]
+    }
+
+    get setExtraClasses(): Setter<string> {
+        return this.extraClassesSignal[1]
+    }
+
+    get items(): Accessor<FazElementItem[]> {
+        return this.itemsSignal[0]
+    }
+
+    get setItems(): Setter<FazElementItem[]> {
+        return this.itemsSignal[1]
+    }
+
+    get loading(): Accessor<boolean> {
+        return this.loadingSignal[0]
+    }
+
+    get setLoading(): Setter<boolean> {
+        return this.loadingSignal[1]
+    }
+
+    get parent(): Accessor<FazElementItem|undefined> {
+        return this.parentSignal[0]
+    }
+
+    get setParent(): Setter<FazElementItem|undefined> {
+        return this.parentSignal[1]
+    }
+
+    get reload(): Accessor<boolean> {
+        return this.reloadSignal[0]
+    }
+
+    get setReload(): Setter<boolean> {
+        return this.reloadSignal[1]
+    }
+
+    get link(): Accessor<string|undefined> {
+        return this.linkSignal[0]
+    }
+
+    get setLink(): Setter<string|undefined> {
+        return this.linkSignal[1]
     }
 
     hasExtraClass(value: string): boolean {
