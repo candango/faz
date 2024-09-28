@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 import { FazElementItem } from "./item";
+import { Accessor, Setter } from "solid-js";
 export declare class FazFormElement extends FazElementItem {
-    private _action;
-    private _errors;
-    private _method;
+    private actionSignal;
+    private errorsSignal;
+    private methodSignal;
     constructor();
-    get action(): string | null;
-    set action(value: string | null);
-    onActionChange(event: CustomEvent): void;
-    get errors(): Array<string>;
-    set errors(value: string);
+    get action(): Accessor<string | undefined>;
+    get setAction(): Setter<string | undefined>;
+    get errors(): Accessor<string[]>;
+    get setErrors(): Setter<string[]>;
     hasError(value: string): boolean;
     hasErrors(): boolean;
     pushError(value: string): void;
-    get method(): string | null;
-    set method(value: string | null);
-    onMethodChange(event: CustomEvent): void;
+    get method(): Accessor<string>;
+    get setMethod(): Setter<string>;
 }
 //# sourceMappingURL=form.d.ts.map
