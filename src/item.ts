@@ -213,7 +213,7 @@ export class FazElementItem extends HTMLElement {
 
     get activeItems(): FazElementItem[] {
         return this.items().filter(item => {
-            return item.active
+            return item.active()
         })
     }
 
