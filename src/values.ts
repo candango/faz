@@ -16,7 +16,7 @@
 
 export function toBoolean(value: string | null): boolean {
     if (value === null) {
-        return false
+        return false;
     }
-    return value.toLowerCase() === "true"
+    return value.toLowerCase() === "true";
 }

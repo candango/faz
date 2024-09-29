@@ -14,68 +14,51 @@
  * limitations under the License.
  */
 
-import { FazElementItem } from "./item"
-import { Accessor, createSignal, Setter, Signal } from "solid-js"
+import { FazElementItem } from "./item";
+import { Accessor, createSignal, Setter } from "solid-js";
 
  
 export class FazFormElement extends FazElementItem {
 
-    private actionSignal: Signal<string|undefined> = createSignal<string|undefined>(undefined)
-    private errorsSignal: Signal<string[]> = createSignal<string[]>([])
-    private methodSignal: Signal<string> = createSignal<string>("get")
+    public action: Accessor<string|undefined>;
+    public setAction: Setter<string|undefined>;
+    public errors: Accessor<string[]>;
+    public setErrors: Setter<string[]>;
+    public method: Accessor<string>;
+    public setMethod: Setter<string>;
 
     constructor() {
-        super()
+        super();
+        [this.action, this.setAction] = createSignal<string|undefined>(undefined);
+        [this.errors, this.setErrors] = createSignal<string[]>([]);
+        [this.method, this.setMethod] = createSignal<string>("get");
+
         for (const attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
                 case "action":
-                    this.setAction(attribute.value)
-                    break
+                    this.setAction(attribute.value);
+                    break;
                 case "method":
-                    this.setMethod(attribute.value)
-                    break
+                    this.setMethod(attribute.value);
+                    break;
             }
         }
     }
 
-    get action(): Accessor<string|undefined> {
-        return this.actionSignal[0]
-    }
-
-    get setAction(): Setter<string|undefined> {
-        return this.actionSignal[1]
-    }
-
-    get errors(): Accessor<string[]> {
-        return this.errorsSignal[0]
-    }
-
-    get setErrors(): Setter<string[]> {
-        return this.errorsSignal[1]
-    }
-
     hasError(value: string): boolean {
-        return this.errors().find(item => item == value) !== undefined
+        return this.errors().find(item => item == value) !== undefined;
     }
 
     hasErrors(): boolean {
-        return this.errors().length > 0
+        return this.errors().length > 0;
     }
 
     pushError(value: string) {
-        value = value.trim()
+        value = value.trim();
         if (!this.hasError(value)) {
-            const errors = this.errors()
-            errors.push(value)
-            this.setErrors(errors)
+            const errors = this.errors();
+            errors.push(value);
+            this.setErrors(errors);
         }
-    }
-
-    get method(): Accessor<string> {
-        return this.methodSignal[0]
-    }
-
-    get setMethod(): Setter<string> {
-        return this.methodSignal[1]
     }
 }

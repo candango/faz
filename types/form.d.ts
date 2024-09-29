@@ -16,18 +16,15 @@
 import { FazElementItem } from "./item";
 import { Accessor, Setter } from "solid-js";
 export declare class FazFormElement extends FazElementItem {
-    private actionSignal;
-    private errorsSignal;
-    private methodSignal;
+    action: Accessor<string | undefined>;
+    setAction: Setter<string | undefined>;
+    errors: Accessor<string[]>;
+    setErrors: Setter<string[]>;
+    method: Accessor<string>;
+    setMethod: Setter<string>;
     constructor();
-    get action(): Accessor<string | undefined>;
-    get setAction(): Setter<string | undefined>;
-    get errors(): Accessor<string[]>;
-    get setErrors(): Setter<string[]>;
     hasError(value: string): boolean;
     hasErrors(): boolean;
     pushError(value: string): void;
-    get method(): Accessor<string>;
-    get setMethod(): Setter<string>;
 }
 //# sourceMappingURL=form.d.ts.map
