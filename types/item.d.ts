@@ -49,7 +49,7 @@ export declare class FazElementItem extends HTMLElement {
     removeItem(item: FazElementItem): void;
     get activeItems(): FazElementItem[];
     get childId(): string;
-    get contentChildren(): ChildNode[];
+    get contentChild(): ChildNode | null;
     get linkIsVoid(): boolean;
     addChild<T extends Node>(node: T): T;
     afterShow(): void;

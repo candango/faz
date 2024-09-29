@@ -169,12 +169,8 @@ export class FazElementItem extends HTMLElement {
         return this.childPrefix.concat("-", this.id);
     }
 
-    get contentChildren(): ChildNode[] {
-        const children:ChildNode[] = []
-        if (this.firstChild != null) { 
-            children.push(this.firstChild)
-        }
-        return children;
+    get contentChild(): ChildNode|null {
+        return this.firstChild;
     }
 
     get linkIsVoid() {
@@ -187,9 +183,7 @@ export class FazElementItem extends HTMLElement {
     }
 
     addChild<T extends Node>(node: T): T {
-        this.contentChildren.forEach(child => {
-            child.appendChild(node);
-        });
+        this.contentChild?.appendChild(node);
         return node;
     }
 
