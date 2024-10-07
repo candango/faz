@@ -14,50 +14,53 @@
  * limitations under the License.
  */
 
-import { FazElementItem } from "../src/item"
-import { afterEach, beforeEach, describe, expect, test, vitest } from "vitest"
-import { screen, waitFor } from "@testing-library/dom"
-import { createEffect, getOwner, runWithOwner } from "solid-js"
-import { render } from "solid-js/web"
+import { FazElementItem, FazNode } from "../src/item";
+import { afterEach, beforeEach, describe, expect, test, vitest } from "vitest";
+import { waitFor } from "@testing-library/dom";
+import { createEffect, createRoot } from "solid-js";
+import { render} from "solid-js/web";
+import { allComments } from "../src/test";
 
 class TestElement extends FazElementItem {
 
-    public doActiveChanged: boolean = false
-    public doDisabledChanged: boolean = false
-    public doExtraClassesChanged: boolean = false
+    public doActiveChanged: boolean = false;
+    public doDisabledChanged: boolean = false;
+    public doExtraClassesChanged: boolean = false;
 
     constructor() {
-        super()
-        createEffect((prevActive) => {
-            if (this.active() != prevActive) {
-                this.doActiveChanged = true
-            }
-        }, false)
+        super();
+        createRoot(() => {
+            createEffect((prevActive) => {
+                if (this.active() != prevActive) {
+                    this.doActiveChanged = true;
+                }
+            }, false);
 
-        createEffect((prevDisabled) => {
-            if (this.disabled() != prevDisabled) {
-                this.doDisabledChanged = true
-            }
-        }, false)
+            createEffect((prevDisabled) => {
+                if (this.disabled() != prevDisabled) {
+                    this.doDisabledChanged = true;
+                }
+            }, false);
 
-        createEffect((prevExtraClasses) => {
-            if (this.extraClasses() != prevExtraClasses) {
-                this.doExtraClassesChanged = true
-            }
-        }, "aclass")
+            createEffect((prevExtraClasses) => {
+                if (this.extraClasses() != prevExtraClasses) {
+                    this.doExtraClassesChanged = true;
+                }
+            }, "aclass");
+        });
     }
 
     show() {
         render(() => {
-            return <div data-testid={"rendered_div_" + this.id}></div>
-        }, this)
+            return <div id={`faz_test_${this.id}`} data-testid={"rendered_div_" + this.id}></div>
+        }, this);
     }
 }
 
-customElements.define("faz-test-element", TestElement)
+customElements.define("faz-test-element", TestElement);
 
 describe("Test Element", () => {
-    const theText = "A text"
+    const theText = "A text";
     beforeEach(() => {
         vitest.useFakeTimers();
     });
@@ -71,48 +74,49 @@ describe("Test Element", () => {
                     ${theText}
                 </faz-test-element>
             </faz-test-element>
-        `
-        const outerElement = screen.queryByTestId(
-            "outer_element") as TestElement
-        const innerElement = screen.queryByTestId(
-            "inner_element") as TestElement
-        outerElement.setActive(true)
-        outerElement.setDisabled(true)
-        expect(outerElement.doActiveChanged).toBeTruthy()
-        expect(outerElement.doDisabledChanged).toBeTruthy()
-        expect(outerElement.doExtraClassesChanged).toBeFalsy()
-        outerElement.setExtraClasses("aclass")
-        expect(outerElement.doExtraClassesChanged).toBeFalsy()
-        outerElement.setExtraClasses("aclass bclass")
-        expect(outerElement.doExtraClassesChanged).toBeTruthy()
-        outerElement.doExtraClassesChanged = false
-        outerElement.setExtraClasses("bclass aclass")
-        expect(outerElement.doExtraClassesChanged).toBeTruthy()
-        outerElement.doExtraClassesChanged = false
-        outerElement.setExtraClasses("bclass aclass ")
-        expect(outerElement.doExtraClassesChanged).toBeTruthy()
-        outerElement.doExtraClassesChanged = false
-        outerElement.setExtraClasses(" bclass aclass")
-        expect(outerElement.doExtraClassesChanged).toBeTruthy()
-        outerElement.doExtraClassesChanged = false
-        outerElement.setExtraClasses(" bclass aclass ")
-        expect(outerElement.doExtraClassesChanged).toBeTruthy()
-        outerElement.doExtraClassesChanged = false
-        outerElement.setExtraClasses("bclass aclass cclass")
-        expect(outerElement.doExtraClassesChanged).toBeTruthy()
-        outerElement.doExtraClassesChanged = false
-        outerElement.pushExtraClass("aclass")
-        outerElement.pushExtraClass("bclass ")
-        outerElement.pushExtraClass(" cclass")
-        outerElement.pushExtraClass(" aclass ")
-        expect(outerElement.doExtraClassesChanged).toBeFalsy()
-        outerElement.pushExtraClass("eclass")
-        expect(outerElement.doExtraClassesChanged).toBeTruthy()
-        outerElement.setActive(false)
-        outerElement.setDisabled(false)
-        expect(innerElement.doActiveChanged).toBeFalsy()
-        expect(innerElement.doDisabledChanged).toBeFalsy()
-    })
+        `;
+        const comments = allComments(document.body);
+        const [outerElementComment, innerElementComment] = comments;
+        const outerElement = outerElementComment.fazElement() as TestElement;
+        const innerElement = innerElementComment.fazElement() as TestElement;
+
+        outerElement.setActive(true);
+        outerElement.setDisabled(true);
+        expect(outerElement.doActiveChanged).toBeTruthy();
+        expect(outerElement.doDisabledChanged).toBeTruthy();
+        expect(outerElement.doExtraClassesChanged).toBeFalsy();
+        outerElement.setExtraClasses("aclass");
+        expect(outerElement.doExtraClassesChanged).toBeFalsy();
+        outerElement.setExtraClasses("aclass bclass");
+        expect(outerElement.doExtraClassesChanged).toBeTruthy();
+        outerElement.doExtraClassesChanged = false;
+        outerElement.setExtraClasses("bclass aclass");
+        expect(outerElement.doExtraClassesChanged).toBeTruthy();
+        outerElement.doExtraClassesChanged = false;
+        outerElement.setExtraClasses("bclass aclass ");
+        expect(outerElement.doExtraClassesChanged).toBeTruthy();
+        outerElement.doExtraClassesChanged = false;
+        outerElement.setExtraClasses(" bclass aclass");
+        expect(outerElement.doExtraClassesChanged).toBeTruthy();
+        outerElement.doExtraClassesChanged = false;
+        outerElement.setExtraClasses(" bclass aclass ");
+        expect(outerElement.doExtraClassesChanged).toBeTruthy();
+        outerElement.doExtraClassesChanged = false;
+        outerElement.setExtraClasses("bclass aclass cclass");
+        expect(outerElement.doExtraClassesChanged).toBeTruthy();
+        outerElement.doExtraClassesChanged = false;
+        outerElement.pushExtraClass("aclass");
+        outerElement.pushExtraClass("bclass ");
+        outerElement.pushExtraClass(" cclass");
+        outerElement.pushExtraClass(" aclass ");
+        expect(outerElement.doExtraClassesChanged).toBeFalsy();
+        outerElement.pushExtraClass("eclass");
+        expect(outerElement.doExtraClassesChanged).toBeTruthy();
+        outerElement.setActive(false);
+        outerElement.setDisabled(false);
+        expect(innerElement.doActiveChanged).toBeFalsy();
+        expect(innerElement.doDisabledChanged).toBeFalsy();
+    });
 
     test("Tag rendered", async () => {
         document.body.innerHTML = `
@@ -121,14 +125,17 @@ describe("Test Element", () => {
                     ${theText}
                 </faz-test-element>
             </faz-test-element>
-        `
-        vitest.runAllTimers()
+        `;
+        vitest.runAllTimers();
         await waitFor(() => {
-            const outerElement = screen.getByTestId("outer_element") as FazElementItem
-            const innerElement = screen.getByTestId("inner_element") as FazElementItem
-            expect(outerElement.items().length).toBe(1);
-            expect(innerElement.parent()).toBe(outerElement);
-            expect(screen.queryByTestId("rendered_div_outer")?.tagName).toBe("DIV");
+            const outerDiv = document.getElementById("faz_test_outer") as unknown as FazNode;
+            const innerDiv = document.getElementById("faz_test_inner") as unknown as FazNode;
+            const outerElement = outerDiv.fazElement();
+            const innerElement = innerDiv.fazElement();
+            expect(outerElement?.items().length).toBe(1);
+            expect(outerElement?.items()[0]).toBe(innerElement);
+            expect(innerElement?.parent()).toBe(outerElement);
+            expect((outerDiv as unknown as Element).tagName).toBe("DIV");
         });
-    })
-})
+    });
+});

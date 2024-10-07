@@ -18,21 +18,30 @@ import { randomId } from "./id";
 import { toBoolean } from "./values";
 import { Accessor, createSignal, Setter } from "solid-js";
 
+export interface FazComment extends Comment {
+    fazElement: Accessor <FazElementItem | undefined>;
+    setFazElement: Setter <FazElementItem | undefined>;
+} 
 
-class FazNode extends Node {
-    public fazElement: FazElementItem | null = null;
+export interface FazNode extends ChildNode {
+    fazElement: Accessor <FazElementItem | undefined>;
+    setFazElement: Setter <FazElementItem | undefined>;
 }
 
 export class FazElementItem extends HTMLElement {
 
     public active: Accessor<boolean>;
     public setActive: Setter<boolean>;
+    public connected: Accessor<boolean>;
+    public setConnected: Setter<boolean>;
     public content: Accessor<string|undefined>;
     public setContent: Setter<string|undefined>;
     public disabled: Accessor<boolean>;
     public setDisabled: Setter<boolean>;
     public extraClasses: Accessor<string>;
     public setExtraClasses: Setter<string>;
+    public fazElement: Accessor <FazElementItem | undefined>;
+    public setFazElement: Setter <FazElementItem | undefined>;
     public items: Accessor<FazElementItem[]>;
     public setItems: Setter<FazElementItem[]>;
     public loading: Accessor<boolean>;
@@ -45,20 +54,21 @@ export class FazElementItem extends HTMLElement {
     public setLink: Setter<string|undefined>;
 
     public childPrefix: string = "";
-    private connected: boolean = false;
     public debug: boolean = false;
     public renderedChild: ChildNode | null = null;
     private initialOuterHTML: string = "";
-    private comment: Comment | null = null;
+    private comment: FazComment | null = null;
     public source: any;
 
     constructor() {
         super();
 
         [this.active, this.setActive] = createSignal<boolean>(false);
+        [this.connected, this.setConnected] = createSignal<boolean>(false);
         [this.content, this.setContent] = createSignal<string|undefined>(undefined);
         [this.disabled, this.setDisabled] = createSignal<boolean>(false);
         [this.extraClasses, this.setExtraClasses] = createSignal<string>("");
+        [this.fazElement, this.setFazElement] = createSignal<FazElementItem | undefined>(undefined);
         [this.items, this.setItems] = createSignal<FazElementItem[]>([]);
         [this.loading, this.setLoading] = createSignal(true);
         [this.parent, this.setParent] = createSignal<FazElementItem | undefined>(undefined);
@@ -97,6 +107,7 @@ export class FazElementItem extends HTMLElement {
                     break;
             }
         }
+
         this.dataset['faz_element_item'] = this.tagName;
         this.childPrefix = "__child-prefix__";
         if (this.source) {
@@ -110,7 +121,8 @@ export class FazElementItem extends HTMLElement {
                 node.remove();
             });
         }
-        this.comment = document.createComment(this.nodeName + " " + this.id);
+        this.comment = (document.createComment(this.nodeName + " " + this.id) as FazComment);
+        [this.comment.fazElement, this.comment.setFazElement] = createSignal<FazElementItem | undefined>(this);
         this.before(this.comment);
     }
 
@@ -133,7 +145,7 @@ export class FazElementItem extends HTMLElement {
         }
     }
 
-    resolveLink(): string|undefined  {
+    resolveLink(): string | undefined  {
         // From: https://stackoverflow.com/a/66717705/2887989
         let voidHref = "#!";
         const link = this.link();
@@ -169,7 +181,7 @@ export class FazElementItem extends HTMLElement {
         return this.childPrefix.concat("-", this.id);
     }
 
-    get contentChild(): ChildNode|null {
+    get contentChild(): ChildNode | null {
         return this.firstChild;
     }
 
@@ -225,7 +237,7 @@ export class FazElementItem extends HTMLElement {
             setTimeout(()=>resolve(null), 0);
         }).then(()=> {
             this.render();
-            this.connected = true;
+            this.setConnected(true);
         });
     }
 
@@ -243,13 +255,15 @@ export class FazElementItem extends HTMLElement {
         this.placeBackChildren(children);
         this.afterShow();
         this.setLoading(false);
+        this.cleanFazTag();
     }
 
     cleanFazTag() {
         let parentElement = this.parentElement;
         this.childNodes.forEach((node) => {
-            ((node as unknown) as FazNode).fazElement = this;
-            this.before(node);
+            const fNode = node as FazNode;
+            [fNode.fazElement, fNode.setFazElement] = createSignal<FazElementItem | undefined>(this);
+            this.before(fNode);
         })
         parentElement?.removeChild(this);
     }

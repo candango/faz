@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 import { Accessor, Setter } from "solid-js";
+export interface FazComment extends Comment {
+    fazElement: Accessor<FazElementItem | undefined>;
+    setFazElement: Setter<FazElementItem | undefined>;
+}
+export interface FazNode extends ChildNode {
+    fazElement: Accessor<FazElementItem | undefined>;
+    setFazElement: Setter<FazElementItem | undefined>;
+}
 export declare class FazElementItem extends HTMLElement {
     active: Accessor<boolean>;
     setActive: Setter<boolean>;
+    connected: Accessor<boolean>;
+    setConnected: Setter<boolean>;
     content: Accessor<string | undefined>;
     setContent: Setter<string | undefined>;
     disabled: Accessor<boolean>;
     setDisabled: Setter<boolean>;
     extraClasses: Accessor<string>;
     setExtraClasses: Setter<string>;
+    fazElement: Accessor<FazElementItem | undefined>;
+    setFazElement: Setter<FazElementItem | undefined>;
     items: Accessor<FazElementItem[]>;
     setItems: Setter<FazElementItem[]>;
     loading: Accessor<boolean>;
@@ -34,7 +46,6 @@ export declare class FazElementItem extends HTMLElement {
     link: Accessor<string | undefined>;
     setLink: Setter<string | undefined>;
     childPrefix: string;
-    private connected;
     debug: boolean;
     renderedChild: ChildNode | null;
     private initialOuterHTML;
