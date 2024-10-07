@@ -36,6 +36,8 @@ export class FazElementItem extends HTMLElement {
     public setConnected: Setter<boolean>;
     public content: Accessor<string|undefined>;
     public setContent: Setter<string|undefined>;
+    public debug: Accessor<boolean>;
+    public setDebug: Setter<boolean>;
     public disabled: Accessor<boolean>;
     public setDisabled: Setter<boolean>;
     public extraClasses: Accessor<string>;
@@ -54,7 +56,6 @@ export class FazElementItem extends HTMLElement {
     public setLink: Setter<string|undefined>;
 
     public childPrefix: string = "";
-    public debug: boolean = false;
     public renderedChild: ChildNode | null = null;
     private initialOuterHTML: string = "";
     private comment: FazComment | null = null;
@@ -66,6 +67,7 @@ export class FazElementItem extends HTMLElement {
         [this.active, this.setActive] = createSignal<boolean>(false);
         [this.connected, this.setConnected] = createSignal<boolean>(false);
         [this.content, this.setContent] = createSignal<string|undefined>(undefined);
+        [this.debug, this.setDebug] = createSignal<boolean>(false);
         [this.disabled, this.setDisabled] = createSignal<boolean>(false);
         [this.extraClasses, this.setExtraClasses] = createSignal<string>("");
         [this.fazElement, this.setFazElement] = createSignal<FazElementItem | undefined>(undefined);
@@ -92,6 +94,9 @@ export class FazElementItem extends HTMLElement {
                     break;
                 case "content":
                     this.setContent(attribute.value);
+                    break;
+                case "debug":
+                    this.setDebug(toBoolean(attribute.value));
                     break;
                 case "disabled":
                     this.setDisabled(toBoolean(attribute.value));

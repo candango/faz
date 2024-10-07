@@ -19,4 +19,5 @@ export const entryPoints =  [
     { out: "id", in: "src/id.ts" },
     { out: "index", in: "src/index.ts" },
     { out: "item", in: "src/item.ts" },
+    { out: "test", in: "src/test.ts" },
 ];

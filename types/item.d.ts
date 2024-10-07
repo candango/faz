@@ -29,6 +29,8 @@ export declare class FazElementItem extends HTMLElement {
     setConnected: Setter<boolean>;
     content: Accessor<string | undefined>;
     setContent: Setter<string | undefined>;
+    debug: Accessor<boolean>;
+    setDebug: Setter<boolean>;
     disabled: Accessor<boolean>;
     setDisabled: Setter<boolean>;
     extraClasses: Accessor<string>;
@@ -46,7 +48,6 @@ export declare class FazElementItem extends HTMLElement {
     link: Accessor<string | undefined>;
     setLink: Setter<string | undefined>;
     childPrefix: string;
-    debug: boolean;
     renderedChild: ChildNode | null;
     private initialOuterHTML;
     private comment;
