@@ -258,18 +258,22 @@ export class FazElementItem extends HTMLElement {
             this.show();
         }
         this.placeBackChildren(children);
-        this.afterShow();
         this.setLoading(false);
         this.cleanFazTag();
+        if (!this.loading()) {
+            this.afterShow();
+        }
     }
 
-    cleanFazTag() {
-        let parentElement = this.parentElement;
+    cleanFazTag(): void {
         this.childNodes.forEach((node) => {
             const fNode = node as FazNode;
             [fNode.fazElement, fNode.setFazElement] = createSignal<FazElementItem | undefined>(this);
             this.before(fNode);
         })
-        parentElement?.removeChild(this);
+        if (this.parent()) {
+            this.parent()?.appendChild(this);
+            return;
+        }
     }
 }
