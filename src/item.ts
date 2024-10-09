@@ -241,8 +241,11 @@ export class FazElementItem extends HTMLElement {
         new Promise((resolve) => {
             setTimeout(()=>resolve(null), 0);
         }).then(()=> {
-            this.render();
+            if (this.loading()) {
+                this.render();
+            }
             this.setConnected(true);
+            this.setLoading(false);
         });
     }
 
@@ -254,15 +257,10 @@ export class FazElementItem extends HTMLElement {
         this.load();
         this.beforeShow();
         const children = this.collectChildren();
-        if (this.loading()) {
-            this.show();
-        }
+        this.show();
         this.placeBackChildren(children);
-        this.setLoading(false);
         this.cleanFazTag();
-        if (!this.loading()) {
-            this.afterShow();
-        }
+        this.afterShow();
     }
 
     cleanFazTag(): void {
