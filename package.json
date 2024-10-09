@@ -33,7 +33,7 @@
     ],
     "dependencies": {
         "less": "4.2.0",
-        "solid-js": "1.8.17"
+        "solid-js": "1.9.2"
     },
     "devDependencies": {
         "@codemirror/lang-html": "6.4.5",
