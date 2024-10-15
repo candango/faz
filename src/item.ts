@@ -44,8 +44,8 @@ export class FazElementItem extends HTMLElement {
     public setExtraClasses: Setter<string>;
     public fazElement: Accessor <FazElementItem | undefined>;
     public setFazElement: Setter <FazElementItem | undefined>;
-    public items: Accessor<FazElementItem[]>;
-    public setItems: Setter<FazElementItem[]>;
+    public fazChildren: Accessor<FazElementItem[]>;
+    public setFazChildren: Setter<FazElementItem[]>;
     public loading: Accessor<boolean>;
     public setLoading: Setter<boolean>;
     public parent: Accessor<FazElementItem | undefined>;
@@ -71,7 +71,7 @@ export class FazElementItem extends HTMLElement {
         [this.disabled, this.setDisabled] = createSignal<boolean>(false);
         [this.extraClasses, this.setExtraClasses] = createSignal<string>("");
         [this.fazElement, this.setFazElement] = createSignal<FazElementItem | undefined>(undefined);
-        [this.items, this.setItems] = createSignal<FazElementItem[]>([]);
+        [this.fazChildren, this.setFazChildren] = createSignal<FazElementItem[]>([]);
         [this.loading, this.setLoading] = createSignal(true);
         [this.parent, this.setParent] = createSignal<FazElementItem | undefined>(undefined);
         [this.reload, this.setReload] = createSignal(true);
@@ -116,12 +116,7 @@ export class FazElementItem extends HTMLElement {
         this.dataset['faz_element_item'] = this.tagName;
         this.childPrefix = "__child-prefix__";
         if (this.source) {
-            console.debug(
-                "The element" +
-                    this.id +
-                    " has a source " +
-                    "attribute. All child nodes will be removed."
-            );
+            console.debug(`The element ${this.id}  has a source attribute. All child nodes will be removed.`);
             this.childNodes.forEach((node) => {
                 node.remove();
             });
@@ -160,30 +155,25 @@ export class FazElementItem extends HTMLElement {
         return this.link();
     }
 
-    addItem(item: FazElementItem) {
-        if (this.items().indexOf(item) === -1) {
-            const items = {...this.items()} as FazElementItem[];
-            items.push(item);
-            this.setItems(items);
+    addFazChild(child: FazElementItem) {
+        if (this.fazChildren().indexOf(child) === -1) {
+            const children = {...this.fazChildren()} as FazElementItem[];
+            children.push(child);
+            this.setFazChildren(children);
         }
     }
 
-    removeItem(item: FazElementItem) {
-        if (this.items().indexOf(item) !== -1) {
-            const items = {...this.items()} as FazElementItem[];
-            this.setItems(items.filter(i => i !== item));
+    removeFazChild(child: FazElementItem) {
+        if (this.fazChildren().indexOf(child) !== -1) {
+            const children = {...this.fazChildren()} as FazElementItem[];
+            this.setFazChildren(children.filter(i => i !== child));
         }
     }
 
-    get activeItems(): FazElementItem[] {
-        return this.items().filter(item => {
-            return item.active();
+    get activeFazChildren(): FazElementItem[] {
+        return this.fazChildren().filter(child => {
+            return child.active();
         })
-    }
-
-
-    get childId() {
-        return this.childPrefix.concat("-", this.id);
     }
 
     get contentChild(): ChildNode | null {
@@ -195,8 +185,7 @@ export class FazElementItem extends HTMLElement {
             return true;
         }
         const linkResolved = this.resolveLink();
-        return linkResolved === undefined || linkResolved === "" ||
-            linkResolved === "#" || linkResolved === "#!";
+        return linkResolved === undefined || linkResolved === "" || linkResolved === "#" || linkResolved === "#!";
     }
 
     addChild<T extends Node>(node: T): T {
@@ -223,7 +212,7 @@ export class FazElementItem extends HTMLElement {
                 this.removeChild(this.firstChild);
             }
             if (items.length > 0) {
-                this.setItems(items);
+                this.setFazChildren(items);
             }
         }
         return children;

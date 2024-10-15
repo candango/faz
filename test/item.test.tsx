@@ -132,8 +132,8 @@ describe("Test Element", () => {
             const innerDiv = document.getElementById("faz_test_inner") as unknown as FazNode;
             const outerElement = outerDiv.fazElement();
             const innerElement = innerDiv.fazElement();
-            expect(outerElement?.items().length).toBe(1);
-            expect(outerElement?.items()[0]).toBe(innerElement);
+            expect(outerElement?.fazChildren().length).toBe(1);
+            expect(outerElement?.fazChildren()[0]).toBe(innerElement);
             expect(innerElement?.parent()).toBe(outerElement);
             expect((outerDiv as unknown as Element).tagName).toBe("DIV");
         });

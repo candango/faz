@@ -31,7 +31,7 @@ await esbuild.build({
     format: "esm",
     define: { gobal: "window" },
     target: ["esnext"],
-    outdir: "dist/esm",
+    outdir: "dist/js",
     logLevel: "info",
     legalComments: "none",
     // outExtension: { '.js': '.cjs' },

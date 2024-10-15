@@ -37,8 +37,8 @@ export declare class FazElementItem extends HTMLElement {
     setExtraClasses: Setter<string>;
     fazElement: Accessor<FazElementItem | undefined>;
     setFazElement: Setter<FazElementItem | undefined>;
-    items: Accessor<FazElementItem[]>;
-    setItems: Setter<FazElementItem[]>;
+    fazChildren: Accessor<FazElementItem[]>;
+    setFazChildren: Setter<FazElementItem[]>;
     loading: Accessor<boolean>;
     setLoading: Setter<boolean>;
     parent: Accessor<FazElementItem | undefined>;
@@ -57,10 +57,9 @@ export declare class FazElementItem extends HTMLElement {
     hasExtraClasses(): boolean;
     pushExtraClass(value: string): void;
     resolveLink(): string | undefined;
-    addItem(item: FazElementItem): void;
-    removeItem(item: FazElementItem): void;
-    get activeItems(): FazElementItem[];
-    get childId(): string;
+    addFazChild(child: FazElementItem): void;
+    removeFazChild(child: FazElementItem): void;
+    get activeFazChildren(): FazElementItem[];
     get contentChild(): ChildNode | null;
     get linkIsVoid(): boolean;
     addChild<T extends Node>(node: T): T;
