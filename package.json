@@ -46,7 +46,7 @@
         "esbuild-plugin-solid": "0.6.0",
         "http-server": "14.1.1",
         "jsdom": "25.0.1",
-        "prettier": "3.4.1",
+        "prettier": "3.4.2",
         "ts-node": "10.9.2",
         "typescript": "5.7.2",
         "vite": "6.0.1",
