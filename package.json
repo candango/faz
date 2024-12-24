@@ -39,7 +39,7 @@
         "@testing-library/dom": "10.4.0",
         "@testing-library/jest-dom": "6.6.3",
         "@types/jest": "29.5.14",
-        "@types/node": "22.7.5",
+        "@types/node": "22.10.2",
         "can-stache-loader": "3.0.0",
         "esbuild": "0.24.2",
         "esbuild-plugin-copy": "2.1.1",
