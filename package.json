@@ -37,7 +37,7 @@
     },
     "devDependencies": {
         "@testing-library/dom": "10.4.0",
-        "@testing-library/jest-dom": "6.5.0",
+        "@testing-library/jest-dom": "6.6.3",
         "@types/jest": "29.5.13",
         "@types/node": "22.7.5",
         "can-stache-loader": "3.0.0",
