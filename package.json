@@ -41,7 +41,7 @@
         "@types/jest": "29.5.13",
         "@types/node": "22.7.5",
         "can-stache-loader": "3.0.0",
-        "esbuild": "0.24.0",
+        "esbuild": "0.24.2",
         "esbuild-plugin-copy": "2.1.1",
         "esbuild-plugin-solid": "0.6.0",
         "http-server": "14.1.1",
