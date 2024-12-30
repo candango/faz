@@ -262,5 +262,6 @@ export class FazElementItem extends HTMLElement {
             this.parent()?.appendChild(this);
             return;
         }
+        this.remove(); 
     }
 }
