@@ -36,9 +36,11 @@
         "solid-js": "1.9.3"
     },
     "devDependencies": {
+        "axios": "1.7.7",
         "@testing-library/dom": "10.4.0",
         "@testing-library/jest-dom": "6.6.3",
         "@types/jest": "29.5.14",
+        "@types/nise": "1.4.5",
         "@types/node": "22.10.2",
         "can-stache-loader": "3.0.0",
         "esbuild": "0.24.2",
@@ -46,6 +48,7 @@
         "esbuild-plugin-solid": "0.6.0",
         "http-server": "14.1.1",
         "jsdom": "25.0.1",
+        "nise": "6.1.1",
         "prettier": "3.4.2",
         "ts-node": "10.9.2",
         "typescript": "5.7.2",
