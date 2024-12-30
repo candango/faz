@@ -57,7 +57,8 @@
         "vitest": "2.1.8"
     },
     "scripts": {
-        "watch": "node watch.mjs",
+        "watch": "npm run watch:clean && node watch.mjs",
+        "watch:clean": "rm -rf watch/dist",
         "showcase": "http-server & npm run watch",
         "esbuild": "node build.mjs",
         "ts:build": "npm run ts:clean && npm run ts:declaration",

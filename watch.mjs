@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2024 Flavio Garcia
+ * Copyright 2018-2025 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-import * as esbuild from "esbuild";
+import { context } from "esbuild";
 import { assets } from "./assets.mjs";
 import { entryPoints } from "./entryPoints.mjs";
 import { copy } from "esbuild-plugin-copy";
+import { solidPlugin } from "esbuild-plugin-solid";
 
-let ctx = await esbuild.context({
+entryPoints.push({ out: "form.bundle", in: "showcase/src/form.tsx" });
+
+entryPoints.push({ out: "global.bundle", in: "showcase/src/global.ts" });
+entryPoints.push({ out: "css/showcase", in: "stylesheets/showcase.css"});
+
+let ctx = await context({
     entryPoints: entryPoints,
     bundle: true,
     minify: true,
@@ -31,14 +37,16 @@ let ctx = await esbuild.context({
     legalComments: "none",
     allowOverwrite: false,
     plugins:[
-        copy(assets)
-    ]
+        copy(assets),
+        solidPlugin()
+    ],
+    loader: { '.png': 'binary' },
 });
 
 await ctx.watch();
 
 await ctx.serve({
-    port: 8080,
+    port: 8081,
     servedir: "showcase",
     onRequest: (args) => {
         let logMessage = "";
