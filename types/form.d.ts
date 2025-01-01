@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2024 Flavio Garcia
+ * Copyright 2018-2025 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,16 @@ import { Accessor, Setter } from "solid-js";
 export declare class FazFormElement extends FazElementItem {
     action: Accessor<string | undefined>;
     setAction: Setter<string | undefined>;
-    errors: Accessor<string[]>;
-    setErrors: Setter<string[]>;
+    errors: Accessor<Record<string, string[]>>;
+    setErrors: Setter<Record<string, string[]>>;
     method: Accessor<string>;
     setMethod: Setter<string>;
     constructor();
-    hasError(value: string): boolean;
+    clearErrorsFor(key: string): void;
+    clearErrors(): void;
+    hasErrorsFor(key: string): boolean;
     hasErrors(): boolean;
-    pushError(value: string): void;
+    getErrorsFor(key: string): string[];
+    pushError(key: string, value: string): void;
 }
 //# sourceMappingURL=form.d.ts.map
