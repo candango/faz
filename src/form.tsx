@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2024 Flavio Garcia
+ * Copyright 2018-2025 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@ export class FazFormElement extends FazElementItem {
 
     public action: Accessor<string|undefined>;
     public setAction: Setter<string|undefined>;
-    public errors: Accessor<string[]>;
-    public setErrors: Setter<string[]>;
+    public errors: Accessor<Record<string, string[]>>;
+    public setErrors: Setter<Record<string, string[]>>;
     public method: Accessor<string>;
     public setMethod: Setter<string>;
 
     constructor() {
         super();
         [this.action, this.setAction] = createSignal<string|undefined>(undefined);
-        [this.errors, this.setErrors] = createSignal<string[]>([]);
+        [this.errors, this.setErrors] = createSignal<Record<string, string[]>>({});
         [this.method, this.setMethod] = createSignal<string>("get");
 
         for (const attribute of this.attributes) {
@@ -45,19 +45,40 @@ export class FazFormElement extends FazElementItem {
         }
     }
 
-    hasError(value: string): boolean {
-        return this.errors().find(item => item == value) !== undefined;
+    public clearErrorsFor(key: string) {
+        const errors = { ...this.errors() };
+        if (key in errors) {
+            delete errors[key];
+        }
+        this.setErrors(errors);
     }
 
-    hasErrors(): boolean {
-        return this.errors().length > 0;
+    public clearErrors() {
+        this.setErrors({});
     }
 
-    pushError(value: string) {
+    public hasErrorsFor(key: string): boolean {
+        return key in this.errors() && this.errors()[key].length > 0;
+    }
+
+    public hasErrors(): boolean {
+        return Object.values(this.errors()).some(errors => errors.length > 0);
+    }
+
+    public getErrorsFor(key: string): string[] {
+        return this.errors()[key] || [];
+    }
+
+    public pushError(key: string, value: string) {
         value = value.trim();
-        if (!this.hasError(value)) {
-            const errors = this.errors();
-            errors.push(value);
+        if (value) {
+            const errors = { ...this.errors() };
+            if (!errors[key]) {
+                errors[key] = [];
+            }
+            if (!errors[key].includes(value)) {
+                errors[key].push(value);
+            }
             this.setErrors(errors);
         }
     }
