@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2024 Flavio Garcia
+ * Copyright 2018-2025 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-export function randomId() {
-    // SEE: https://gist.github.com/gordonbrander/2230317
-    // Math.random should be unique because of its seeding algorithm.
-    // Convert it to base 36 (numbers + letters), and grab the first
-    // 9 characters
-    // after the decimal.
-    return "_" + Math.random().toString(36).substring(2, 11);
+import { FazElement } from "../../src/element";
+
+class CustomTag extends FazElement {
+    
+    constructor() {
+        super();
+    }
+
 }
+
+customElements.define("custom-tag", CustomTag);

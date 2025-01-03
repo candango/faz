@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2024 Flavio Garcia
+ * Copyright 2018-2025 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 import { Accessor, Setter } from "solid-js";
 export interface FazComment extends Comment {
-    fazElement: Accessor<FazElementItem | undefined>;
-    setFazElement: Setter<FazElementItem | undefined>;
+    fazElement: Accessor<FazElement | undefined>;
+    setFazElement: Setter<FazElement | undefined>;
 }
 export interface FazNode extends ChildNode {
-    fazElement: Accessor<FazElementItem | undefined>;
-    setFazElement: Setter<FazElementItem | undefined>;
+    fazElement: Accessor<FazElement | undefined>;
+    setFazElement: Setter<FazElement | undefined>;
 }
-export declare class FazElementItem extends HTMLElement {
+export declare class FazElement extends HTMLElement {
     active: Accessor<boolean>;
     setActive: Setter<boolean>;
     connected: Accessor<boolean>;
@@ -35,14 +35,14 @@ export declare class FazElementItem extends HTMLElement {
     setDisabled: Setter<boolean>;
     extraClasses: Accessor<string>;
     setExtraClasses: Setter<string>;
-    fazElement: Accessor<FazElementItem | undefined>;
-    setFazElement: Setter<FazElementItem | undefined>;
-    fazChildren: Accessor<FazElementItem[]>;
-    setFazChildren: Setter<FazElementItem[]>;
+    fazElement: Accessor<FazElement | undefined>;
+    setFazElement: Setter<FazElement | undefined>;
+    fazChildren: Accessor<FazElement[]>;
+    setFazChildren: Setter<FazElement[]>;
     loading: Accessor<boolean>;
     setLoading: Setter<boolean>;
-    parent: Accessor<FazElementItem | undefined>;
-    setParent: Setter<FazElementItem | undefined>;
+    parent: Accessor<FazElement | undefined>;
+    setParent: Setter<FazElement | undefined>;
     reload: Accessor<boolean>;
     setReload: Setter<boolean>;
     link: Accessor<string | undefined>;
@@ -57,9 +57,9 @@ export declare class FazElementItem extends HTMLElement {
     hasExtraClasses(): boolean;
     pushExtraClass(value: string): void;
     resolveLink(): string | undefined;
-    addFazChild(child: FazElementItem): void;
-    removeFazChild(child: FazElementItem): void;
-    get activeFazChildren(): FazElementItem[];
+    addFazChild(child: FazElement): void;
+    removeFazChild(child: FazElement): void;
+    get activeFazChildren(): FazElement[];
     get contentChild(): ChildNode | null;
     get linkIsVoid(): boolean;
     addChild<T extends Node>(node: T): T;
@@ -73,4 +73,4 @@ export declare class FazElementItem extends HTMLElement {
     render(): void;
     cleanFazTag(): void;
 }
-//# sourceMappingURL=item.d.ts.map
+//# sourceMappingURL=element.d.ts.map

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { FazElementItem, FazNode } from "../src/item";
+import { FazElement, FazNode } from "../src/element";
 import { afterEach, beforeEach, describe, expect, test, vitest } from "vitest";
 import { waitFor } from "@testing-library/dom";
 import { createEffect, createRoot } from "solid-js";
 import { render} from "solid-js/web";
 import { allComments } from "../src/test";
 
-class TestElement extends FazElementItem {
+class TestElement extends FazElement {
 
     public doActiveChanged: boolean = false;
     public doDisabledChanged: boolean = false;

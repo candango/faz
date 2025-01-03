@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FazElementItem } from "./item";
+import { FazElement } from "./element";
 import { Accessor, Setter } from "solid-js";
-export declare class FazFormElement extends FazElementItem {
+export declare class FazFormElement extends FazElement {
     action: Accessor<string | undefined>;
     setAction: Setter<string | undefined>;
     errors: Accessor<Record<string, string[]>>;

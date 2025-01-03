@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2024 Flavio Garcia
+ * Copyright 2018-2025 Flavio Garcia
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-import { randomId } from "./id";
-import { toBoolean } from "./values";
+import { randomId, toBoolean } from "./values";
 import { Accessor, createSignal, Setter } from "solid-js";
 
 export interface FazComment extends Comment {
-    fazElement: Accessor <FazElementItem | undefined>;
-    setFazElement: Setter <FazElementItem | undefined>;
+    fazElement: Accessor <FazElement | undefined>;
+    setFazElement: Setter <FazElement | undefined>;
 } 
 
 export interface FazNode extends ChildNode {
-    fazElement: Accessor <FazElementItem | undefined>;
-    setFazElement: Setter <FazElementItem | undefined>;
+    fazElement: Accessor <FazElement | undefined>;
+    setFazElement: Setter <FazElement | undefined>;
 }
 
-export class FazElementItem extends HTMLElement {
+export class FazElement extends HTMLElement {
 
     public active: Accessor<boolean>;
     public setActive: Setter<boolean>;
@@ -42,14 +41,14 @@ export class FazElementItem extends HTMLElement {
     public setDisabled: Setter<boolean>;
     public extraClasses: Accessor<string>;
     public setExtraClasses: Setter<string>;
-    public fazElement: Accessor <FazElementItem | undefined>;
-    public setFazElement: Setter <FazElementItem | undefined>;
-    public fazChildren: Accessor<FazElementItem[]>;
-    public setFazChildren: Setter<FazElementItem[]>;
+    public fazElement: Accessor <FazElement | undefined>;
+    public setFazElement: Setter <FazElement | undefined>;
+    public fazChildren: Accessor<FazElement[]>;
+    public setFazChildren: Setter<FazElement[]>;
     public loading: Accessor<boolean>;
     public setLoading: Setter<boolean>;
-    public parent: Accessor<FazElementItem | undefined>;
-    public setParent: Setter<FazElementItem | undefined>;
+    public parent: Accessor<FazElement | undefined>;
+    public setParent: Setter<FazElement | undefined>;
     public reload: Accessor<boolean>;
     public setReload: Setter<boolean>;
     public link: Accessor<string|undefined>;
@@ -70,10 +69,10 @@ export class FazElementItem extends HTMLElement {
         [this.debug, this.setDebug] = createSignal<boolean>(false);
         [this.disabled, this.setDisabled] = createSignal<boolean>(false);
         [this.extraClasses, this.setExtraClasses] = createSignal<string>("");
-        [this.fazElement, this.setFazElement] = createSignal<FazElementItem | undefined>(undefined);
-        [this.fazChildren, this.setFazChildren] = createSignal<FazElementItem[]>([]);
+        [this.fazElement, this.setFazElement] = createSignal<FazElement | undefined>(undefined);
+        [this.fazChildren, this.setFazChildren] = createSignal<FazElement[]>([]);
         [this.loading, this.setLoading] = createSignal(true);
-        [this.parent, this.setParent] = createSignal<FazElementItem | undefined>(undefined);
+        [this.parent, this.setParent] = createSignal<FazElement | undefined>(undefined);
         [this.reload, this.setReload] = createSignal(true);
         [this.link, this.setLink] = createSignal<string|undefined>(undefined);
 
@@ -122,7 +121,7 @@ export class FazElementItem extends HTMLElement {
             });
         }
         this.comment = (document.createComment(this.nodeName + " " + this.id) as FazComment);
-        [this.comment.fazElement, this.comment.setFazElement] = createSignal<FazElementItem | undefined>(this);
+        [this.comment.fazElement, this.comment.setFazElement] = createSignal<FazElement | undefined>(this);
         this.before(this.comment);
     }
 
@@ -155,22 +154,22 @@ export class FazElementItem extends HTMLElement {
         return this.link();
     }
 
-    addFazChild(child: FazElementItem) {
+    addFazChild(child: FazElement) {
         if (this.fazChildren().indexOf(child) === -1) {
-            const children = {...this.fazChildren()} as FazElementItem[];
+            const children = {...this.fazChildren()} as FazElement[];
             children.push(child);
             this.setFazChildren(children);
         }
     }
 
-    removeFazChild(child: FazElementItem) {
+    removeFazChild(child: FazElement) {
         if (this.fazChildren().indexOf(child) !== -1) {
-            const children = {...this.fazChildren()} as FazElementItem[];
+            const children = {...this.fazChildren()} as FazElement[];
             this.setFazChildren(children.filter(i => i !== child));
         }
     }
 
-    get activeFazChildren(): FazElementItem[] {
+    get activeFazChildren(): FazElement[] {
         return this.fazChildren().filter(child => {
             return child.active();
         })
@@ -199,12 +198,12 @@ export class FazElementItem extends HTMLElement {
 
     collectChildren() { 
         const children:Node[] = [];
-        const items: FazElementItem[] = [];
+        const items: FazElement[] = [];
         if (this.loading()) {
             while(this.firstChild) {
-                if (this.firstChild instanceof FazElementItem) {
-                    const item = this.firstChild as FazElementItem;
-                    item.setParent(this as FazElementItem);
+                if (this.firstChild instanceof FazElement) {
+                    const item = this.firstChild as FazElement;
+                    item.setParent(this as FazElement);
                     items.push(item);
                     item.dataset['parent'] = this.id;
                 }
@@ -255,7 +254,7 @@ export class FazElementItem extends HTMLElement {
     cleanFazTag(): void {
         this.childNodes.forEach((node) => {
             const fNode = node as FazNode;
-            [fNode.fazElement, fNode.setFazElement] = createSignal<FazElementItem | undefined>(this);
+            [fNode.fazElement, fNode.setFazElement] = createSignal<FazElement | undefined>(this);
             this.before(fNode);
         })
         if (this.parent()) {

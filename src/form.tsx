@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { FazElementItem } from "./item";
+import { FazElement } from "./element";
 import { Accessor, createSignal, Setter } from "solid-js";
 
  
-export class FazFormElement extends FazElementItem {
+export class FazFormElement extends FazElement {
 
     public action: Accessor<string|undefined>;
     public setAction: Setter<string|undefined>;
