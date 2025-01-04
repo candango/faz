@@ -122,7 +122,6 @@ export class FazElement extends HTMLElement {
         }
         this.comment = (document.createComment(this.nodeName + " " + this.id) as FazComment);
         [this.comment.fazElement, this.comment.setFazElement] = createSignal<FazElement | undefined>(this);
-        this.before(this.comment);
     }
 
     hasExtraClass(value: string): boolean {
@@ -226,6 +225,9 @@ export class FazElement extends HTMLElement {
     }
 
     connectedCallback() {
+        if (this.comment){
+            this.before(this.comment);
+        }
         new Promise((resolve) => {
             setTimeout(()=>resolve(null), 0);
         }).then(()=> {
