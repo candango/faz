@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { FazElement } from ".";
+import { JSX } from "solid-js/types/jsx";
 
-interface FazElementAttributes extends HTMLAttributes<T> {
+interface FazElementAttributes<T> extends JSX.HTMLAttributes<T> {
     fazid?: string;
     active?: boolean;
     connected?: boolean;
