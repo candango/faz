@@ -21,7 +21,7 @@ jobs:
         run: |
           export YARN_ENABLE_IMMUTABLE_INSTALLS=false
           corepack enable
-          npm install -g yarn
+          npm set version stable
           npm run yarn
           yarn install
       - name: Run vitest unit tests
