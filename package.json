@@ -8,10 +8,7 @@
         "module",
         "main"
     ],
-    "types": [
-        "./types/faz-elements.d.ts",
-        "./types/index.d.ts"
-    ],
+    "types": "./types/index.d.ts",
     "files": [
         "dist",
         "src",
@@ -64,7 +61,7 @@
         "watch:clean": "rm -rf watch/dist",
         "showcase": "http-server & npm run watch",
         "esbuild": "node build.mjs",
-        "ts:build": "npm run ts:clean && npm run ts:declaration && cp src/*.d.ts types",
+        "ts:build": "npm run ts:clean && npm run ts:declaration",
         "ts:declaration": "tsc -p tsconfig.types.json -d --declarationDir types --emitDeclarationOnly && rm -rf tsconfig.types.tsbuildinfo",
         "ts:clean": "rm -rf tsconfig.tsbuildinfo types/*",
         "build": "npm run build:clean && npm run lessc && npm run esbuild && npm run ts:build",

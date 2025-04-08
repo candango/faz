@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FazElement } from ".";
-import { JSX } from "solid-js/types/jsx";
-
-interface FazElementAttributes<T> extends JSX.HTMLAttributes<T> {
+import { FazElement } from "./element";
+import { JSX } from "solid-js";
+export interface FazElementAttributes<T> extends JSX.HTMLAttributes<T> {
     fazid?: string;
     active?: boolean;
     connected?: boolean;
@@ -30,3 +29,4 @@ interface FazElementAttributes<T> extends JSX.HTMLAttributes<T> {
     reload?: boolean;
     link?: string;
 }
+//# sourceMappingURL=element-attributes.d.ts.map
