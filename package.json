@@ -33,7 +33,7 @@
     ],
     "dependencies": {
         "less": "4.3.0",
-        "solid-js": "1.9.5"
+        "solid-js": "1.9.7"
     },
     "devDependencies": {
         "@testing-library/dom": "10.4.0",
