@@ -54,7 +54,7 @@
         "typescript": "5.8.3",
         "vite": "6.3.5",
         "vite-plugin-solid": "2.11.6",
-        "vitest": "3.1.1"
+        "vitest": "3.2.4"
     },
     "scripts": {
         "watch": "npm run watch:clean && node watch.mjs",
