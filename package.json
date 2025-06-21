@@ -41,7 +41,7 @@
         "@types/jest": "30.0.0",
         "@types/nise": "1.4.5",
         "@types/node": "24.0.3",
-        "axios": "1.8.4",
+        "axios": "1.10.0",
         "can-stache-loader": "3.0.0",
         "esbuild": "0.25.2",
         "esbuild-plugin-copy": "2.1.1",
