@@ -4,6 +4,9 @@
 
 We are pleased to announce the release of Faz X.X.X.
 
+<!-- Optional: Add a significant change or highlight for this release below -->
+<!-- Example: This version introduces a major redesign of the pagination with improved performance and security. -->
+
 Here are the highlights:
 
 ## Features
