@@ -69,8 +69,8 @@ describe("Test Element", () => {
     });
     test("Properties changed", () => {
         document.body.innerHTML = `
-            <faz-test-element data-testid="outer_element" id="outer" fazclass="aclass">
-                <faz-test-element data-testid="inner_element" id="inner">
+            <faz-test-element data-testid="outer_element" id="outer" fazrole="list" fazclass="aclass">
+                <faz-test-element data-testid="inner_element" id="inner" faz-role="listitem">
                     ${theText}
                 </faz-test-element>
             </faz-test-element>
@@ -82,6 +82,8 @@ describe("Test Element", () => {
 
         outerElement.setActive(true);
         outerElement.setDisabled(true);
+        expect(outerElement.fazRole()).toBe("list");
+        expect(innerElement.fazRole()).toBe("listitem");
         expect(outerElement.doActiveChanged).toBeTruthy();
         expect(outerElement.doDisabledChanged).toBeTruthy();
         expect(outerElement.doExtraClassesChanged).toBeFalsy();

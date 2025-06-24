@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { FazAttributeRole } from "./element-attributes";
 import { randomId, toBoolean } from "./values";
 import { Accessor, createSignal, Setter } from "solid-js";
 
@@ -41,10 +42,12 @@ export class FazElement extends HTMLElement {
     public setDisabled: Setter<boolean>;
     public extraClasses: Accessor<string>;
     public setExtraClasses: Setter<string>;
-    public fazElement: Accessor <FazElement | undefined>;
-    public setFazElement: Setter <FazElement | undefined>;
     public fazChildren: Accessor<FazElement[]>;
     public setFazChildren: Setter<FazElement[]>;
+    public fazElement: Accessor <FazElement | undefined>;
+    public setFazElement: Setter <FazElement | undefined>;
+    public fazRole: Accessor <FazAttributeRole>;
+    public setFazRole: Setter <FazAttributeRole>;
     public loading: Accessor<boolean>;
     public setLoading: Setter<boolean>;
     public parent: Accessor<FazElement | undefined>;
@@ -56,7 +59,6 @@ export class FazElement extends HTMLElement {
 
     public childPrefix: string = "";
     public renderedChild: ChildNode | null = null;
-    private initialOuterHTML: string = "";
     private comment: FazComment | null = null;
     public source: any;
 
@@ -69,14 +71,14 @@ export class FazElement extends HTMLElement {
         [this.debug, this.setDebug] = createSignal<boolean>(false);
         [this.disabled, this.setDisabled] = createSignal<boolean>(false);
         [this.extraClasses, this.setExtraClasses] = createSignal<string>("");
-        [this.fazElement, this.setFazElement] = createSignal<FazElement | undefined>(undefined);
         [this.fazChildren, this.setFazChildren] = createSignal<FazElement[]>([]);
+        [this.fazElement, this.setFazElement] = createSignal<FazElement | undefined>(undefined);
+        [this.fazRole, this.setFazRole] = createSignal<FazAttributeRole>(undefined);
         [this.loading, this.setLoading] = createSignal(true);
         [this.parent, this.setParent] = createSignal<FazElement | undefined>(undefined);
         [this.reload, this.setReload] = createSignal(true);
         [this.link, this.setLink] = createSignal<string|undefined>(undefined);
 
-        this.initialOuterHTML = this.outerHTML;
         if (!this.id) {
             this.id = randomId();
         }
@@ -108,6 +110,11 @@ export class FazElement extends HTMLElement {
                 case "href":
                 case "link":
                     this.setLink(attribute.value);
+                    break;
+                case "role":
+                case "fazrole":
+                case "faz-role":
+                    this.setFazRole(attribute.value as FazAttributeRole);
                     break;
             }
         }
