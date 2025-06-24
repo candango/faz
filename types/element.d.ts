@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { FazAttributeRole } from "./element-attributes";
 import { Accessor, Setter } from "solid-js";
 export interface FazComment extends Comment {
     fazElement: Accessor<FazElement | undefined>;
@@ -35,10 +36,12 @@ export declare class FazElement extends HTMLElement {
     setDisabled: Setter<boolean>;
     extraClasses: Accessor<string>;
     setExtraClasses: Setter<string>;
-    fazElement: Accessor<FazElement | undefined>;
-    setFazElement: Setter<FazElement | undefined>;
     fazChildren: Accessor<FazElement[]>;
     setFazChildren: Setter<FazElement[]>;
+    fazElement: Accessor<FazElement | undefined>;
+    setFazElement: Setter<FazElement | undefined>;
+    fazRole: Accessor<FazAttributeRole>;
+    setFazRole: Setter<FazAttributeRole>;
     loading: Accessor<boolean>;
     setLoading: Setter<boolean>;
     parent: Accessor<FazElement | undefined>;
@@ -49,7 +52,6 @@ export declare class FazElement extends HTMLElement {
     setLink: Setter<string | undefined>;
     childPrefix: string;
     renderedChild: ChildNode | null;
-    private initialOuterHTML;
     private comment;
     source: any;
     constructor();
