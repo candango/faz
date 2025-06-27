@@ -2,13 +2,13 @@
     "name": "faz",
     "version": "0.3.1",
     "description": "JS HTML Web Components",
-    "main": "./dist/index.js",
-    "module": "./dist/js/index.js",
+    "main": "dist/index.js",
+    "module": "dist/js/index.js",
     "mainFields": [
         "module",
         "main"
     ],
-    "types": "./types/index.d.ts",
+    "types": "dist/types/index.d.ts",
     "files": [
         "dist",
         "src",
@@ -36,7 +36,6 @@
         "solid-js": "1.9.7"
     },
     "devDependencies": {
-        "@testing-library/dom": "10.4.0",
         "@testing-library/jest-dom": "6.6.3",
         "@types/jest": "30.0.0",
         "@types/nise": "1.4.5",
@@ -61,7 +60,7 @@
         "watch:clean": "rm -rf watch/dist",
         "showcase": "http-server & npm run watch",
         "esbuild": "node build.mjs",
-        "ts:build": "npm run ts:clean && npm run ts:declaration",
+        "ts:build": "npm run ts:clean && npm run ts:declaration && cp -r types dist",
         "ts:declaration": "tsc -p tsconfig.types.json -d --declarationDir types --emitDeclarationOnly && rm -rf tsconfig.types.tsbuildinfo",
         "ts:clean": "rm -rf tsconfig.tsbuildinfo types/*",
         "build": "npm run build:clean && npm run lessc && npm run esbuild && npm run ts:build",
