@@ -23,6 +23,8 @@ export declare class FazFormElement extends FazElement {
     method: Accessor<string>;
     setMethod: Setter<string>;
     constructor();
+    get form(): HTMLFormElement | undefined;
+    get values(): Record<string, FormDataEntryValue>;
     clearErrorsFor(key: string): void;
     clearErrors(): void;
     hasErrorsFor(key: string): boolean;

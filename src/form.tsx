@@ -44,6 +44,22 @@ export class FazFormElement extends FazElement {
             }
         }
     }
+    
+    get form(): HTMLFormElement|undefined {
+        return undefined
+    }
+
+    get values(): Record<string, FormDataEntryValue> {
+        const values: Record<string, FormDataEntryValue> = {};
+        if (this.form === undefined) {
+            return values;
+        }
+        const formData = new FormData(this.form);
+        for (const [key, value] of formData.entries()) {
+            values[key] = value;
+        }
+        return values;
+    }
 
     public clearErrorsFor(key: string) {
         const errors = { ...this.errors() };
