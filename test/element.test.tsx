@@ -16,10 +16,9 @@
 
 import { FazElement, FazNode } from "../src/element";
 import { afterEach, beforeEach, describe, expect, test, vitest } from "vitest";
-import { waitFor } from "@testing-library/dom";
 import { createEffect, createRoot } from "solid-js";
 import { render} from "solid-js/web";
-import { allComments } from "../src/test";
+import { allComments} from "../src/test";
 
 class TestElement extends FazElement {
 
@@ -73,17 +72,24 @@ describe("Test Element", () => {
                 <faz-test-element data-testid="inner_element" id="inner" faz-role="listitem">
                     ${theText}
                 </faz-test-element>
+                <faz-test-element data-testid="inner_element1" role="listitem">
+                    Another inner
+                </faz-test-element>
             </faz-test-element>
         `;
         const comments = allComments(document.body);
-        const [outerElementComment, innerElementComment] = comments;
+        const [outerElementComment, innerElementComment, anotherInnerElementComment] = comments;
         const outerElement = outerElementComment.fazElement() as TestElement;
         const innerElement = innerElementComment.fazElement() as TestElement;
-
+        const anotherInnerElement = anotherInnerElementComment.fazElement() as TestElement;
         outerElement.setActive(true);
         outerElement.setDisabled(true);
+        expect(outerElement.idGenerated).toBeFalsy();
+        expect(innerElement.idGenerated).toBeFalsy();
+        expect(anotherInnerElement.idGenerated).toBeTruthy();
         expect(outerElement.fazRole()).toBe("list");
         expect(innerElement.fazRole()).toBe("listitem");
+        expect(anotherInnerElement.fazRole()).toBe("listitem");
         expect(outerElement.doActiveChanged).toBeTruthy();
         expect(outerElement.doDisabledChanged).toBeTruthy();
         expect(outerElement.doExtraClassesChanged).toBeFalsy();
@@ -128,16 +134,14 @@ describe("Test Element", () => {
                 </faz-test-element>
             </faz-test-element>
         `;
-        vitest.runAllTimers();
-        await waitFor(() => {
-            const outerDiv = document.getElementById("faz_test_outer") as unknown as FazNode;
-            const innerDiv = document.getElementById("faz_test_inner") as unknown as FazNode;
-            const outerElement = outerDiv.fazElement();
-            const innerElement = innerDiv.fazElement();
-            expect(outerElement?.fazChildren().length).toBe(1);
-            expect(outerElement?.fazChildren()[0]).toBe(innerElement);
-            expect(innerElement?.parent()).toBe(outerElement);
-            expect((outerDiv as unknown as Element).tagName).toBe("DIV");
-        });
+        await vitest.runAllTimersAsync();
+        const outerDiv = document.getElementById("faz_test_outer") as unknown as FazNode;
+        const innerDiv = document.getElementById("faz_test_inner") as unknown as FazNode;
+        const outerElement = outerDiv.fazElement();
+        const innerElement = innerDiv.fazElement();
+        expect(outerElement?.fazChildren().length).toBe(1);
+        expect(outerElement?.fazChildren()[0]).toBe(innerElement);
+        expect(innerElement?.parent()).toBe(outerElement);
+        expect((outerDiv as unknown as Element).tagName).toBe("DIV");
     });
 });

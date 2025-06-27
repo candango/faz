@@ -42,6 +42,7 @@ export declare class FazElement extends HTMLElement {
     setFazElement: Setter<FazElement | undefined>;
     fazRole: Accessor<FazAttributeRole>;
     setFazRole: Setter<FazAttributeRole>;
+    idGenerated: boolean;
     loading: Accessor<boolean>;
     setLoading: Setter<boolean>;
     parent: Accessor<FazElement | undefined>;
