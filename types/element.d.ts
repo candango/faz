@@ -56,6 +56,17 @@ export declare class FazElement extends HTMLElement {
     private comment;
     source: any;
     constructor();
+    /**
+     * The `disconnectedCallback` is a built-in lifecycle method of custom elements.
+     * It is called automatically by the browser when the element is removed from the DOM.
+     */
+    disconnectedCallback(): void;
+    /**
+     * Custom cleanup method for the component.
+     * Implement additional resource or event listener cleanups here as needed.
+     * Currently empty.
+     */
+    disconnect(): void;
     hasExtraClass(value: string): boolean;
     hasExtraClasses(): boolean;
     pushExtraClass(value: string): void;
