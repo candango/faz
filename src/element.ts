@@ -141,6 +141,25 @@ export class FazElement extends HTMLElement {
         [this.comment.fazElement, this.comment.setFazElement] = createSignal<FazElement | undefined>(this);
     }
 
+    /**
+     * The `disconnectedCallback` is a built-in lifecycle method of custom elements.
+     * It is called automatically by the browser when the element is removed from the DOM.
+     */
+    disconnectedCallback() {
+        if (this.connected()) {
+            this.comment?.parentElement?.removeChild(this.comment);
+            this.disconnect();
+        }
+    }
+
+    /**
+     * Custom cleanup method for the component.
+     * Implement additional resource or event listener cleanups here as needed.
+     * Currently empty.
+     */
+    disconnect() {
+    }
+
     // Check if a specific extra class is present.
     hasExtraClass(value: string): boolean {
         const extraClasses = this.extraClasses().trim().split(" ");
