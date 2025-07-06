@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { FazElement, FazNode } from "../src/element";
+import { FazElement } from "../src/element";
 import { afterEach, beforeEach, describe, expect, test, vitest } from "vitest";
 import { createEffect, createRoot } from "solid-js";
 import { render} from "solid-js/web";
@@ -28,6 +28,7 @@ class TestElement extends FazElement {
 
     constructor() {
         super();
+        this.setDisabled(false);
         createRoot(() => {
             createEffect((prevActive) => {
                 if (this.active() != prevActive) {
@@ -50,9 +51,7 @@ class TestElement extends FazElement {
     }
 
     show() {
-        render(() => {
-            return <div id={`faz_test_${this.id}`} data-testid={"rendered_div_" + this.id}></div>
-        }, this);
+        render(() => <div id={`faz_test_${this.id}`} data-testid={"rendered_div_" + this.id}></div>, this);
     }
 }
 
@@ -121,7 +120,7 @@ describe("Test Element", () => {
         outerElement.pushExtraClass("eclass");
         expect(outerElement.doExtraClassesChanged).toBeTruthy();
         outerElement.setActive(false);
-        outerElement.setDisabled(false);
+        outerElement.setDisabled(undefined);
         expect(innerElement.doActiveChanged).toBeFalsy();
         expect(innerElement.doDisabledChanged).toBeFalsy();
     });
@@ -135,13 +134,14 @@ describe("Test Element", () => {
             </faz-test-element>
         `;
         await vitest.runAllTimersAsync();
-        const outerDiv = document.getElementById("faz_test_outer") as unknown as FazNode;
-        const innerDiv = document.getElementById("faz_test_inner") as unknown as FazNode;
-        const outerElement = outerDiv.fazElement();
-        const innerElement = innerDiv.fazElement();
+        const outerElement = document.getElementById("outer") as unknown as FazElement;
+        const innerElement = document.getElementById("inner") as unknown as FazElement;
+        const outerDiv = outerElement.contentChild;
+        const innerDiv = innerElement.contentChild;
         expect(outerElement?.fazChildren().length).toBe(1);
         expect(outerElement?.fazChildren()[0]).toBe(innerElement);
         expect(innerElement?.parent()).toBe(outerElement);
         expect((outerDiv as unknown as Element).tagName).toBe("DIV");
+        expect((innerDiv as unknown as Element).tagName).toBe("DIV");
     });
 });

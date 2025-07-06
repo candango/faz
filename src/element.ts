@@ -42,8 +42,8 @@ export class FazElement extends HTMLElement {
     public setContent: Setter<string|undefined>;
     public debug: Accessor<boolean>;
     public setDebug: Setter<boolean>;
-    public disabled: Accessor<boolean>;
-    public setDisabled: Setter<boolean>;
+    public disabled: Accessor<boolean|undefined>;
+    public setDisabled: Setter<boolean|undefined>;
     public extraClasses: Accessor<string>;
     public setExtraClasses: Setter<string>;
     public fazChildren: Accessor<FazElement[]>;
@@ -76,7 +76,7 @@ export class FazElement extends HTMLElement {
         [this.connected, this.setConnected] = createSignal<boolean>(false);
         [this.content, this.setContent] = createSignal<string|undefined>(undefined);
         [this.debug, this.setDebug] = createSignal<boolean>(false);
-        [this.disabled, this.setDisabled] = createSignal<boolean>(false);
+        [this.disabled, this.setDisabled] = createSignal<boolean|undefined>(undefined);
         [this.extraClasses, this.setExtraClasses] = createSignal<string>("");
         [this.fazChildren, this.setFazChildren] = createSignal<FazElement[]>([]);
         [this.fazElement, this.setFazElement] = createSignal<FazElement | undefined>(undefined);
@@ -288,21 +288,6 @@ export class FazElement extends HTMLElement {
         const children = this.collectChildren();
         this.show();
         this.placeBackChildren(children);
-        this.cleanFazTag();
         this.afterShow();
-    }
-
-    // Cleans Faz tags and sets fazElement on all child nodes.
-    cleanFazTag(): void {
-        this.childNodes.forEach((node) => {
-            const fNode = node as FazNode;
-            [fNode.fazElement, fNode.setFazElement] = createSignal<FazElement | undefined>(this);
-            this.before(fNode);
-        })
-        if (this.parent()) {
-            this.parent()?.appendChild(this);
-            return;
-        }
-        this.remove(); 
     }
 }
