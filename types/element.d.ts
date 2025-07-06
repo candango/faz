@@ -32,8 +32,8 @@ export declare class FazElement extends HTMLElement {
     setContent: Setter<string | undefined>;
     debug: Accessor<boolean>;
     setDebug: Setter<boolean>;
-    disabled: Accessor<boolean>;
-    setDisabled: Setter<boolean>;
+    disabled: Accessor<boolean | undefined>;
+    setDisabled: Setter<boolean | undefined>;
     extraClasses: Accessor<string>;
     setExtraClasses: Setter<string>;
     fazChildren: Accessor<FazElement[]>;
@@ -74,6 +74,5 @@ export declare class FazElement extends HTMLElement {
     load(): void;
     show(): void;
     render(): void;
-    cleanFazTag(): void;
 }
 //# sourceMappingURL=element.d.ts.map
