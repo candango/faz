@@ -28,7 +28,7 @@ export default class DateUtil {
         let days = [];
         Array.from(
             {length: new Date(year, month + 1, 0).getDate()},
-            (x, day)=> days.push(
+            (_, day)=> days.push(
                 new Date(year, month, day + 1)
             )
         );
@@ -41,7 +41,7 @@ export default class DateUtil {
         let dayMatrix = new Array(weeks);
         Array.from(
             {length: weeks},
-            (x, i)=> dayMatrix[i] = new Array(7)
+            (_, i)=> dayMatrix[i] = new Array(7)
         );
         let week = 0;
         DateUtil.daysOfMonthArray(year, month).forEach(day=>{
