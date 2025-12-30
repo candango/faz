@@ -41,3 +41,9 @@ Candango faz is a toolkit based on bootstrap and solid-js.
  - Add new Node.Js at the Run/Debug configurations.
  - Java Script file: node_modules/http-server/bin/http-server
  - Working directory: the faz project root directory
+
+# License
+
+Candango Faz was licensed under Apache-2.0 from 2018 to 2025.
+
+Since 2026 it is licensed under the MIT License.
