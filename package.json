@@ -46,7 +46,7 @@
         "esbuild-plugin-copy": "2.1.1",
         "esbuild-plugin-solid": "0.6.0",
         "http-server": "14.1.1",
-        "jsdom": "27.0.0",
+        "jsdom": "27.4.0",
         "nise": "6.1.1",
         "prettier": "3.6.2",
         "ts-node": "10.9.2",
