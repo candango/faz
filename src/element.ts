@@ -223,14 +223,10 @@ export class FazElement extends HTMLElement {
     }
 
     // Lifecycle hook, can be overridden by subclasses for logic after showing.
-    afterShow():void {
-        this.removeAttribute("data-faz-loading");
-    }
+    afterShow():void {}
 
     // Lifecycle hook, can be overridden by subclasses for logic before showing.
-    beforeShow():void {
-        this.setAttribute("data-faz-loading", "true");
-    }
+    beforeShow():void {}
 
     // Remove and collect all children, update fazChildren list.
     collectChildren() { 
@@ -292,10 +288,12 @@ export class FazElement extends HTMLElement {
     // Main render method: load data, prepare, manipulate, and restore children.
     render() {
         this.load();
+        this.setAttribute("data-faz-loading", "true");
         this.beforeShow();
         const children = this.collectChildren();
         this.show();
         this.placeBackChildren(children);
         this.afterShow();
+        this.removeAttribute("data-faz-loading");
     }
 }
