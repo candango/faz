@@ -9,6 +9,7 @@ entryPoints.push({ out: "custom-tag.bundle", in: "showcase/src/custom-tag.tsx" }
 entryPoints.push({ out: "form.bundle", in: "showcase/src/form.tsx" });
 
 entryPoints.push({ out: "global.bundle", in: "showcase/src/global.ts" });
+entryPoints.push({ out: "poc.bundle", in: "showcase/src/poc/poc.tsx" });
 entryPoints.push({ out: "css/showcase", in: "stylesheets/showcase.css"});
 
 let ctx = await context({
@@ -32,7 +33,7 @@ let ctx = await context({
 await ctx.watch();
 
 await ctx.serve({
-    port: 8081,
+    port: 8082,
     servedir: "showcase",
     onRequest: (args) => {
         let logMessage = "";
