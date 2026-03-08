@@ -1,4 +1,3 @@
-import { Accessor, Setter } from "solid-js";
 /**
  * FazPaginator is a pagination utility class built for use with Solid.js
  * reactive primitives.
@@ -6,14 +5,10 @@ import { Accessor, Setter } from "solid-js";
  * offering helpers for navigation, state, and boundary conditions.
  */
 export declare class FazPaginator {
-    count: Accessor<number>;
-    setCount: Setter<number>;
-    page: Accessor<number>;
-    setPage: Setter<number>;
-    perBlock: Accessor<number>;
-    setPerBlock: Setter<number>;
-    perPage: Accessor<number>;
-    setPerPage: Setter<number>;
+    count: number;
+    page: number;
+    perBlock: number;
+    perPage: number;
     constructor();
     /**
      * Returns the total number of blocks needed for the current settings.

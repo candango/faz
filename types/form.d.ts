@@ -1,12 +1,8 @@
 import { FazElement } from "./element";
-import { Accessor, Setter } from "solid-js";
 export declare class FazFormElement extends FazElement {
-    action: Accessor<string | undefined>;
-    setAction: Setter<string | undefined>;
-    errors: Accessor<Record<string, string[]>>;
-    setErrors: Setter<Record<string, string[]>>;
-    method: Accessor<string>;
-    setMethod: Setter<string>;
+    action: string | undefined;
+    errors: Record<string, string[]>;
+    method: string;
     constructor();
     get form(): HTMLFormElement | undefined;
     get values(): Record<string, FormDataEntryValue>;

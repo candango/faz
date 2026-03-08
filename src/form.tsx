@@ -11,15 +11,15 @@ export class FazFormElement extends FazElement {
 
     constructor() {
         super();
-        const reactiveProps: Partial<this> = {
-            action: undefined,
-            errors: {},
+        const config = {
+            action: undefined as string | undefined,
+            errors: {} as Record<string, string[]>,
             method: "get",
         };
 
-        for (const [key, value] of Object.entries(reactiveProps)) {
-            bindReactive(this, key as keyof this, value);
-        }
+        (Object.keys(config) as Array<keyof typeof config>).forEach((key) => {
+            bindReactive(this, key as any, config[key]);
+        });
 
         for (const attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {

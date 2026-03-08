@@ -46,25 +46,25 @@ export class FazElement extends HTMLElement {
         // Standardize Render Strategy: use display: contents to avoid layout expansion
         this.style.display = "contents";
 
-        const reactiveProps: Partial<this> = {
+        const config = {
             active: false,
             connected: false,
-            content: undefined,
+            content: undefined as string | undefined,
             debug: false,
-            disabled: undefined,
+            disabled: undefined as boolean | undefined,
             extraClasses: "",
-            fazChildren: [],
-            fazElement: undefined,
-            fazRole: undefined,
+            fazChildren: [] as FazElement[],
+            fazElement: undefined as FazElement | undefined,
+            fazRole: undefined as FazAttributeRole,
             loading: true,
-            parent: undefined,
+            parent: undefined as FazElement | undefined,
             reload: true,
-            link: undefined,
+            link: undefined as string | undefined,
         };
 
-        for (const [key, value] of Object.entries(reactiveProps)) {
-            bindReactive(this, key as keyof this, value);
-        }
+        (Object.keys(config) as Array<keyof typeof config>).forEach((key) => {
+            bindReactive(this, key as any, config[key]);
+        });
 
         if (!this.id) {
             this.id = randomId();

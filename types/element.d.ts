@@ -1,41 +1,25 @@
 import { FazAttributeRole } from "./element-attributes";
-import { Accessor, Setter } from "solid-js";
 export interface FazComment extends Comment {
-    fazElement: Accessor<FazElement | undefined>;
-    setFazElement: Setter<FazElement | undefined>;
+    fazElement: FazElement | undefined;
 }
 export interface FazNode extends ChildNode {
-    fazElement: Accessor<FazElement | undefined>;
-    setFazElement: Setter<FazElement | undefined>;
+    fazElement: FazElement | undefined;
 }
 export declare class FazElement extends HTMLElement {
-    active: Accessor<boolean>;
-    setActive: Setter<boolean>;
-    connected: Accessor<boolean>;
-    setConnected: Setter<boolean>;
-    content: Accessor<string | undefined>;
-    setContent: Setter<string | undefined>;
-    debug: Accessor<boolean>;
-    setDebug: Setter<boolean>;
-    disabled: Accessor<boolean | undefined>;
-    setDisabled: Setter<boolean | undefined>;
-    extraClasses: Accessor<string>;
-    setExtraClasses: Setter<string>;
-    fazChildren: Accessor<FazElement[]>;
-    setFazChildren: Setter<FazElement[]>;
-    fazElement: Accessor<FazElement | undefined>;
-    setFazElement: Setter<FazElement | undefined>;
-    fazRole: Accessor<FazAttributeRole>;
-    setFazRole: Setter<FazAttributeRole>;
+    active: boolean;
+    connected: boolean;
+    content: string | undefined;
+    debug: boolean;
+    disabled: boolean | undefined;
+    extraClasses: string;
+    fazChildren: FazElement[];
+    fazElement: FazElement | undefined;
+    fazRole: FazAttributeRole;
     idGenerated: boolean;
-    loading: Accessor<boolean>;
-    setLoading: Setter<boolean>;
-    parent: Accessor<FazElement | undefined>;
-    setParent: Setter<FazElement | undefined>;
-    reload: Accessor<boolean>;
-    setReload: Setter<boolean>;
-    link: Accessor<string | undefined>;
-    setLink: Setter<string | undefined>;
+    loading: boolean;
+    parent: FazElement | undefined;
+    reload: boolean;
+    link: string | undefined;
     childPrefix: string;
     renderedChild: ChildNode | null;
     private comment;
