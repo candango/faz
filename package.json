@@ -14,6 +14,20 @@
         "src",
         "types"
     ],
+    "exports": {
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "import": "./dist/js/index.js"
+        },
+        "./reactivity": {
+            "types": "./dist/types/reactivity.d.ts",
+            "import": "./dist/js/reactivity.js"
+        },
+        "./paginator": {
+            "types": "./dist/types/paginator.d.ts",
+            "import": "./dist/js/paginator.js"
+        }
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/candango/faz.git"
