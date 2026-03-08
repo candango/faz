@@ -1,6 +1,6 @@
 {
     "name": "faz",
-    "version": "0.5.1",
+    "version": "0.5.2",
     "description": "JS HTML Web Components",
     "main": "dist/index.js",
     "module": "dist/js/index.js",
@@ -26,7 +26,9 @@
         "./paginator": {
             "types": "./dist/types/paginator.d.ts",
             "import": "./dist/js/paginator.js"
-        }
+        },
+        "./src": "./src/index.ts",
+        "./src/*": "./src/*"
     },
     "repository": {
         "type": "git",
