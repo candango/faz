@@ -5,5 +5,16 @@ export default defineConfig({
     plugins: [solid()],
     resolve: {
         conditions: ["development", "browser"],
+    },
+    test: {
+        environment: "jsdom",
+        server: {
+            deps: {
+                inline: [
+                    "@csstools/css-calc",
+                    "@asamuzakjp/css-color"
+                ]
+            }
+        }
     }
 })
