@@ -6,8 +6,15 @@ export default defineConfig({
     resolve: {
         conditions: ["development", "browser"],
     },
+    ssr: {
+        noExternal: [
+            "@csstools/css-calc",
+            "@asamuzakjp/css-color"
+        ]
+    },
     test: {
         environment: "jsdom",
+        pool: "threads",
         server: {
             deps: {
                 inline: [
