@@ -41,7 +41,7 @@ describe("Test Forms", () => {
             </test-form>
         `;
         const [formComment] = allComments(document.body);
-        const form = formComment.fazElement() as FazFormElement;
+        const form = formComment.fazElement as FazFormElement;
         await vitest.runAllTimersAsync();
         expect(form.hasErrors()).toBeFalsy();
         form.pushError("field1", "error 1");

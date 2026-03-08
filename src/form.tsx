@@ -1,30 +1,33 @@
 
 import { FazElement } from "./element";
-import { Accessor, createSignal, Setter } from "solid-js";
+import { bindReactive } from "./reactivity";
 
  
 export class FazFormElement extends FazElement {
 
-    public action: Accessor<string|undefined>;
-    public setAction: Setter<string|undefined>;
-    public errors: Accessor<Record<string, string[]>>;
-    public setErrors: Setter<Record<string, string[]>>;
-    public method: Accessor<string>;
-    public setMethod: Setter<string>;
+    public action: string|undefined;
+    public errors!: Record<string, string[]>;
+    public method!: string;
 
     constructor() {
         super();
-        [this.action, this.setAction] = createSignal<string|undefined>(undefined);
-        [this.errors, this.setErrors] = createSignal<Record<string, string[]>>({});
-        [this.method, this.setMethod] = createSignal<string>("get");
+        const reactiveProps: Partial<this> = {
+            action: undefined,
+            errors: {},
+            method: "get",
+        };
+
+        for (const [key, value] of Object.entries(reactiveProps)) {
+            bindReactive(this, key as keyof this, value);
+        }
 
         for (const attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
                 case "action":
-                    this.setAction(attribute.value);
+                    this.action = attribute.value;
                     break;
                 case "method":
-                    this.setMethod(attribute.value);
+                    this.method = attribute.value;
                     break;
             }
         }
@@ -47,40 +50,40 @@ export class FazFormElement extends FazElement {
     }
 
     public clearErrorsFor(key: string) {
-        const errors = { ...this.errors() };
+        const errors = { ...this.errors };
         if (key in errors) {
             delete errors[key];
         }
-        this.setErrors(errors);
+        this.errors = errors;
     }
 
     public clearErrors() {
-        this.setErrors({});
+        this.errors = {};
     }
 
     public hasErrorsFor(key: string): boolean {
-        return key in this.errors() && this.errors()[key].length > 0;
+        return key in this.errors && this.errors[key].length > 0;
     }
 
     public hasErrors(): boolean {
-        return Object.values(this.errors()).some(errors => errors.length > 0);
+        return Object.values(this.errors).some(errors => errors.length > 0);
     }
 
     public getErrorsFor(key: string): string[] {
-        return this.errors()[key] || [];
+        return this.errors[key] || [];
     }
 
     public pushError(key: string, value: string) {
         value = value.trim();
         if (value) {
-            const errors = { ...this.errors() };
+            const errors = { ...this.errors };
             if (!errors[key]) {
                 errors[key] = [];
             }
             if (!errors[key].includes(value)) {
                 errors[key].push(value);
             }
-            this.setErrors(errors);
+            this.errors = errors;
         }
     }
 }

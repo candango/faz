@@ -1,51 +1,37 @@
 
 import { FazAttributeRole } from "./element-attributes";
 import { randomId, toBoolean } from "./values";
-import { Accessor, createSignal, Setter } from "solid-js";
+import { createSignal } from "solid-js";
+import { bindReactive } from "./reactivity";
 
 // FazComment extends the standard Comment node to include FazElement reactivity.
 export interface FazComment extends Comment {
-    fazElement: Accessor <FazElement | undefined>;
-    setFazElement: Setter <FazElement | undefined>;
+    fazElement: FazElement | undefined;
 } 
 
 // FazNode extends ChildNode to include FazElement reactivity.
 export interface FazNode extends ChildNode {
-    fazElement: Accessor <FazElement | undefined>;
-    setFazElement: Setter <FazElement | undefined>;
+    fazElement: FazElement | undefined;
 }
 
 // Main FazElement class, extends HTMLElement to provide custom logic and reactivity for web components.
 export class FazElement extends HTMLElement {
 
     // Reactive properties for component state.
-    public active: Accessor<boolean>;
-    public setActive: Setter<boolean>;
-    public connected: Accessor<boolean>;
-    public setConnected: Setter<boolean>;
-    public content: Accessor<string|undefined>;
-    public setContent: Setter<string|undefined>;
-    public debug: Accessor<boolean>;
-    public setDebug: Setter<boolean>;
-    public disabled: Accessor<boolean|undefined>;
-    public setDisabled: Setter<boolean|undefined>;
-    public extraClasses: Accessor<string>;
-    public setExtraClasses: Setter<string>;
-    public fazChildren: Accessor<FazElement[]>;
-    public setFazChildren: Setter<FazElement[]>;
-    public fazElement: Accessor <FazElement | undefined>;
-    public setFazElement: Setter <FazElement | undefined>;
-    public fazRole: Accessor <FazAttributeRole>;
-    public setFazRole: Setter <FazAttributeRole>;
+    public active!: boolean;
+    public connected!: boolean;
+    public content: string|undefined;
+    public debug!: boolean;
+    public disabled: boolean|undefined;
+    public extraClasses!: string;
+    public fazChildren!: FazElement[];
+    public fazElement: FazElement | undefined;
+    public fazRole: FazAttributeRole;
     public idGenerated: boolean = false;
-    public loading: Accessor<boolean>;
-    public setLoading: Setter<boolean>;
-    public parent: Accessor<FazElement | undefined>;
-    public setParent: Setter<FazElement | undefined>;
-    public reload: Accessor<boolean>;
-    public setReload: Setter<boolean>;
-    public link: Accessor<string|undefined>;
-    public setLink: Setter<string|undefined>;
+    public loading!: boolean;
+    public parent: FazElement | undefined;
+    public reload!: boolean;
+    public link: string|undefined;
 
     // Prefix for children and rendered child tracking.
     public childPrefix: string = "";
@@ -57,19 +43,28 @@ export class FazElement extends HTMLElement {
     constructor() {
         super();
 
-        [this.active, this.setActive] = createSignal<boolean>(false);
-        [this.connected, this.setConnected] = createSignal<boolean>(false);
-        [this.content, this.setContent] = createSignal<string|undefined>(undefined);
-        [this.debug, this.setDebug] = createSignal<boolean>(false);
-        [this.disabled, this.setDisabled] = createSignal<boolean|undefined>(undefined);
-        [this.extraClasses, this.setExtraClasses] = createSignal<string>("");
-        [this.fazChildren, this.setFazChildren] = createSignal<FazElement[]>([]);
-        [this.fazElement, this.setFazElement] = createSignal<FazElement | undefined>(undefined);
-        [this.fazRole, this.setFazRole] = createSignal<FazAttributeRole>(undefined);
-        [this.loading, this.setLoading] = createSignal(true);
-        [this.parent, this.setParent] = createSignal<FazElement | undefined>(undefined);
-        [this.reload, this.setReload] = createSignal(true);
-        [this.link, this.setLink] = createSignal<string|undefined>(undefined);
+        // Standardize Render Strategy: use display: contents to avoid layout expansion
+        this.style.display = "contents";
+
+        const reactiveProps: Partial<this> = {
+            active: false,
+            connected: false,
+            content: undefined,
+            debug: false,
+            disabled: undefined,
+            extraClasses: "",
+            fazChildren: [],
+            fazElement: undefined,
+            fazRole: undefined,
+            loading: true,
+            parent: undefined,
+            reload: true,
+            link: undefined,
+        };
+
+        for (const [key, value] of Object.entries(reactiveProps)) {
+            bindReactive(this, key as keyof this, value);
+        }
 
         if (!this.id) {
             this.id = randomId();
@@ -79,21 +74,21 @@ export class FazElement extends HTMLElement {
         for (const attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
                 case "active":
-                    this.setActive(toBoolean(attribute.value));
+                    this.active = toBoolean(attribute.value);
                     break;
                 case "class":
                 case "fazclass":
                 case "faz-class":
-                    this.setExtraClasses(attribute.value);
+                    this.extraClasses = attribute.value;
                     break;
                 case "content":
-                    this.setContent(attribute.value);
+                    this.content = attribute.value;
                     break;
                 case "debug":
-                    this.setDebug(toBoolean(attribute.value));
+                    this.debug = toBoolean(attribute.value);
                     break;
                 case "disabled":
-                    this.setDisabled(toBoolean(attribute.value));
+                    this.disabled = toBoolean(attribute.value);
                     break;
                 case "id":
                 case "fazid":
@@ -102,12 +97,12 @@ export class FazElement extends HTMLElement {
                     break;
                 case "href":
                 case "link":
-                    this.setLink(attribute.value);
+                    this.link = attribute.value;
                     break;
                 case "role":
                 case "fazrole":
                 case "faz-role":
-                    this.setFazRole(attribute.value as FazAttributeRole);
+                    this.fazRole = attribute.value as FazAttributeRole;
                     break;
             }
         }
@@ -123,7 +118,7 @@ export class FazElement extends HTMLElement {
             });
         }
         this.comment = (document.createComment(this.nodeName + " " + this.id) as FazComment);
-        [this.comment.fazElement, this.comment.setFazElement] = createSignal<FazElement | undefined>(this);
+        bindReactive(this.comment, "fazElement", this);
     }
 
     /**
@@ -131,7 +126,7 @@ export class FazElement extends HTMLElement {
      * It is called automatically by the browser when the element is removed from the DOM.
      */
     disconnectedCallback() {
-        if (this.connected()) {
+        if (this.connected) {
             this.comment?.parentElement?.removeChild(this.comment);
             this.disconnect();
         }
@@ -147,23 +142,23 @@ export class FazElement extends HTMLElement {
 
     // Check if a specific extra class is present.
     hasExtraClass(value: string): boolean {
-        const extraClasses = this.extraClasses().trim().split(" ");
+        const extraClasses = this.extraClasses.trim().split(" ");
         return extraClasses.find(
             item => item == value.toLowerCase()) !== undefined;
     }
 
     // Check if any extra classes are present.
     hasExtraClasses(): boolean {
-        return this.extraClasses().trim().split(" ").length > 0;
+        return this.extraClasses.trim().split(" ").length > 0;
     }
 
     // Add a new extra class if not already present.
     pushExtraClass(value: string) {
         value = value.trim();
         if (!this.hasExtraClass(value)) {
-            const extraClasses = this.extraClasses().trim().split(" ");
+            const extraClasses = this.extraClasses.trim().split(" ");
             extraClasses.push(value);
-            this.setExtraClasses(extraClasses.join(" "));
+            this.extraClasses = extraClasses.join(" ");
         }
     }
 
@@ -171,34 +166,34 @@ export class FazElement extends HTMLElement {
     resolveLink(): string | undefined  {
         // From: https://stackoverflow.com/a/66717705/2887989
         let voidHref = "#!";
-        const link = this.link();
-        if (this.disabled() || link === undefined || link === "") {
+        const link = this.link;
+        if (this.disabled || link === undefined || link === "") {
             return voidHref;
         }
-        return this.link();
+        return this.link;
     }
 
     // Add a FazElement child to the list of reactive children.
     addFazChild(child: FazElement) {
-        if (this.fazChildren().indexOf(child) === -1) {
-            const children = {...this.fazChildren()} as FazElement[];
+        if (this.fazChildren.indexOf(child) === -1) {
+            const children = [...this.fazChildren] as FazElement[];
             children.push(child);
-            this.setFazChildren(children);
+            this.fazChildren = children;
         }
     }
 
     // Remove a FazElement child from the reactive children array.
     removeFazChild(child: FazElement) {
-        if (this.fazChildren().indexOf(child) !== -1) {
-            const children = {...this.fazChildren()} as FazElement[];
-            this.setFazChildren(children.filter(i => i !== child));
+        if (this.fazChildren.indexOf(child) !== -1) {
+            const children = [...this.fazChildren] as FazElement[];
+            this.fazChildren = children.filter(i => i !== child);
         }
     }
 
     // Get all children that are currently active.
     get activeFazChildren(): FazElement[] {
-        return this.fazChildren().filter(child => {
-            return child.active();
+        return this.fazChildren.filter(child => {
+            return child.active;
         })
     }
 
@@ -209,7 +204,7 @@ export class FazElement extends HTMLElement {
 
     // Check if the link attribute is void (should not navigate).
     get linkIsVoid() {
-        if (this.disabled()) {
+        if (this.disabled) {
             return true;
         }
         const linkResolved = this.resolveLink();
@@ -232,31 +227,27 @@ export class FazElement extends HTMLElement {
     collectChildren() { 
         const children:Node[] = [];
         const items: FazElement[] = [];
-        if (this.loading()) {
-            while(this.firstChild) {
-                if (this.firstChild instanceof FazElement) {
-                    const item = this.firstChild as FazElement;
-                    item.setParent(this as FazElement);
-                    items.push(item);
-                    item.dataset['parent'] = this.id;
-                }
-                children.push(this.firstChild);
-                this.removeChild(this.firstChild);
+        while(this.firstChild) {
+            if (this.firstChild instanceof FazElement) {
+                const item = this.firstChild as FazElement;
+                item.parent = this as FazElement;
+                items.push(item);
+                item.dataset['parent'] = this.id;
             }
-            if (items.length > 0) {
-                this.setFazChildren(items);
-            }
+            children.push(this.firstChild);
+            this.removeChild(this.firstChild);
+        }
+        if (items.length > 0) {
+            this.fazChildren = items;
         }
         return children;
     }
 
     // Place previously collected children back into the DOM.
     placeBackChildren(children: Node[]) {
-        if (this.loading()) {
-            children.forEach(child => {
-                this.addChild(child);
-            });
-        }
+        children.forEach(child => {
+            this.addChild(child);
+        });
     }
 
     // Standard web component lifecycle method: called when element is inserted
@@ -266,16 +257,17 @@ export class FazElement extends HTMLElement {
         if (this.comment){
             this.before(this.comment);
         }
+
         // Defer rendering and state updates until the next microtask to ensure
         // all child custom elements are upgraded.
         // This is necessary because, during connectedCallback, child elements
         // may not be fully constructed or upgraded yet.
         Promise.resolve().then(()=> {
-            if (this.loading()) {
+            if (this.loading) {
                 this.render();
             }
-            this.setConnected(true);
-            this.setLoading(false);
+            this.connected = true;
+            this.loading = false;
         });
     }
 
@@ -288,12 +280,10 @@ export class FazElement extends HTMLElement {
     // Main render method: load data, prepare, manipulate, and restore children.
     render() {
         this.load();
-        this.setAttribute("data-faz-loading", "true");
         this.beforeShow();
         const children = this.collectChildren();
         this.show();
         this.placeBackChildren(children);
         this.afterShow();
-        this.removeAttribute("data-faz-loading");
     }
 }

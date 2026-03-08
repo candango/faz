@@ -1,5 +1,5 @@
 
-import { Accessor, createSignal, Setter } from "solid-js";
+import { bindReactive } from "./reactivity";
 
 /**
  * FazPaginator is a pagination utility class built for use with Solid.js
@@ -9,35 +9,31 @@ import { Accessor, createSignal, Setter } from "solid-js";
  */
 export class FazPaginator {
 
-    // Number of total records/items (reactive getter/setter)
-    public count: Accessor<number>;
-    public setCount: Setter<number>;
+    // Number of total records/items
+    public count!: number;
 
-    // Current page number (reactive getter/setter)
-    public page: Accessor<number>;
-    public setPage: Setter<number>;
+    // Current page number
+    public page!: number;
 
-    // Number of pages per block (reactive getter/setter)
-    public perBlock: Accessor<number>;
-    public setPerBlock: Setter<number>;
+    // Number of pages per block
+    public perBlock!: number;
 
-    // Number of records per page (reactive getter/setter)
-    public perPage: Accessor<number>;
-    public setPerPage: Setter<number>;
+    // Number of records per page
+    public perPage!: number;
 
     constructor() {
-        [this.count, this.setCount] = createSignal<number>(0);
-        [this.page, this.setPage] = createSignal<number>(1);
-        [this.perBlock, this.setPerBlock] = createSignal<number>(10);
-        [this.perPage, this.setPerPage] = createSignal<number>(10);
+        bindReactive(this, "count", 0);
+        bindReactive(this, "page", 1);
+        bindReactive(this, "perBlock", 10);
+        bindReactive(this, "perPage", 10);
     }
 
     /**
      * Returns the total number of blocks needed for the current settings.
      */
     get blocks(): number {
-        const blocksFloor = Math.floor(this.pages / this.perBlock());
-        const reminder = this.pages % this.perBlock() > 0 ? 1 : 0;
+        const blocksFloor = Math.floor(this.pages / this.perBlock);
+        const reminder = this.pages % this.perBlock > 0 ? 1 : 0;
         return blocksFloor + reminder;
     }
 
@@ -45,11 +41,11 @@ export class FazPaginator {
      * Returns the total number of pages based on count and perPage.
      */
     get pages(): number {
-        if (this.count() === 0) {
+        if (this.count === 0) {
             return 1;
         }
-        const pagesFloor = Math.floor(this.count() / this.perPage());
-        let remainder = this.count() % this.perPage();
+        const pagesFloor = Math.floor(this.count / this.perPage);
+        let remainder = this.count % this.perPage;
         remainder = remainder > 0 ? 1 : 0;
         return pagesFloor + remainder;
     }
@@ -59,24 +55,24 @@ export class FazPaginator {
      * Adjusts the page if it's out of bounds.
      */
     get safePage(): number {
-        if (this.page() < 1) {
-            this.setPage(1);
+        if (this.page < 1) {
+            this.page = 1;
         }
-        if (this.pages < this.page()) {
-            this.setPage(this.pages);
+        if (this.pages < this.page) {
+            this.page = this.pages;
         }
-        return this.page();
+        return this.page;
     }
 
     /**
      * Returns the current block number (1-based) for the current page.
      */
     get block(): number {
-        if (this.safePage <= this.perBlock()) {
+        if (this.safePage <= this.perBlock) {
             return 1;
         }
-        const currentBlockFloor = Math.floor(this.safePage / this.perBlock());
-        const remainder = this.safePage % this.perBlock();
+        const currentBlockFloor = Math.floor(this.safePage / this.perBlock);
+        const remainder = this.safePage % this.perBlock;
         const addRemainder = remainder > 0 ? 1 : 0;
         return currentBlockFloor + addRemainder;
     }
@@ -85,7 +81,7 @@ export class FazPaginator {
      * Returns the first page number in the current block.
      */
     get currentFirstPage(): number {
-        return (this.block * this.perBlock()) - this.perBlock() + 1;
+        return (this.block * this.perBlock) - this.perBlock + 1;
     }
 
     /**
@@ -96,22 +92,22 @@ export class FazPaginator {
         if (this.isLastBlock) {
             return this.currentFirstPage + this.pagesInLastBlock - 1;
         }
-        return this.block * this.perBlock();
+        return this.block * this.perBlock;
     }
     
     /**
      * Returns the number of pages in the last block.
      */
     get pagesInLastBlock(): number {
-        let lastBlockRemainder = this.pages % this.perBlock();
-        return lastBlockRemainder > 0 ? lastBlockRemainder : this.perBlock();
+        let lastBlockRemainder = this.pages % this.perBlock;
+        return lastBlockRemainder > 0 ? lastBlockRemainder : this.perBlock;
     }
 
     /**
      * Returns an array of page numbers in the current block.
      */
     get blockPages(): number[] {
-        let pages = this.isLastBlock ? this.pagesInLastBlock : this.perBlock();
+        let pages = this.isLastBlock ? this.pagesInLastBlock : this.perBlock;
         return Array(pages).fill(undefined).map((_, i) => i + this.currentFirstPage);
     }
 
@@ -169,15 +165,15 @@ export class FazPaginator {
      * Returns the number of records in the last page.
      */
     get recordsInLastPage() {
-        let lastPageRemainder = this.count() % this.perPage();
-        return lastPageRemainder > 0 ? lastPageRemainder : this.perPage();
+        let lastPageRemainder = this.count % this.perPage;
+        return lastPageRemainder > 0 ? lastPageRemainder : this.perPage;
     }
 
     /**
      * Returns the absolute index of the first record on the current page.
      */
     get firstRecord() {
-        return (this.safePage * this.perPage()) - this.perPage() + 1;
+        return (this.safePage * this.perPage) - this.perPage + 1;
     }
 
     /**
@@ -187,6 +183,6 @@ export class FazPaginator {
         if (this.isLastPage) {
             return this.firstRecord + this.recordsInLastPage - 1;
         }
-        return this.safePage * this.perPage();
+        return this.safePage * this.perPage;
     }
 }

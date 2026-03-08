@@ -13,22 +13,22 @@ class TestElement extends FazElement {
 
     constructor() {
         super();
-        this.setDisabled(false);
+        this.disabled = false;
         createRoot(() => {
             createEffect((prevActive) => {
-                if (this.active() != prevActive) {
+                if (this.active != prevActive) {
                     this.doActiveChanged = true;
                 }
             }, false);
 
             createEffect((prevDisabled) => {
-                if (this.disabled() != prevDisabled) {
+                if (this.disabled != prevDisabled) {
                     this.doDisabledChanged = true;
                 }
             }, false);
 
             createEffect((prevExtraClasses) => {
-                if (this.extraClasses() != prevExtraClasses) {
+                if (this.extraClasses != prevExtraClasses) {
                     this.doExtraClassesChanged = true;
                 }
             }, "aclass");
@@ -63,38 +63,38 @@ describe("Test Element", () => {
         `;
         const comments = allComments(document.body);
         const [outerElementComment, innerElementComment, anotherInnerElementComment] = comments;
-        const outerElement = outerElementComment.fazElement() as TestElement;
-        const innerElement = innerElementComment.fazElement() as TestElement;
-        const anotherInnerElement = anotherInnerElementComment.fazElement() as TestElement;
-        outerElement.setActive(true);
-        outerElement.setDisabled(true);
+        const outerElement = outerElementComment.fazElement as TestElement;
+        const innerElement = innerElementComment.fazElement as TestElement;
+        const anotherInnerElement = anotherInnerElementComment.fazElement as TestElement;
+        outerElement.active = true;
+        outerElement.disabled = true;
         expect(outerElement.idGenerated).toBeFalsy();
         expect(innerElement.idGenerated).toBeFalsy();
         expect(anotherInnerElement.idGenerated).toBeTruthy();
-        expect(outerElement.fazRole()).toBe("list");
-        expect(innerElement.fazRole()).toBe("listitem");
-        expect(anotherInnerElement.fazRole()).toBe("listitem");
+        expect(outerElement.fazRole).toBe("list");
+        expect(innerElement.fazRole).toBe("listitem");
+        expect(anotherInnerElement.fazRole).toBe("listitem");
         expect(outerElement.doActiveChanged).toBeTruthy();
         expect(outerElement.doDisabledChanged).toBeTruthy();
         expect(outerElement.doExtraClassesChanged).toBeFalsy();
-        outerElement.setExtraClasses("aclass");
+        outerElement.extraClasses = "aclass";
         expect(outerElement.doExtraClassesChanged).toBeFalsy();
-        outerElement.setExtraClasses("aclass bclass");
+        outerElement.extraClasses = "aclass bclass";
         expect(outerElement.doExtraClassesChanged).toBeTruthy();
         outerElement.doExtraClassesChanged = false;
-        outerElement.setExtraClasses("bclass aclass");
+        outerElement.extraClasses = "bclass aclass";
         expect(outerElement.doExtraClassesChanged).toBeTruthy();
         outerElement.doExtraClassesChanged = false;
-        outerElement.setExtraClasses("bclass aclass ");
+        outerElement.extraClasses = "bclass aclass ";
         expect(outerElement.doExtraClassesChanged).toBeTruthy();
         outerElement.doExtraClassesChanged = false;
-        outerElement.setExtraClasses(" bclass aclass");
+        outerElement.extraClasses = " bclass aclass";
         expect(outerElement.doExtraClassesChanged).toBeTruthy();
         outerElement.doExtraClassesChanged = false;
-        outerElement.setExtraClasses(" bclass aclass ");
+        outerElement.extraClasses = " bclass aclass ";
         expect(outerElement.doExtraClassesChanged).toBeTruthy();
         outerElement.doExtraClassesChanged = false;
-        outerElement.setExtraClasses("bclass aclass cclass");
+        outerElement.extraClasses = "bclass aclass cclass";
         expect(outerElement.doExtraClassesChanged).toBeTruthy();
         outerElement.doExtraClassesChanged = false;
         outerElement.pushExtraClass("aclass");
@@ -104,8 +104,8 @@ describe("Test Element", () => {
         expect(outerElement.doExtraClassesChanged).toBeFalsy();
         outerElement.pushExtraClass("eclass");
         expect(outerElement.doExtraClassesChanged).toBeTruthy();
-        outerElement.setActive(false);
-        outerElement.setDisabled(undefined);
+        outerElement.active = false;
+        outerElement.disabled = undefined;
         expect(innerElement.doActiveChanged).toBeFalsy();
         expect(innerElement.doDisabledChanged).toBeFalsy();
     });
@@ -123,9 +123,9 @@ describe("Test Element", () => {
         const innerElement = document.getElementById("inner") as unknown as FazElement;
         const outerDiv = outerElement.contentChild;
         const innerDiv = innerElement.contentChild;
-        expect(outerElement?.fazChildren().length).toBe(1);
-        expect(outerElement?.fazChildren()[0]).toBe(innerElement);
-        expect(innerElement?.parent()).toBe(outerElement);
+        expect(outerElement?.fazChildren.length).toBe(1);
+        expect(outerElement?.fazChildren[0]).toBe(innerElement);
+        expect(innerElement?.parent).toBe(outerElement);
         expect((outerDiv as unknown as Element).tagName).toBe("DIV");
         expect((innerDiv as unknown as Element).tagName).toBe("DIV");
     });

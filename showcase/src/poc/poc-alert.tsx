@@ -1,22 +1,24 @@
-import { FazElement } from "../../../src/element";
+import { FastPocElement } from "./fast-poc-element";
 
-export class PocAlert extends FazElement {
+export class PocAlert extends FastPocElement {
     constructor() {
         super();
     }
 
     connectedCallback() {
         const contentAttr = this.getAttribute("content");
-        if (contentAttr) this.setContent(contentAttr);
+        if (contentAttr) this.content = contentAttr;
         super.connectedCallback();
     }
 
     show() {
+        // Restauramos o display pra que as classes do Bootstrap funcionem no host
+        this.style.display = "block"; 
         this.classList.add("alert", "alert-primary");
         this.setAttribute("role", "alert");
-        const content = this.content();
+        
+        const content = this.content;
         if (content) {
-            // Usando innerHTML na POC pra eliminar qualquer dúvida com SolidJS render
             this.innerHTML = `<span>${content}</span>`;
         }
     }
