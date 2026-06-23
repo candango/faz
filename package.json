@@ -63,7 +63,7 @@
         "esbuild-plugin-solid": "0.6.0",
         "http-server": "14.1.1",
         "jsdom": "27.0.0",
-        "nise": "6.1.1",
+        "nise": "6.1.5",
         "prettier": "3.7.4",
         "ts-node": "10.9.2",
         "typescript": "5.9.3",
