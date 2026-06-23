@@ -5,8 +5,6 @@ import { MountableElement, render } from "solid-js/web";
 import { fakeServer, FakeXMLHttpRequest } from "nise";
 
 const server = fakeServer.create();
-import axios from "axios";
-
 
 server.autoRespond = true;
 server.respondWith("GET", "/sometest", function(xhr: FakeXMLHttpRequest) {
@@ -37,15 +35,21 @@ export class FormExample extends FazFormElement {
     }
 }
 
-axios.get("/sometest").then(function (response) {
-    console.log(response);
-}).catch(function(error){
-    console.log(error);
-});
+fetch("/sometest")
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
 
-axios.get("/sometest1").then(function (response) {
-    console.log(response);
-}).catch(function(error){
-    console.log(error);
-});
+fetch("/sometest1")
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
 customElements.define("faz-form-example", FormExample);

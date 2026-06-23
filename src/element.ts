@@ -1,7 +1,7 @@
 
 import { FazAttributeRole } from "./element-attributes";
 import { randomId, toBoolean } from "./values";
-import { createSignal } from "solid-js";
+import { createSignal, createRoot, createEffect } from "solid-js";
 import { bindReactive } from "./reactivity";
 
 // FazComment extends the standard Comment node to include FazElement reactivity.
@@ -38,13 +38,13 @@ export class FazElement extends HTMLElement {
     public renderedChild: ChildNode | null = null;
     private comment: FazComment | null = null;
     public source: any;
+    private observer: MutationObserver | null = null;
+    private isMoving: boolean = false;
+    private hostInitialized: boolean = false;
 
     // Constructor initializes reactivity, attributes, and default state.
     constructor() {
         super();
-
-        // Standardize Render Strategy: use display: contents to avoid layout expansion
-        this.style.display = "contents";
 
         const config = {
             active: false,
@@ -65,11 +65,6 @@ export class FazElement extends HTMLElement {
         (Object.keys(config) as Array<keyof typeof config>).forEach((key) => {
             bindReactive(this, key as any, config[key]);
         });
-
-        if (!this.id) {
-            this.id = randomId();
-            this.idGenerated = true;
-        }
 
         for (const attribute of this.attributes) {
             switch (attribute.name.toLowerCase()) {
@@ -107,8 +102,6 @@ export class FazElement extends HTMLElement {
             }
         }
 
-        // Store tag name in dataset for reference.
-        this.dataset['faz_element_item'] = this.tagName;
         this.childPrefix = "__child-prefix__";
         // If source is present, remove all child nodes (for virtualized or remote sourced components).
         if (this.source) {
@@ -122,11 +115,104 @@ export class FazElement extends HTMLElement {
     }
 
     /**
+     * Initialize host DOM attributes after construction.
+     *
+     * Custom element constructors must not mutate attributes or children.
+     * Keep DOM-affecting setup in the connected lifecycle so elements created
+     * via document.createElement() can upgrade cleanly in browsers and jsdom.
+     */
+    private initializeHost() {
+        if (this.hostInitialized) return;
+
+        this.style.display = "contents";
+
+        if (!this.id) {
+            this.id = randomId();
+            this.idGenerated = true;
+        }
+
+        this.dataset['faz_element_item'] = this.tagName;
+
+        if (this.comment) {
+            this.comment.data = this.nodeName + " " + this.id;
+        }
+
+        this.hostInitialized = true;
+    }
+
+    /**
+     * Set up a MutationObserver to handle dynamic DOM changes (e.g., HTMX).
+     */
+    private setupMutationObserver() {
+        this.observer = new MutationObserver((mutations) => {
+            if (this.isMoving) return;
+
+            let shouldUpdateChildren = false;
+
+            for (const mutation of mutations) {
+                if (mutation.type === "childList") {
+                    // Handle additions
+                    if (mutation.addedNodes.length > 0) {
+                        this.isMoving = true;
+                        mutation.addedNodes.forEach((node) => {
+                            if (node.parentElement === this && node !== this.comment && node !== this.contentChild) {
+                                this.addChild(node);
+                            }
+                        });
+                        this.isMoving = false;
+                        shouldUpdateChildren = true;
+                    }
+
+                    // Handle removals
+                    if (mutation.removedNodes.length > 0) {
+                        shouldUpdateChildren = true;
+                    }
+                }
+            }
+
+            if (shouldUpdateChildren) {
+                this.updateFazChildren();
+            }
+        });
+
+        this.observer.observe(this, { childList: true, subtree: true });
+    }
+
+    /**
+     * Updates the reactive fazChildren list by scanning current child nodes.
+     */
+    private updateFazChildren() {
+        const items: FazElement[] = [];
+        // Deep scan for elements that are FazElements
+        const scan = (root: Node | null) => {
+            root?.childNodes.forEach((node) => {
+                if (node.nodeType === 1) {
+                    const el = node as HTMLElement;
+                    // Check if it's a FazElement (via our custom marker or duck typing)
+                    if (el.dataset?.['faz_element_item'] || (el as any).fazChildren !== undefined) {
+                        const item = el as unknown as FazElement;
+                        item.parent = this as FazElement;
+                        items.push(item);
+                    } else {
+                        // Only recurse if it's NOT a FazElement (to find nested ones in wrappers)
+                        // If it IS a FazElement, its own observer will handle its children.
+                        scan(node);
+                    }
+                }
+            });
+        };
+        
+        scan(this);
+        this.fazChildren = items;
+    }
+
+    /**
      * The `disconnectedCallback` is a built-in lifecycle method of custom elements.
      * It is called automatically by the browser when the element is removed from the DOM.
      */
     disconnectedCallback() {
         if (this.connected) {
+            this.observer?.disconnect();
             this.comment?.parentElement?.removeChild(this.comment);
             this.disconnect();
         }
@@ -213,7 +299,12 @@ export class FazElement extends HTMLElement {
 
     // Add a child node to the content container.
     addChild<T extends Node>(node: T): T {
-        this.contentChild?.appendChild(node);
+        const contentChild = this.contentChild;
+        if (contentChild && contentChild.nodeType === Node.ELEMENT_NODE) {
+            contentChild.appendChild(node);
+        } else {
+            this.appendChild(node);
+        }
         return node;
     }
 
@@ -228,8 +319,9 @@ export class FazElement extends HTMLElement {
         const children:Node[] = [];
         const items: FazElement[] = [];
         while(this.firstChild) {
-            if (this.firstChild instanceof FazElement) {
-                const item = this.firstChild as FazElement;
+            const el = this.firstChild as HTMLElement;
+            if (this.firstChild.nodeType === 1 && (el.dataset?.['faz_element_item'] || (el as any).fazChildren !== undefined)) {
+                const item = this.firstChild as unknown as FazElement;
                 item.parent = this as FazElement;
                 items.push(item);
                 item.dataset['parent'] = this.id;
@@ -253,10 +345,14 @@ export class FazElement extends HTMLElement {
     // Standard web component lifecycle method: called when element is inserted
     // into the DOM.
     connectedCallback() {
+        this.initializeHost();
+
         // Insert the comment node as a placeholder.
         if (this.comment){
             this.before(this.comment);
         }
+
+        this.setupMutationObserver();
 
         // Defer rendering and state updates until the next microtask to ensure
         // all child custom elements are upgraded.

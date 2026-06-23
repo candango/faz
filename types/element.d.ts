@@ -24,7 +24,26 @@ export declare class FazElement extends HTMLElement {
     renderedChild: ChildNode | null;
     private comment;
     source: any;
+    private observer;
+    private isMoving;
+    private hostInitialized;
     constructor();
+    /**
+     * Initialize host DOM attributes after construction.
+     *
+     * Custom element constructors must not mutate attributes or children.
+     * Keep DOM-affecting setup in the connected lifecycle so elements created
+     * via document.createElement() can upgrade cleanly in browsers and jsdom.
+     */
+    private initializeHost;
+    /**
+     * Set up a MutationObserver to handle dynamic DOM changes (e.g., HTMX).
+     */
+    private setupMutationObserver;
+    /**
+     * Updates the reactive fazChildren list by scanning current child nodes.
+     */
+    private updateFazChildren;
     /**
      * The `disconnectedCallback` is a built-in lifecycle method of custom elements.
      * It is called automatically by the browser when the element is removed from the DOM.
