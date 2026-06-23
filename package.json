@@ -71,30 +71,28 @@
         "vitest": "4.0.18"
     },
     "scripts": {
-        "watch": "npm run watch:clean && node watch.mjs",
+        "watch": "pnpm run watch:clean && node watch.mjs",
         "watch:clean": "rm -rf watch/dist",
-        "showcase": "http-server & npm run watch",
+        "showcase": "http-server & pnpm run watch",
         "esbuild": "node build.mjs",
-        "ts:build": "npm run ts:clean && npm run ts:declaration && cp -r types dist",
+        "ts:build": "pnpm run ts:clean && pnpm run ts:declaration && cp -r types dist",
         "ts:declaration": "tsc -p tsconfig.types.json -d --declarationDir types --emitDeclarationOnly && rm -rf tsconfig.types.tsbuildinfo",
         "ts:clean": "rm -rf tsconfig.tsbuildinfo tsconfig.types.tsbuildinfo types/*",
-        "build": "npm run build:clean && npm run lessc && npm run esbuild && npm run ts:build",
+        "build": "pnpm run build:clean && pnpm run lessc && pnpm run esbuild && pnpm run ts:build",
         "build:clean": "rm -rf dist",
         "build:vendors": "rm -rf dist",
-        "lessc": "npm run lessc:faz && npm run lessc:showcase",
+        "lessc": "pnpm run lessc:faz && pnpm run lessc:showcase",
         "lessc:faz": "lessc stylesheets/faz.less dist/css/faz.css --source-map",
         "lessc:showcase": "lessc stylesheets/showcase.less dist/css/showcase.css --source-map",
-        "lessc:dev": "npm run lessc:dev:faz && npm run lessc:dev:showcase",
+        "lessc:dev": "pnpm run lessc:dev:faz && pnpm run lessc:dev:showcase",
         "lessc:dev:faz": "lessc stylesheets/faz.less stylesheets/faz.css --source-map",
         "lessc:dev:showcase": "lessc stylesheets/showcase.less stylesheets/showcase.css --source-map",
-        "test": "vitest run",
-        "yarn": "npm run yarn:clean && npm run yarn:v2 && npm run yarn:install",
-        "yarn:install": "yarn install",
-        "yarn:clean": "rm -rf yarn.lock .yarn .yarnrc.yml .next node_modules",
-        "yarn:v2": "yarn set version berry && yarn config set nodeLinker node-modules"
+        "test": "vitest run"
     },
-    "packageManager": "yarn@4.17.0",
-    "resolutions": {
-        "@asamuzakjp/css-color": "4.1.1"
+    "packageManager": "pnpm@10.25.0",
+    "pnpm": {
+        "overrides": {
+            "@asamuzakjp/css-color": "4.1.1"
+        }
     }
 }
