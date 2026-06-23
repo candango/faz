@@ -1,18 +1,35 @@
 {
     "name": "faz",
-    "version": "0.1.9",
-    "description": "Vanilla JS HTML Web Components",
-    "main": "./dist/index.js",
-    "module": "./dist/esm/index.js",
+    "version": "0.5.3",
+    "description": "JS HTML Web Components",
+    "main": "dist/js/index.js",
+    "module": "dist/js/index.js",
     "mainFields": [
         "module",
         "main"
     ],
-    "types": "./src/types/index.d.ts",
+    "types": "dist/types/index.d.ts",
     "files": [
         "dist",
-        "src"
+        "src",
+        "types"
     ],
+    "exports": {
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "import": "./dist/js/index.js"
+        },
+        "./reactivity": {
+            "types": "./dist/types/reactivity.d.ts",
+            "import": "./dist/js/reactivity.js"
+        },
+        "./paginator": {
+            "types": "./dist/types/paginator.d.ts",
+            "import": "./dist/js/paginator.js"
+        },
+        "./src": "./src/index.ts",
+        "./src/*": "./src/*"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/candango/faz.git"
@@ -22,7 +39,8 @@
     },
     "homepage": "https://github.com/candango/faz#readme",
     "author": "Flavio Garcia <piraz@candango.org>",
-    "license": "Apache-2.0",
+    "license": "MIT",
+    "type": "module",
     "keywords": [
         "webcomponent",
         "solidjs",
@@ -30,59 +48,51 @@
         "toolkit"
     ],
     "dependencies": {
-        "axios": "1.6.1",
-        "bootstrap": "5.3.2",
-        "bootstrap-icons": "1.11.2",
-        "bootswatch": "5.3.2",
-        "can": "6.6.2",
-        "jquery": "3.7.0",
-        "less": "4.2.0",
-        "lodash": "4.17.21",
-        "solid-js": "1.8.5"
+        "less": "4.5.1",
+        "solid-js": "1.9.13"
     },
     "devDependencies": {
-        "@codemirror/lang-html": "6.4.5",
-        "@codemirror/language": "6.8.0",
-        "@codemirror/view": "6.16.0",
-        "@testing-library/dom": "9.3.3",
-        "@testing-library/jest-dom": "6.1.5",
-        "@types/jest": "29.5.11",
-        "@types/lodash": "4.14.197",
+        "@testing-library/jest-dom": "6.9.1",
+        "@types/jest": "30.0.0",
+        "@types/nise": "1.4.5",
+        "@types/node": "25.0.3",
         "can-stache-loader": "3.0.0",
-        "electron": "27.0.4",
-        "esbuild": "0.19.10",
-        "esbuild-jest": "0.5.0",
+        "esbuild": "0.27.2",
         "esbuild-plugin-copy": "2.1.1",
-        "esbuild-plugin-solid": "0.5.0",
+        "esbuild-plugin-solid": "0.6.0",
         "http-server": "14.1.1",
-        "jest": "29.7.0",
-        "jest-environment-jsdom": "29.7.0",
-        "prettier": "3.1.1",
-        "qunit": "2.17.2",
-        "ts-jest": "29.1.1",
-        "ts-loader": "9.5.1",
+        "jsdom": "27.0.0",
+        "nise": "6.1.5",
+        "prettier": "3.7.4",
         "ts-node": "10.9.2",
-        "typescript": "5.3.3"
+        "typescript": "5.9.3",
+        "vite": "8.0.16",
+        "vite-plugin-solid": "2.11.12",
+        "vitest": "4.0.18"
     },
     "scripts": {
-        "watch": "node watch.mjs",
-        "showcase": "http-server & npm run watch",
+        "watch": "pnpm run watch:clean && node watch.mjs",
+        "watch:clean": "rm -rf watch/dist",
+        "showcase": "http-server & pnpm run watch",
         "esbuild": "node build.mjs",
-        "build": "npm run build:clean && npm run lessc && npm run esbuild",
-        "build:prod": "npm run build:clean && webpack --config webpack.config.prod.js && npm run lessc",
+        "ts:build": "pnpm run ts:clean && pnpm run ts:declaration && cp -r types dist",
+        "ts:declaration": "tsc -p tsconfig.types.json -d --declarationDir types --emitDeclarationOnly && rm -rf tsconfig.types.tsbuildinfo",
+        "ts:clean": "rm -rf tsconfig.tsbuildinfo tsconfig.types.tsbuildinfo types/*",
+        "build": "pnpm run build:clean && pnpm run lessc && pnpm run esbuild && pnpm run ts:build",
         "build:clean": "rm -rf dist",
         "build:vendors": "rm -rf dist",
-        "lessc": "npm run lessc:faz && npm run lessc:showcase",
+        "lessc": "pnpm run lessc:faz && pnpm run lessc:showcase",
         "lessc:faz": "lessc stylesheets/faz.less dist/css/faz.css --source-map",
         "lessc:showcase": "lessc stylesheets/showcase.less dist/css/showcase.css --source-map",
-        "lessc:dev": "npm run lessc:dev:faz && npm run lessc:dev:showcase",
+        "lessc:dev": "pnpm run lessc:dev:faz && pnpm run lessc:dev:showcase",
         "lessc:dev:faz": "lessc stylesheets/faz.less stylesheets/faz.css --source-map",
         "lessc:dev:showcase": "lessc stylesheets/showcase.less stylesheets/showcase.css --source-map",
-        "test": "jest",
-        "test:browser": "karma start --single-run",
-        "yarn": "npm run yarn:clean && npm run yarn:v2 && npm run yarn:install",
-        "yarn:install": "yarn install",
-        "yarn:clean": "rm -rf yarn.lock .yarn .yarnrc.yml .next node_modules",
-        "yarn:v2": "yarn set version berry && yarn config set nodeLinker node-modules"
+        "test": "vitest run"
+    },
+    "packageManager": "pnpm@10.25.0",
+    "pnpm": {
+        "overrides": {
+            "@asamuzakjp/css-color": "4.1.1"
+        }
     }
 }

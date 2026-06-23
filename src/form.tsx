@@ -1,42 +1,89 @@
-/**
- * Copyright 2018-2023 Flavio Garcia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
-import { FazElementItem } from "./item";
-import { Accessor, createSignal, Setter} from "solid-js";
+import { FazElement } from "./element";
+import { bindReactive } from "./reactivity";
 
  
-export class FazFormElement extends FazElementItem {
+export class FazFormElement extends FazElement {
 
-    public action: Accessor<string|null>;
-    public setAction: Setter<string|null>;
-
-    public errors: Accessor<Array<string>>;
-    public setErrors: Setter<Array<string>>;
-
-    public method: Accessor<string>;
-    public setMethod: Setter<string>;
-
-    hasErrors() {
-        return this.errors().length > 0;
-    }
+    public action: string|undefined;
+    public errors!: Record<string, string[]>;
+    public method!: string;
 
     constructor() {
         super();
-        [this.action, this.setAction] = createSignal<string|null>(null);
-        [this.errors, this.setErrors] = createSignal<Array<string>>([]);
-        [this.method, this.setMethod] = createSignal<string>("get");
+        const config = {
+            action: undefined as string | undefined,
+            errors: {} as Record<string, string[]>,
+            method: "get",
+        };
+
+        (Object.keys(config) as Array<keyof typeof config>).forEach((key) => {
+            bindReactive(this, key as any, config[key]);
+        });
+
+        for (const attribute of this.attributes) {
+            switch (attribute.name.toLowerCase()) {
+                case "action":
+                    this.action = attribute.value;
+                    break;
+                case "method":
+                    this.method = attribute.value;
+                    break;
+            }
+        }
+    }
+    
+    get form(): HTMLFormElement|undefined {
+        return undefined
+    }
+
+    get values(): Record<string, FormDataEntryValue> {
+        const values: Record<string, FormDataEntryValue> = {};
+        if (this.form === undefined) {
+            return values;
+        }
+        const formData = new FormData(this.form);
+        for (const [key, value] of formData.entries()) {
+            values[key] = value;
+        }
+        return values;
+    }
+
+    public clearErrorsFor(key: string) {
+        const errors = { ...this.errors };
+        if (key in errors) {
+            delete errors[key];
+        }
+        this.errors = errors;
+    }
+
+    public clearErrors() {
+        this.errors = {};
+    }
+
+    public hasErrorsFor(key: string): boolean {
+        return key in this.errors && this.errors[key].length > 0;
+    }
+
+    public hasErrors(): boolean {
+        return Object.values(this.errors).some(errors => errors.length > 0);
+    }
+
+    public getErrorsFor(key: string): string[] {
+        return this.errors[key] || [];
+    }
+
+    public pushError(key: string, value: string) {
+        value = value.trim();
+        if (value) {
+            const errors = { ...this.errors };
+            if (!errors[key]) {
+                errors[key] = [];
+            }
+            if (!errors[key].includes(value)) {
+                errors[key].push(value);
+            }
+            this.errors = errors;
+        }
     }
 }

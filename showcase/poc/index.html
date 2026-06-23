@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Candango Faz POC - Blink & Malabarismo</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/dist/css/faz.css" rel="stylesheet"/>
+    <link href="/dist/css/showcase.css" rel="stylesheet"/>
+    <style>
+        /* A Mágica do Jacazul: Faz o Web Component sumir pro layout */
+        poc-alert, poc-breadcrumb-item {
+            display: contents;
+        }
+
+        /* Estabilização de Layout sugerida pelo Mestre:
+           Damos um tamanho mínimo pro componente enquanto ele carrega */
+        [data-faz-loading] {
+            display: block; 
+            min-height: 2.5rem;
+            background-color: rgba(0, 0, 0, 0.05); /* Mais transparente */
+            border: 1px dashed rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            color: rgba(0, 0, 0, 0.2); /* Texto levemente visível */
+        }
+    </style>
+</head>
+<body>
+    <main role="main" class="container">
+        <h1>POC: Estratégia de Renderização</h1>
+        
+        <section>
+            <h2>1. Caso Alert (Simples)</h2>
+            <poc-alert id="alert1" content="Outer Alert">
+                <poc-alert id="alert2" content="Inner Alert"></poc-alert>
+            </poc-alert>
+        </section>
+
+        <section style="margin-top: 2rem;">
+            <h2>2. Caso Breadcrumb (Malabarismo)</h2>
+            <poc-breadcrumb id="bread1">
+                <poc-breadcrumb-item id="item1" content="Home"></poc-breadcrumb-item>
+                <poc-breadcrumb-item id="item2" content="Library"></poc-breadcrumb-item>
+                <poc-breadcrumb-item id="item3" content="Data"></poc-breadcrumb-item>
+            </poc-breadcrumb>
+        </section>
+    </main>
+
+    <script src="/dist/poc.bundle.js"></script>
+</body>
+</html>

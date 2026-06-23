@@ -1,22 +1,8 @@
-/**
- * Copyright 2018-2023 Flávio Gonçalves Garcia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 export const entryPoints =  [
     { out: "form", in: "src/form.tsx" },
-    { out: "id", in: "src/id.ts" },
     { out: "index", in: "src/index.ts" },
-    { out: "item", in: "src/item.ts" },
+    { out: "element", in: "src/element.ts" },
+    { out: "test", in: "src/test.ts" },
+    { out: "values", in: "src/values.ts" },
 ];

@@ -1,0 +1,14 @@
+{ 
+    "extends": "./tsconfig",
+    "include": ["src/**/*"],
+    "exclude": ["jest.config.ts", "vitest.config.ts"],
+    "compilerOptions": {
+        "composite": true,
+        "rootDir": "./src",
+        "types": [
+            "vite/client",
+            "@testing-library/jest-dom"
+        ],
+        "outDir": "./dist",
+    }
+}

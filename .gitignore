@@ -13,3 +13,6 @@ yarn-error.log
 # Less
 stylesheets/*.css
 stylesheets/*.css.map
+
+# Project
+.gemini/

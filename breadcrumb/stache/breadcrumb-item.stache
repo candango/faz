@@ -1,7 +1,0 @@
-<li class:from="classes"{{#if(active}} aria-current="page"{{/if}}>
-    {{# if(isLink) }}
-    <a href:from="href">{{{ content }}}</a>
-    {{ else }}
-    {{{ content }}}
-    {{/ if }}
-</li>
