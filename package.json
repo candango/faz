@@ -49,7 +49,7 @@
     ],
     "dependencies": {
         "less": "4.5.1",
-        "solid-js": "1.9.10"
+        "solid-js": "1.9.13"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "6.9.1",
