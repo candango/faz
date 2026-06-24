@@ -1,6 +1,6 @@
 {
     "name": "faz",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "description": "JS HTML Web Components",
     "main": "dist/js/index.js",
     "module": "dist/js/index.js",
@@ -48,8 +48,10 @@
         "toolkit"
     ],
     "dependencies": {
-        "less": "4.5.1",
-        "solid-js": "1.9.13"
+        "less": "4.5.1"
+    },
+    "peerDependencies": {
+        "solid-js": "^1.9.13"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "6.9.1",
@@ -64,6 +66,7 @@
         "jsdom": "27.0.0",
         "nise": "6.1.5",
         "prettier": "3.7.4",
+        "solid-js": "1.9.13",
         "ts-node": "10.9.2",
         "typescript": "5.9.3",
         "vite": "8.0.16",

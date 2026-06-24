@@ -48,6 +48,60 @@ When designing or changing APIs, ask:
 
 Avoid designs that only make sense in a modern greenfield SPA.
 
+## Release Smoke Testing with Local Tarballs
+
+Before publishing a new Faz version to npm, validate the exact package artifact that would be published.
+
+Recommended flow:
+
+1. Build and pack Faz locally:
+
+   ```bash
+   pnpm install --frozen-lockfile
+   pnpm run build
+   pnpm test
+   npm pack
+   ```
+
+2. Install the generated tarball in a downstream consumer such as `faz-bootstrap`.
+
+   For Yarn 4 consumers, prefer the explicit `file:` protocol:
+
+   ```bash
+   yarn add faz@file:/home/fpiraz/source/candango/faz/faz-0.6.1.tgz
+   ```
+
+   Alternatively, edit the consumer dependency temporarily:
+
+   ```json
+   "faz": "file:/home/fpiraz/source/candango/faz/faz-0.6.1.tgz"
+   ```
+
+3. Run the consumer validation:
+
+   ```bash
+   yarn install
+   yarn build
+   ```
+
+4. Validate browser behavior, not only TypeScript/build output.
+
+Tarball smoke checklist:
+
+- The tarball `package.json` contains the intended version.
+- `dist/js/index.js` does not bundle shared runtimes such as `solid-js`; it should preserve imports for consumer resolution.
+- Every declared public export has matching generated JavaScript and type files.
+- Imports from the public package root, such as `from "faz"`, work in the consumer.
+- Runtime browser interactions, including click/reactivity behavior, still work.
+
+This validates the packed artifact before npm publication. It does not validate npm registry metadata or registry installation behavior. After publishing, repeat the downstream smoke using the published version, for example:
+
+```bash
+yarn add faz@0.6.1
+```
+
+Do not commit generated `.tgz` files unless there is an explicit release-artifact policy requiring it.
+
 ## Security and Build Hardening TODOs
 
 The current build and CI setup needs supply-chain hardening before release automation becomes trusted.

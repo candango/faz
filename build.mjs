@@ -19,6 +19,10 @@ await esbuild.build({
     outdir: "dist/js",
     logLevel: "info",
     legalComments: "none",
+    external: [
+        "solid-js",
+        "solid-js/*",
+    ],
     // outExtension: { '.js': '.cjs' },
     // target: ['chrome58', 'firefox57', 'safari11', 'edge16'],
     plugins:[
