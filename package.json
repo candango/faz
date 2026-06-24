@@ -1,6 +1,6 @@
 {
     "name": "faz",
-    "version": "0.5.3",
+    "version": "0.6.0",
     "description": "JS HTML Web Components",
     "main": "dist/js/index.js",
     "module": "dist/js/index.js",

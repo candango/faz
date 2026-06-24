@@ -54,18 +54,16 @@ The current build and CI setup needs supply-chain hardening before release autom
 
 TODO:
 
-- Replace the mutable Yarn CI install flow with a reproducible package-manager workflow.
-  - Current GitHub Actions disables immutable installs and runs `npm run yarn`, which deletes and regenerates `yarn.lock`, `.yarnrc.yml`, and `node_modules`.
-  - Prefer a committed lockfile and an immutable install command.
-  - The project may migrate from Yarn to pnpm, but the migration must preserve reproducibility.
+- Keep the pnpm install flow reproducible.
+  - GitHub Actions and Travis CI should use the committed `pnpm-lock.yaml` with `pnpm install --frozen-lockfile`.
+  - Do not reintroduce mutable install scripts that delete and regenerate lockfiles during CI.
 - Add explicit least-privilege permissions to GitHub Actions.
   - The test workflow should start with `permissions: contents: read` unless a job needs more.
 - Decide whether to pin GitHub Actions by SHA.
-  - Current workflow uses tag references such as `actions/checkout@v4` and `actions/setup-node@v4`.
+  - Current workflow uses tag references such as `actions/checkout@v7`, `actions/setup-node@v6`, and `pnpm/action-setup@v6`.
   - Pinning by SHA reduces tag-compromise risk.
-- Retire or modernize Travis CI.
-  - `.travis.yml` still targets Node.js 12 and caches `node_modules`.
-  - If Travis is no longer used, remove it to avoid stale CI behavior.
+- Decide whether Travis CI is still required.
+  - `.travis.yml` is modernized for pnpm and current Node.js versions, but should be removed if Travis is no longer used.
 - Decide release sourcemap policy.
   - `build.mjs` currently emits sourcemaps into `dist/js`.
   - Keep them intentionally for open-source/debuggability or disable them for release builds.

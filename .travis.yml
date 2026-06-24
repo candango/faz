@@ -1,11 +1,11 @@
 sudo: false
 language: node_js
 node_js:
-  - "12"
-script: npm test
+  - "22"
+  - "24"
+  - "26"
 install:
-  - npm run yarn
-cache:
-  yarn: true
-  directories:
-    - node_modules
+  - npm exec --yes pnpm@10.25.0 install --frozen-lockfile
+script:
+  - npm exec --yes pnpm@10.25.0 run build
+  - npm exec --yes pnpm@10.25.0 test
