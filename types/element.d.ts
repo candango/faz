@@ -37,9 +37,19 @@ export declare class FazElement extends HTMLElement {
      */
     private initializeHost;
     /**
-     * Set up a MutationObserver to handle dynamic DOM changes (e.g., HTMX).
+     * Checks whether an added node can be safely moved into this element's
+     * content container.
+     */
+    private shouldRemapAddedNode;
+    /**
+     * Set up a MutationObserver to handle external DOM changes (e.g., HTMX).
      */
     private setupMutationObserver;
+    /**
+     * Pauses MutationObserver delivery while Faz performs internal render DOM
+     * reshaping. This keeps the observer focused on external additions.
+     */
+    private pauseMutationObserver;
     /**
      * Updates the reactive fazChildren list by scanning current child nodes.
      */

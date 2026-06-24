@@ -18,6 +18,20 @@ if (!customElements.get("mutation-test-element")) {
     customElements.define("mutation-test-element", MutationTestElement);
 }
 
+class WrapperRenderElement extends FazElement {
+    show() {
+        this.innerHTML = `<nav><ol class="content-root"></ol></nav>`;
+    }
+
+    get contentChild() {
+        return this.querySelector(".content-root") as ChildNode;
+    }
+}
+
+if (!customElements.get("wrapper-render-element")) {
+    customElements.define("wrapper-render-element", WrapperRenderElement);
+}
+
 describe("MutationObserver (HTMX Compatibility)", () => {
     beforeEach(() => {
         document.body.innerHTML = "";
@@ -75,5 +89,18 @@ describe("MutationObserver (HTMX Compatibility)", () => {
         await new Promise(resolve => setTimeout(resolve, 100));
 
         expect(parent.fazChildren.length).toBe(0);
+    });
+
+    test("should not remap a rendered wrapper into its own content child", async () => {
+        document.body.innerHTML = `<wrapper-render-element id="wrapper"></wrapper-render-element>`;
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const wrapper = document.getElementById("wrapper") as WrapperRenderElement;
+        const nav = wrapper.querySelector("nav");
+        const contentRoot = wrapper.querySelector(".content-root");
+
+        expect(nav?.parentElement).toBe(wrapper);
+        expect(contentRoot?.parentElement).toBe(nav);
     });
 });

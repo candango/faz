@@ -141,41 +141,76 @@ export class FazElement extends HTMLElement {
     }
 
     /**
-     * Set up a MutationObserver to handle dynamic DOM changes (e.g., HTMX).
+     * Checks whether an added node can be safely moved into this element's
+     * content container.
+     */
+    private shouldRemapAddedNode(node: Node): boolean {
+        const contentChild = this.contentChild;
+
+        if (node === this || node.contains(this)) {
+            return false;
+        }
+
+        if (contentChild && node.contains(contentChild)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Set up a MutationObserver to handle external DOM changes (e.g., HTMX).
      */
     private setupMutationObserver() {
-        this.observer = new MutationObserver((mutations) => {
-            if (this.isMoving) return;
+        if (!this.observer) {
+            this.observer = new MutationObserver((mutations) => {
+                if (this.isMoving) return;
 
-            let shouldUpdateChildren = false;
+                let shouldUpdateChildren = false;
 
-            for (const mutation of mutations) {
-                if (mutation.type === "childList") {
-                    // Handle additions
-                    if (mutation.addedNodes.length > 0) {
-                        this.isMoving = true;
-                        mutation.addedNodes.forEach((node) => {
-                            if (node.parentElement === this && node !== this.comment && node !== this.contentChild) {
-                                this.addChild(node);
-                            }
-                        });
-                        this.isMoving = false;
-                        shouldUpdateChildren = true;
-                    }
+                for (const mutation of mutations) {
+                    if (mutation.type === "childList") {
+                        // Handle direct host additions only. Descendant additions
+                        // belong to component-rendered internals and must not be
+                        // remapped by the core observer.
+                        if (mutation.target === this && mutation.addedNodes.length > 0) {
+                            this.isMoving = true;
+                            mutation.addedNodes.forEach((node) => {
+                                if (
+                                    node.parentElement === this &&
+                                    node !== this.comment &&
+                                    node !== this.contentChild &&
+                                    this.shouldRemapAddedNode(node)
+                                ) {
+                                    this.addChild(node);
+                                }
+                            });
+                            this.isMoving = false;
+                            shouldUpdateChildren = true;
+                        }
 
-                    // Handle removals
-                    if (mutation.removedNodes.length > 0) {
-                        shouldUpdateChildren = true;
+                        // Descendant removals can still affect fazChildren.
+                        if (mutation.removedNodes.length > 0) {
+                            shouldUpdateChildren = true;
+                        }
                     }
                 }
-            }
 
-            if (shouldUpdateChildren) {
-                this.updateFazChildren();
-            }
-        });
+                if (shouldUpdateChildren) {
+                    this.updateFazChildren();
+                }
+            });
+        }
 
         this.observer.observe(this, { childList: true, subtree: true });
+    }
+
+    /**
+     * Pauses MutationObserver delivery while Faz performs internal render DOM
+     * reshaping. This keeps the observer focused on external additions.
+     */
+    private pauseMutationObserver() {
+        this.observer?.disconnect();
     }
 
     /**
@@ -203,7 +238,12 @@ export class FazElement extends HTMLElement {
         };
         
         scan(this);
-        this.fazChildren = items;
+        if (
+            items.length !== this.fazChildren.length ||
+            items.some((item, index) => item !== this.fazChildren[index])
+        ) {
+            this.fazChildren = items;
+        }
     }
 
     /**
@@ -300,6 +340,9 @@ export class FazElement extends HTMLElement {
     // Add a child node to the content container.
     addChild<T extends Node>(node: T): T {
         const contentChild = this.contentChild;
+        if (!this.shouldRemapAddedNode(node)) {
+            return node;
+        }
         if (contentChild && contentChild.nodeType === Node.ELEMENT_NODE) {
             contentChild.appendChild(node);
         } else {
@@ -352,8 +395,6 @@ export class FazElement extends HTMLElement {
             this.before(this.comment);
         }
 
-        this.setupMutationObserver();
-
         // Defer rendering and state updates until the next microtask to ensure
         // all child custom elements are upgraded.
         // This is necessary because, during connectedCallback, child elements
@@ -364,6 +405,7 @@ export class FazElement extends HTMLElement {
             }
             this.connected = true;
             this.loading = false;
+            this.setupMutationObserver();
         });
     }
 
@@ -375,11 +417,19 @@ export class FazElement extends HTMLElement {
 
     // Main render method: load data, prepare, manipulate, and restore children.
     render() {
-        this.load();
-        this.beforeShow();
-        const children = this.collectChildren();
-        this.show();
-        this.placeBackChildren(children);
-        this.afterShow();
+        const shouldResumeObserver = this.observer !== null;
+        this.pauseMutationObserver();
+        try {
+            this.load();
+            this.beforeShow();
+            const children = this.collectChildren();
+            this.show();
+            this.placeBackChildren(children);
+            this.afterShow();
+        } finally {
+            if (shouldResumeObserver) {
+                this.setupMutationObserver();
+            }
+        }
     }
 }
