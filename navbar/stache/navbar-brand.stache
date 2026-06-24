@@ -1,5 +1,0 @@
-{{#if (isLink)}}
-    <a class="navbar-brand" href="{{ href }}">{{{ content }}}</a>
-{{else}}
-    <span class="navbar-brand mb-0 h1">{{{ content }}}</span>
-{{/if}}

@@ -47,9 +47,7 @@
         "faz",
         "toolkit"
     ],
-    "dependencies": {
-        "less": "4.5.1"
-    },
+    "dependencies": {},
     "peerDependencies": {
         "solid-js": "^1.9.13"
     },
@@ -58,12 +56,12 @@
         "@types/jest": "30.0.0",
         "@types/nise": "1.4.5",
         "@types/node": "25.0.3",
-        "can-stache-loader": "3.0.0",
         "esbuild": "0.27.2",
         "esbuild-plugin-copy": "2.1.1",
         "esbuild-plugin-solid": "0.6.0",
         "http-server": "14.1.1",
         "jsdom": "27.0.0",
+        "less": "4.5.1",
         "nise": "6.1.5",
         "prettier": "3.7.4",
         "solid-js": "1.9.13",
