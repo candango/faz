@@ -49,7 +49,7 @@
     ],
     "dependencies": {},
     "peerDependencies": {
-        "solid-js": "^1.9.13"
+        "solid-js": "1.9.15"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "6.9.1",
