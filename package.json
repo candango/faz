@@ -58,7 +58,6 @@
         "esbuild": "0.28.2",
         "esbuild-plugin-copy": "2.1.1",
         "esbuild-plugin-solid": "0.6.0",
-        "http-server": "14.1.1",
         "jsdom": "27.0.0",
         "less": "4.5.1",
         "nise": "6.1.5",
@@ -73,7 +72,7 @@
     "scripts": {
         "watch": "pnpm run watch:clean && node watch.mjs",
         "watch:clean": "rm -rf watch/dist",
-        "showcase": "http-server & pnpm run watch",
+        "showcase": "pnpm run watch",
         "esbuild": "node build.mjs",
         "ts:build": "pnpm run ts:clean && pnpm run ts:declaration && cp -r types dist",
         "ts:declaration": "tsc -p tsconfig.types.json -d --declarationDir types --emitDeclarationOnly && rm -rf tsconfig.types.tsbuildinfo",
