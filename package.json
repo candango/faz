@@ -48,7 +48,7 @@
         "toolkit"
     ],
     "peerDependencies": {
-        "solid-js": "1.9.15"
+        "solid-js": "^1.9.17"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "6.9.1",
@@ -62,7 +62,7 @@
         "less": "4.5.1",
         "nise": "6.1.5",
         "prettier": "3.7.4",
-        "solid-js": "1.9.15",
+        "solid-js": "1.9.17",
         "ts-node": "10.9.2",
         "typescript": "5.9.3",
         "vite": "8.0.16",
