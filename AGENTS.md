@@ -111,6 +111,7 @@ TODO:
 - Keep the pnpm install flow reproducible.
   - GitHub Actions and Travis CI should use the committed `pnpm-lock.yaml` with `pnpm install --frozen-lockfile`.
   - Do not reintroduce mutable install scripts that delete and regenerate lockfiles during CI.
+  - `pnpm-workspace.yaml` sets `minimumReleaseAge: 10080` (7 days): new resolutions skip versions younger than that. Use `minimumReleaseAgeExclude` only for an urgent security fix, and remove the exclusion once the version ages.
 - Add explicit least-privilege permissions to GitHub Actions.
   - The test workflow should start with `permissions: contents: read` unless a job needs more.
 - Decide whether to pin GitHub Actions by SHA.
