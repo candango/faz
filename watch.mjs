@@ -1,8 +1,6 @@
 
 import { context } from "esbuild";
-import { assets } from "./assets.mjs";
 import { entryPoints } from "./entryPoints.mjs";
-import { copy } from "esbuild-plugin-copy";
 import { solidPlugin } from "esbuild-plugin-solid";
 
 entryPoints.push({ out: "custom-tag.bundle", in: "showcase/src/custom-tag.tsx" });
@@ -24,7 +22,6 @@ let ctx = await context({
     legalComments: "none",
     allowOverwrite: false,
     plugins:[
-        copy(assets),
         solidPlugin()
     ],
     loader: { '.png': 'binary' },
